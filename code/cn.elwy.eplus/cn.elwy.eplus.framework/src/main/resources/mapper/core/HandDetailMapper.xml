@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.elwy.eplus.core.entity.HandDetailMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.HandDetail">
+		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FHANDOVER_ID" property="handoverId" jdbcType="VARCHAR" />
+		<result column="FSUBJECT_ID" property="subjectId" jdbcType="VARCHAR" />
+		<result column="FSUBJECT_TYPE" property="subjectType" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Condition_Where_Clause">
+		<where>
+			<choose>
+				<when test="criterias != null and criterias.size() &gt; 0">
+					<foreach collection="criterias" item="criteria" separator="AND">
+						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.rules" item="item">
+									<choose>
+										<when test="item.isNoValue()">
+											${criteria.op} ${item.field} ${item.op}
+										</when>
+										<when test="item.isSingleValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value}
+										</when>
+										<when test="item.isBetweenValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+										</when>
+										<when test="item.isListValue()">
+											${criteria.op} ${item.field} ${item.op}
+											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
+												#{listItem}
+											</foreach>
+										</when>
+									</choose>
+								</foreach>
+							</trim>
+						</if>
+						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
+							${criteria.gop}
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.groups" item="groupItem">
+									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
+										${criteria.rgop}
+										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+											<foreach collection="groupItem.rules" item="ruleItem">
+												<choose>
+													<when test="ruleItem.isNoValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													</when>
+													<when test="ruleItem.isSingleValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													</when>
+													<when test="ruleItem.isBetweenValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													</when>
+													<when test="ruleItem.isListValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+															#{listItem}
+														</foreach>
+													</when>
+												</choose>
+											</foreach>
+										</trim>
+									</if>
+								</foreach>
+							</trim>
+						</if>
+					</foreach>
+				</when>
+				<when test="param != null">
+					<foreach item="value" index="key" collection="param.entrySet()" separator="AND">  
+						${key} = #{value}
+					</foreach>
+				</when>
+			</choose>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<choose>
+			<when test="filterColumns == null || filterColumns.isEmpty()">
+		FID, FHANDOVER_ID, FSUBJECT_ID, FSUBJECT_TYPE 
+			</when>
+			<otherwise>
+				<trim prefixOverrides=",">
+					<if test="!filterColumns.contains(&quot;FID&quot;)">
+						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FHANDOVER_ID&quot;)">
+						FHANDOVER_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FSUBJECT_ID&quot;)">
+						FSUBJECT_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FSUBJECT_TYPE&quot;)">
+						FSUBJECT_TYPE 
+					</if>
+				</trim>
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+		select
+		<include refid="Base_Column_List" />
+		from ect_hand_detail
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+		<if test="orderRules != null">
+			order by 
+			<foreach collection="orderRules" item="item" separator=",">
+				${item.field}
+				<if test="item.desc">
+					desc
+				</if>
+			</foreach>
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+		select 
+		<include refid="Base_Column_List" />
+		from ect_hand_detail
+		where FID = #{_parameter.id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from ect_hand_detail
+		where FID = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimaryKeys">
+		delete from ect_hand_detail
+		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+	</delete>
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+		delete from ect_hand_detail
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.HandDetail">
+		insert into ect_hand_detail (FID, FHANDOVER_ID, FSUBJECT_ID, FSUBJECT_TYPE )
+		values (
+			#{id, jdbcType=VARCHAR}, 
+			#{handoverId, jdbcType=VARCHAR}, 
+			#{subjectId, jdbcType=VARCHAR}, 
+			#{subjectType, jdbcType=VARCHAR} 
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.HandDetail">
+		insert into ect_hand_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				FID,
+			</if>
+			<if test="handoverId != null">
+				FHANDOVER_ID,
+			</if>
+			<if test="subjectId != null">
+				FSUBJECT_ID,
+			</if>
+			<if test="subjectType != null">
+				FSUBJECT_TYPE
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id, jdbcType=VARCHAR},
+			</if>
+			<if test="handoverId != null">
+				#{handoverId, jdbcType=VARCHAR},
+			</if>
+			<if test="subjectId != null">
+				#{subjectId, jdbcType=VARCHAR},
+			</if>
+			<if test="subjectType != null">
+				#{subjectType, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+		select count(*) from ect_hand_detail
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByConditionSelective" parameterType="map">
+		update ect_hand_detail
+		<set>
+			<if test="data.handoverId != null">
+				FHANDOVER_ID = #{data.handoverId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.subjectId != null">
+				FSUBJECT_ID = #{data.subjectId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.subjectType != null">
+				FSUBJECT_TYPE = #{data.subjectType, jdbcType=VARCHAR}
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByCondition" parameterType="map">
+		update ect_hand_detail
+		set 
+			FHANDOVER_ID = #{data.handoverId, jdbcType=VARCHAR},
+			FSUBJECT_ID = #{data.subjectId, jdbcType=VARCHAR},
+			FSUBJECT_TYPE = #{data.subjectType, jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.HandDetail">
+		update ect_hand_detail
+		<set>
+			<if test="handoverId != null">
+				FHANDOVER_ID = #{handoverId, jdbcType=VARCHAR},
+			</if>
+			<if test="subjectId != null">
+				FSUBJECT_ID = #{subjectId, jdbcType=VARCHAR},
+			</if>
+			<if test="subjectType != null">
+				FSUBJECT_TYPE = #{subjectType, jdbcType=VARCHAR}
+			</if>
+		</set>
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.HandDetail">
+		update ect_hand_detail
+		set 
+			
+			FHANDOVER_ID = #{handoverId, jdbcType=VARCHAR},
+			FSUBJECT_ID = #{subjectId, jdbcType=VARCHAR},
+			FSUBJECT_TYPE = #{subjectType, jdbcType=VARCHAR}
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

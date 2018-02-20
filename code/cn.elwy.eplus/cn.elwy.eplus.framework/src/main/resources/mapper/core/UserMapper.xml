@@ -1,0 +1,901 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.elwy.eplus.core.entity.UserMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.User">
+		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FUSER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="FUSER_CODE" property="userCode" jdbcType="VARCHAR" />
+		<result column="FUSER_TYPE" property="userType" jdbcType="VARCHAR" />
+		<result column="FNICKNAME" property="nickname" jdbcType="VARCHAR" />
+		<result column="FROLE_ID" property="roleId" jdbcType="VARCHAR" />
+		<result column="FORG_ID" property="orgId" jdbcType="VARCHAR" />
+		<result column="FPOST_ID" property="postId" jdbcType="VARCHAR" />
+		<result column="FENABLE" property="enable" jdbcType="BIT" />
+		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
+		<result column="FAUDIT_STATE" property="auditState" jdbcType="SMALLINT" />
+		<result column="FDELETE_STATE" property="deleteState" jdbcType="SMALLINT" />
+		<result column="FLOCK_STATE" property="lockState" jdbcType="SMALLINT" />
+		<result column="FONLINE" property="online" jdbcType="SMALLINT" />
+		<result column="FSAFETY" property="safety" jdbcType="VARCHAR" />
+		<result column="FINCEPT_TIME" property="inceptTime" jdbcType="TIMESTAMP" />
+		<result column="FEXPIRY_TIME" property="expiryTime" jdbcType="TIMESTAMP" />
+		<result column="FLOGIN_TIME" property="loginTime" jdbcType="TIMESTAMP" />
+		<result column="FLOGIN_COUNT" property="loginCount" jdbcType="INTEGER" />
+		<result column="FCLIENT_IP" property="clientIp" jdbcType="VARCHAR" />
+		<result column="FPASSWORD" property="password" jdbcType="VARCHAR" />
+		<result column="FREAL_NAME" property="realName" jdbcType="VARCHAR" />
+		<result column="FSEX" property="sex" jdbcType="VARCHAR" />
+		<result column="FBIRTHDAY" property="birthday" jdbcType="TIMESTAMP" />
+		<result column="FTELEPHONE" property="telephone" jdbcType="VARCHAR" />
+		<result column="FMOBILE" property="mobile" jdbcType="VARCHAR" />
+		<result column="FJOB" property="job" jdbcType="VARCHAR" />
+		<result column="FPOSTCODE" property="postcode" jdbcType="VARCHAR" />
+		<result column="FEMAIL" property="email" jdbcType="VARCHAR" />
+		<result column="FADDRESS" property="address" jdbcType="VARCHAR" />
+		<result column="FAUDITOR_ID" property="auditorId" jdbcType="VARCHAR" />
+		<result column="FAUDIT_TIME" property="auditTime" jdbcType="TIMESTAMP" />
+		<result column="FCREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
+		<result column="FCREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="FDELETOR_ID" property="deletorId" jdbcType="VARCHAR" />
+		<result column="FDELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
+		<result column="FEDITOR_ID" property="editorId" jdbcType="VARCHAR" />
+		<result column="FEDIT_TIME" property="editTime" jdbcType="TIMESTAMP" />
+		<result column="FREMARK" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Condition_Where_Clause">
+		<where>
+			<choose>
+				<when test="criterias != null and criterias.size() &gt; 0">
+					<foreach collection="criterias" item="criteria" separator="AND">
+						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.rules" item="item">
+									<choose>
+										<when test="item.isNoValue()">
+											${criteria.op} ${item.field} ${item.op}
+										</when>
+										<when test="item.isSingleValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value}
+										</when>
+										<when test="item.isBetweenValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+										</when>
+										<when test="item.isListValue()">
+											${criteria.op} ${item.field} ${item.op}
+											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
+												#{listItem}
+											</foreach>
+										</when>
+									</choose>
+								</foreach>
+							</trim>
+						</if>
+						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
+							${criteria.gop}
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.groups" item="groupItem">
+									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
+										${criteria.rgop}
+										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+											<foreach collection="groupItem.rules" item="ruleItem">
+												<choose>
+													<when test="ruleItem.isNoValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													</when>
+													<when test="ruleItem.isSingleValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													</when>
+													<when test="ruleItem.isBetweenValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													</when>
+													<when test="ruleItem.isListValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+															#{listItem}
+														</foreach>
+													</when>
+												</choose>
+											</foreach>
+										</trim>
+									</if>
+								</foreach>
+							</trim>
+						</if>
+					</foreach>
+				</when>
+				<when test="param != null">
+					<foreach item="value" index="key" collection="param.entrySet()" separator="AND">  
+						${key} = #{value}
+					</foreach>
+				</when>
+			</choose>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<choose>
+			<when test="filterColumns == null || filterColumns.isEmpty()">
+		FID, FUSER_NAME, FUSER_CODE, FUSER_TYPE, FNICKNAME, FROLE_ID, FORG_ID, FPOST_ID, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
+			</when>
+			<otherwise>
+				<trim prefixOverrides=",">
+					<if test="!filterColumns.contains(&quot;FID&quot;)">
+						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FUSER_NAME&quot;)">
+						FUSER_NAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FUSER_CODE&quot;)">
+						FUSER_CODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FUSER_TYPE&quot;)">
+						FUSER_TYPE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FNICKNAME&quot;)">
+						FNICKNAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FROLE_ID&quot;)">
+						FROLE_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FORG_ID&quot;)">
+						FORG_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FPOST_ID&quot;)">
+						FPOST_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FENABLE&quot;)">
+						FENABLE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
+						FEDIT_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FAUDIT_STATE&quot;)">
+						FAUDIT_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FDELETE_STATE&quot;)">
+						FDELETE_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FLOCK_STATE&quot;)">
+						FLOCK_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FONLINE&quot;)">
+						FONLINE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FSAFETY&quot;)">
+						FSAFETY, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FINCEPT_TIME&quot;)">
+						FINCEPT_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEXPIRY_TIME&quot;)">
+						FEXPIRY_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FLOGIN_TIME&quot;)">
+						FLOGIN_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FLOGIN_COUNT&quot;)">
+						FLOGIN_COUNT, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FCLIENT_IP&quot;)">
+						FCLIENT_IP, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FPASSWORD&quot;)">
+						FPASSWORD, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FREAL_NAME&quot;)">
+						FREAL_NAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FSEX&quot;)">
+						FSEX, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FBIRTHDAY&quot;)">
+						FBIRTHDAY, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FTELEPHONE&quot;)">
+						FTELEPHONE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FMOBILE&quot;)">
+						FMOBILE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FJOB&quot;)">
+						FJOB, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FPOSTCODE&quot;)">
+						FPOSTCODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEMAIL&quot;)">
+						FEMAIL, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FADDRESS&quot;)">
+						FADDRESS, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FAUDITOR_ID&quot;)">
+						FAUDITOR_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FAUDIT_TIME&quot;)">
+						FAUDIT_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FCREATOR_ID&quot;)">
+						FCREATOR_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FCREATE_TIME&quot;)">
+						FCREATE_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FDELETOR_ID&quot;)">
+						FDELETOR_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FDELETE_TIME&quot;)">
+						FDELETE_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEDITOR_ID&quot;)">
+						FEDITOR_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEDIT_TIME&quot;)">
+						FEDIT_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FREMARK&quot;)">
+						FREMARK 
+					</if>
+				</trim>
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+		select
+		<include refid="Base_Column_List" />
+		from ect_user
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+		<if test="orderRules != null">
+			order by 
+			<foreach collection="orderRules" item="item" separator=",">
+				${item.field}
+				<if test="item.desc">
+					desc
+				</if>
+			</foreach>
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+		select 
+		<include refid="Base_Column_List" />
+		from ect_user
+		where FID = #{_parameter.id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from ect_user
+		where FID = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimaryKeys">
+		delete from ect_user
+		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+	</delete>
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+		delete from ect_user
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.User">
+		insert into ect_user (FID, FUSER_NAME, FUSER_CODE, FUSER_TYPE, FNICKNAME, FROLE_ID, FORG_ID, FPOST_ID, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
+		values (
+			#{id, jdbcType=VARCHAR}, 
+			#{userName, jdbcType=VARCHAR}, 
+			#{userCode, jdbcType=VARCHAR}, 
+			#{userType, jdbcType=VARCHAR}, 
+			#{nickname, jdbcType=VARCHAR}, 
+			#{roleId, jdbcType=VARCHAR}, 
+			#{orgId, jdbcType=VARCHAR}, 
+			#{postId, jdbcType=VARCHAR}, 
+			#{enable, jdbcType=BIT}, 
+			#{editState, jdbcType=SMALLINT}, 
+			#{auditState, jdbcType=SMALLINT}, 
+			#{deleteState, jdbcType=SMALLINT}, 
+			#{lockState, jdbcType=SMALLINT}, 
+			#{online, jdbcType=SMALLINT}, 
+			#{safety, jdbcType=VARCHAR}, 
+			#{inceptTime, jdbcType=TIMESTAMP}, 
+			#{expiryTime, jdbcType=TIMESTAMP}, 
+			#{loginTime, jdbcType=TIMESTAMP}, 
+			#{loginCount, jdbcType=INTEGER}, 
+			#{clientIp, jdbcType=VARCHAR}, 
+			#{password, jdbcType=VARCHAR}, 
+			#{realName, jdbcType=VARCHAR}, 
+			#{sex, jdbcType=VARCHAR}, 
+			#{birthday, jdbcType=TIMESTAMP}, 
+			#{telephone, jdbcType=VARCHAR}, 
+			#{mobile, jdbcType=VARCHAR}, 
+			#{job, jdbcType=VARCHAR}, 
+			#{postcode, jdbcType=VARCHAR}, 
+			#{email, jdbcType=VARCHAR}, 
+			#{address, jdbcType=VARCHAR}, 
+			#{auditorId, jdbcType=VARCHAR}, 
+			#{auditTime, jdbcType=TIMESTAMP}, 
+			#{creatorId, jdbcType=VARCHAR}, 
+			#{createTime, jdbcType=TIMESTAMP}, 
+			#{deletorId, jdbcType=VARCHAR}, 
+			#{deleteTime, jdbcType=TIMESTAMP}, 
+			#{editorId, jdbcType=VARCHAR}, 
+			#{editTime, jdbcType=TIMESTAMP}, 
+			#{remark, jdbcType=VARCHAR} 
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.User">
+		insert into ect_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				FID,
+			</if>
+			<if test="userName != null">
+				FUSER_NAME,
+			</if>
+			<if test="userCode != null">
+				FUSER_CODE,
+			</if>
+			<if test="userType != null">
+				FUSER_TYPE,
+			</if>
+			<if test="nickname != null">
+				FNICKNAME,
+			</if>
+			<if test="roleId != null">
+				FROLE_ID,
+			</if>
+			<if test="orgId != null">
+				FORG_ID,
+			</if>
+			<if test="postId != null">
+				FPOST_ID,
+			</if>
+			<if test="enable != null">
+				FENABLE,
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE,
+			</if>
+			<if test="auditState != null">
+				FAUDIT_STATE,
+			</if>
+			<if test="deleteState != null">
+				FDELETE_STATE,
+			</if>
+			<if test="lockState != null">
+				FLOCK_STATE,
+			</if>
+			<if test="online != null">
+				FONLINE,
+			</if>
+			<if test="safety != null">
+				FSAFETY,
+			</if>
+			<if test="inceptTime != null">
+				FINCEPT_TIME,
+			</if>
+			<if test="expiryTime != null">
+				FEXPIRY_TIME,
+			</if>
+			<if test="loginTime != null">
+				FLOGIN_TIME,
+			</if>
+			<if test="loginCount != null">
+				FLOGIN_COUNT,
+			</if>
+			<if test="clientIp != null">
+				FCLIENT_IP,
+			</if>
+			<if test="password != null">
+				FPASSWORD,
+			</if>
+			<if test="realName != null">
+				FREAL_NAME,
+			</if>
+			<if test="sex != null">
+				FSEX,
+			</if>
+			<if test="birthday != null">
+				FBIRTHDAY,
+			</if>
+			<if test="telephone != null">
+				FTELEPHONE,
+			</if>
+			<if test="mobile != null">
+				FMOBILE,
+			</if>
+			<if test="job != null">
+				FJOB,
+			</if>
+			<if test="postcode != null">
+				FPOSTCODE,
+			</if>
+			<if test="email != null">
+				FEMAIL,
+			</if>
+			<if test="address != null">
+				FADDRESS,
+			</if>
+			<if test="auditorId != null">
+				FAUDITOR_ID,
+			</if>
+			<if test="auditTime != null">
+				FAUDIT_TIME,
+			</if>
+			<if test="creatorId != null">
+				FCREATOR_ID,
+			</if>
+			<if test="createTime != null">
+				FCREATE_TIME,
+			</if>
+			<if test="deletorId != null">
+				FDELETOR_ID,
+			</if>
+			<if test="deleteTime != null">
+				FDELETE_TIME,
+			</if>
+			<if test="editorId != null">
+				FEDITOR_ID,
+			</if>
+			<if test="editTime != null">
+				FEDIT_TIME,
+			</if>
+			<if test="remark != null">
+				FREMARK
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id, jdbcType=VARCHAR},
+			</if>
+			<if test="userName != null">
+				#{userName, jdbcType=VARCHAR},
+			</if>
+			<if test="userCode != null">
+				#{userCode, jdbcType=VARCHAR},
+			</if>
+			<if test="userType != null">
+				#{userType, jdbcType=VARCHAR},
+			</if>
+			<if test="nickname != null">
+				#{nickname, jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null">
+				#{roleId, jdbcType=VARCHAR},
+			</if>
+			<if test="orgId != null">
+				#{orgId, jdbcType=VARCHAR},
+			</if>
+			<if test="postId != null">
+				#{postId, jdbcType=VARCHAR},
+			</if>
+			<if test="enable != null">
+				#{enable, jdbcType=BIT},
+			</if>
+			<if test="editState != null">
+				#{editState, jdbcType=SMALLINT},
+			</if>
+			<if test="auditState != null">
+				#{auditState, jdbcType=SMALLINT},
+			</if>
+			<if test="deleteState != null">
+				#{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="lockState != null">
+				#{lockState, jdbcType=SMALLINT},
+			</if>
+			<if test="online != null">
+				#{online, jdbcType=SMALLINT},
+			</if>
+			<if test="safety != null">
+				#{safety, jdbcType=VARCHAR},
+			</if>
+			<if test="inceptTime != null">
+				#{inceptTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="expiryTime != null">
+				#{expiryTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginTime != null">
+				#{loginTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginCount != null">
+				#{loginCount, jdbcType=INTEGER},
+			</if>
+			<if test="clientIp != null">
+				#{clientIp, jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				#{password, jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				#{realName, jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex, jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				#{birthday, jdbcType=TIMESTAMP},
+			</if>
+			<if test="telephone != null">
+				#{telephone, jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				#{mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="job != null">
+				#{job, jdbcType=VARCHAR},
+			</if>
+			<if test="postcode != null">
+				#{postcode, jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				#{email, jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				#{address, jdbcType=VARCHAR},
+			</if>
+			<if test="auditorId != null">
+				#{auditorId, jdbcType=VARCHAR},
+			</if>
+			<if test="auditTime != null">
+				#{auditTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="creatorId != null">
+				#{creatorId, jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="deletorId != null">
+				#{deletorId, jdbcType=VARCHAR},
+			</if>
+			<if test="deleteTime != null">
+				#{deleteTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="editorId != null">
+				#{editorId, jdbcType=VARCHAR},
+			</if>
+			<if test="editTime != null">
+				#{editTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				#{remark, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+		select count(*) from ect_user
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByConditionSelective" parameterType="map">
+		update ect_user
+		<set>
+			<if test="data.userName != null">
+				FUSER_NAME = #{data.userName, jdbcType=VARCHAR},
+			</if>
+			<if test="data.userCode != null">
+				FUSER_CODE = #{data.userCode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.userType != null">
+				FUSER_TYPE = #{data.userType, jdbcType=VARCHAR},
+			</if>
+			<if test="data.nickname != null">
+				FNICKNAME = #{data.nickname, jdbcType=VARCHAR},
+			</if>
+			<if test="data.roleId != null">
+				FROLE_ID = #{data.roleId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.orgId != null">
+				FORG_ID = #{data.orgId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.postId != null">
+				FPOST_ID = #{data.postId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.enable != null">
+				FENABLE = #{data.enable, jdbcType=BIT},
+			</if>
+			<if test="data.editState != null">
+				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.auditState != null">
+				FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.deleteState != null">
+				FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.lockState != null">
+				FLOCK_STATE = #{data.lockState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.online != null">
+				FONLINE = #{data.online, jdbcType=SMALLINT},
+			</if>
+			<if test="data.safety != null">
+				FSAFETY = #{data.safety, jdbcType=VARCHAR},
+			</if>
+			<if test="data.inceptTime != null">
+				FINCEPT_TIME = #{data.inceptTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.expiryTime != null">
+				FEXPIRY_TIME = #{data.expiryTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.loginTime != null">
+				FLOGIN_TIME = #{data.loginTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.loginCount != null">
+				FLOGIN_COUNT = #{data.loginCount, jdbcType=INTEGER},
+			</if>
+			<if test="data.clientIp != null">
+				FCLIENT_IP = #{data.clientIp, jdbcType=VARCHAR},
+			</if>
+			<if test="data.password != null">
+				FPASSWORD = #{data.password, jdbcType=VARCHAR},
+			</if>
+			<if test="data.realName != null">
+				FREAL_NAME = #{data.realName, jdbcType=VARCHAR},
+			</if>
+			<if test="data.sex != null">
+				FSEX = #{data.sex, jdbcType=VARCHAR},
+			</if>
+			<if test="data.birthday != null">
+				FBIRTHDAY = #{data.birthday, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.telephone != null">
+				FTELEPHONE = #{data.telephone, jdbcType=VARCHAR},
+			</if>
+			<if test="data.mobile != null">
+				FMOBILE = #{data.mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="data.job != null">
+				FJOB = #{data.job, jdbcType=VARCHAR},
+			</if>
+			<if test="data.postcode != null">
+				FPOSTCODE = #{data.postcode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.email != null">
+				FEMAIL = #{data.email, jdbcType=VARCHAR},
+			</if>
+			<if test="data.address != null">
+				FADDRESS = #{data.address, jdbcType=VARCHAR},
+			</if>
+			<if test="data.auditorId != null">
+				FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.auditTime != null">
+				FAUDIT_TIME = #{data.auditTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.creatorId != null">
+				FCREATOR_ID = #{data.creatorId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.createTime != null">
+				FCREATE_TIME = #{data.createTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.deletorId != null">
+				FDELETOR_ID = #{data.deletorId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.deleteTime != null">
+				FDELETE_TIME = #{data.deleteTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.editorId != null">
+				FEDITOR_ID = #{data.editorId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.editTime != null">
+				FEDIT_TIME = #{data.editTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.remark != null">
+				FREMARK = #{data.remark, jdbcType=VARCHAR}
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByCondition" parameterType="map">
+		update ect_user
+		set 
+			FUSER_NAME = #{data.userName, jdbcType=VARCHAR},
+			FUSER_CODE = #{data.userCode, jdbcType=VARCHAR},
+			FUSER_TYPE = #{data.userType, jdbcType=VARCHAR},
+			FNICKNAME = #{data.nickname, jdbcType=VARCHAR},
+			FROLE_ID = #{data.roleId, jdbcType=VARCHAR},
+			FORG_ID = #{data.orgId, jdbcType=VARCHAR},
+			FPOST_ID = #{data.postId, jdbcType=VARCHAR},
+			FENABLE = #{data.enable, jdbcType=BIT},
+			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
+			FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
+			FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			FLOCK_STATE = #{data.lockState, jdbcType=SMALLINT},
+			FONLINE = #{data.online, jdbcType=SMALLINT},
+			FSAFETY = #{data.safety, jdbcType=VARCHAR},
+			FINCEPT_TIME = #{data.inceptTime, jdbcType=TIMESTAMP},
+			FEXPIRY_TIME = #{data.expiryTime, jdbcType=TIMESTAMP},
+			FLOGIN_TIME = #{data.loginTime, jdbcType=TIMESTAMP},
+			FLOGIN_COUNT = #{data.loginCount, jdbcType=INTEGER},
+			FCLIENT_IP = #{data.clientIp, jdbcType=VARCHAR},
+			FPASSWORD = #{data.password, jdbcType=VARCHAR},
+			FREAL_NAME = #{data.realName, jdbcType=VARCHAR},
+			FSEX = #{data.sex, jdbcType=VARCHAR},
+			FBIRTHDAY = #{data.birthday, jdbcType=TIMESTAMP},
+			FTELEPHONE = #{data.telephone, jdbcType=VARCHAR},
+			FMOBILE = #{data.mobile, jdbcType=VARCHAR},
+			FJOB = #{data.job, jdbcType=VARCHAR},
+			FPOSTCODE = #{data.postcode, jdbcType=VARCHAR},
+			FEMAIL = #{data.email, jdbcType=VARCHAR},
+			FADDRESS = #{data.address, jdbcType=VARCHAR},
+			FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
+			FAUDIT_TIME = #{data.auditTime, jdbcType=TIMESTAMP},
+			FCREATOR_ID = #{data.creatorId, jdbcType=VARCHAR},
+			FCREATE_TIME = #{data.createTime, jdbcType=TIMESTAMP},
+			FDELETOR_ID = #{data.deletorId, jdbcType=VARCHAR},
+			FDELETE_TIME = #{data.deleteTime, jdbcType=TIMESTAMP},
+			FEDITOR_ID = #{data.editorId, jdbcType=VARCHAR},
+			FEDIT_TIME = #{data.editTime, jdbcType=TIMESTAMP},
+			FREMARK = #{data.remark, jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.User">
+		update ect_user
+		<set>
+			<if test="userName != null">
+				FUSER_NAME = #{userName, jdbcType=VARCHAR},
+			</if>
+			<if test="userCode != null">
+				FUSER_CODE = #{userCode, jdbcType=VARCHAR},
+			</if>
+			<if test="userType != null">
+				FUSER_TYPE = #{userType, jdbcType=VARCHAR},
+			</if>
+			<if test="nickname != null">
+				FNICKNAME = #{nickname, jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null">
+				FROLE_ID = #{roleId, jdbcType=VARCHAR},
+			</if>
+			<if test="orgId != null">
+				FORG_ID = #{orgId, jdbcType=VARCHAR},
+			</if>
+			<if test="postId != null">
+				FPOST_ID = #{postId, jdbcType=VARCHAR},
+			</if>
+			<if test="enable != null">
+				FENABLE = #{enable, jdbcType=BIT},
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
+			</if>
+			<if test="auditState != null">
+				FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
+			</if>
+			<if test="deleteState != null">
+				FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="lockState != null">
+				FLOCK_STATE = #{lockState, jdbcType=SMALLINT},
+			</if>
+			<if test="online != null">
+				FONLINE = #{online, jdbcType=SMALLINT},
+			</if>
+			<if test="safety != null">
+				FSAFETY = #{safety, jdbcType=VARCHAR},
+			</if>
+			<if test="inceptTime != null">
+				FINCEPT_TIME = #{inceptTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="expiryTime != null">
+				FEXPIRY_TIME = #{expiryTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginTime != null">
+				FLOGIN_TIME = #{loginTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="loginCount != null">
+				FLOGIN_COUNT = #{loginCount, jdbcType=INTEGER},
+			</if>
+			<if test="clientIp != null">
+				FCLIENT_IP = #{clientIp, jdbcType=VARCHAR},
+			</if>
+			<if test="password != null">
+				FPASSWORD = #{password, jdbcType=VARCHAR},
+			</if>
+			<if test="realName != null">
+				FREAL_NAME = #{realName, jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				FSEX = #{sex, jdbcType=VARCHAR},
+			</if>
+			<if test="birthday != null">
+				FBIRTHDAY = #{birthday, jdbcType=TIMESTAMP},
+			</if>
+			<if test="telephone != null">
+				FTELEPHONE = #{telephone, jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				FMOBILE = #{mobile, jdbcType=VARCHAR},
+			</if>
+			<if test="job != null">
+				FJOB = #{job, jdbcType=VARCHAR},
+			</if>
+			<if test="postcode != null">
+				FPOSTCODE = #{postcode, jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				FEMAIL = #{email, jdbcType=VARCHAR},
+			</if>
+			<if test="address != null">
+				FADDRESS = #{address, jdbcType=VARCHAR},
+			</if>
+			<if test="auditorId != null">
+				FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
+			</if>
+			<if test="auditTime != null">
+				FAUDIT_TIME = #{auditTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="creatorId != null">
+				FCREATOR_ID = #{creatorId, jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				FCREATE_TIME = #{createTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="deletorId != null">
+				FDELETOR_ID = #{deletorId, jdbcType=VARCHAR},
+			</if>
+			<if test="deleteTime != null">
+				FDELETE_TIME = #{deleteTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="editorId != null">
+				FEDITOR_ID = #{editorId, jdbcType=VARCHAR},
+			</if>
+			<if test="editTime != null">
+				FEDIT_TIME = #{editTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="remark != null">
+				FREMARK = #{remark, jdbcType=VARCHAR}
+			</if>
+		</set>
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.User">
+		update ect_user
+		set 
+			
+			FUSER_NAME = #{userName, jdbcType=VARCHAR},
+			FUSER_CODE = #{userCode, jdbcType=VARCHAR},
+			FUSER_TYPE = #{userType, jdbcType=VARCHAR},
+			FNICKNAME = #{nickname, jdbcType=VARCHAR},
+			FROLE_ID = #{roleId, jdbcType=VARCHAR},
+			FORG_ID = #{orgId, jdbcType=VARCHAR},
+			FPOST_ID = #{postId, jdbcType=VARCHAR},
+			FENABLE = #{enable, jdbcType=BIT},
+			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
+			FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
+			FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			FLOCK_STATE = #{lockState, jdbcType=SMALLINT},
+			FONLINE = #{online, jdbcType=SMALLINT},
+			FSAFETY = #{safety, jdbcType=VARCHAR},
+			FINCEPT_TIME = #{inceptTime, jdbcType=TIMESTAMP},
+			FEXPIRY_TIME = #{expiryTime, jdbcType=TIMESTAMP},
+			FLOGIN_TIME = #{loginTime, jdbcType=TIMESTAMP},
+			FLOGIN_COUNT = #{loginCount, jdbcType=INTEGER},
+			FCLIENT_IP = #{clientIp, jdbcType=VARCHAR},
+			FPASSWORD = #{password, jdbcType=VARCHAR},
+			FREAL_NAME = #{realName, jdbcType=VARCHAR},
+			FSEX = #{sex, jdbcType=VARCHAR},
+			FBIRTHDAY = #{birthday, jdbcType=TIMESTAMP},
+			FTELEPHONE = #{telephone, jdbcType=VARCHAR},
+			FMOBILE = #{mobile, jdbcType=VARCHAR},
+			FJOB = #{job, jdbcType=VARCHAR},
+			FPOSTCODE = #{postcode, jdbcType=VARCHAR},
+			FEMAIL = #{email, jdbcType=VARCHAR},
+			FADDRESS = #{address, jdbcType=VARCHAR},
+			FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
+			FAUDIT_TIME = #{auditTime, jdbcType=TIMESTAMP},
+			FCREATOR_ID = #{creatorId, jdbcType=VARCHAR},
+			FCREATE_TIME = #{createTime, jdbcType=TIMESTAMP},
+			FDELETOR_ID = #{deletorId, jdbcType=VARCHAR},
+			FDELETE_TIME = #{deleteTime, jdbcType=TIMESTAMP},
+			FEDITOR_ID = #{editorId, jdbcType=VARCHAR},
+			FEDIT_TIME = #{editTime, jdbcType=TIMESTAMP},
+			FREMARK = #{remark, jdbcType=VARCHAR}
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

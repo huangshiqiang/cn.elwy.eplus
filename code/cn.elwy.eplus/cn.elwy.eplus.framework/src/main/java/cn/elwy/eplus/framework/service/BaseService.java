@@ -198,7 +198,7 @@ public class BaseService<E> implements Service<E> {
 			rd.setPageSize(data.getPageSize());
 			rd.setTotalRecord(data.getTotalRecord());
 			rd.setTotalPage(data.getTotalPage());
-			rd.setDatas(page.getData());
+			rd.setDatas(page.getDatas());
 
 		} catch (RunException e) {
 			rd.setSuccess(false);
@@ -236,7 +236,7 @@ public class BaseService<E> implements Service<E> {
 			rd.setPageSize(data.getPageSize());
 			rd.setTotalRecord(data.getTotalRecord());
 			rd.setTotalPage(data.getTotalPage());
-			rd.setDatas(page.getData());
+			rd.setDatas(page.getDatas());
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());

@@ -26,15 +26,16 @@ import cn.elwy.eplus.framework.dao.dialect.DialectFactory;
 import cn.elwy.eplus.framework.dao.mybatis.MyBatisPage;
 
 /**
- * @description 通用分页拦截器
+ * @description 数据库分页插件，只拦截查询语句.
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
-@Intercepts({ @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class }) })
+@Intercepts({
+		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class PageInterceptor implements Interceptor {
 
 	private static final Logger logger = Logger.getLogger(PageInterceptor.class);
-	private String dbType = "mysql";
+	private String dialectType = "mysql";
 
 	@Override
 	public Object intercept(Invocation invocation) throws Throwable {
@@ -49,15 +50,15 @@ public class PageInterceptor implements Interceptor {
 
 			BoundSql boundSql = statementHandler.getBoundSql();
 			String originalSql = removeBreakingWhitespace(boundSql.getSql());
-			Dialect dialect = DialectFactory.getDialect(this.dbType);
+			Dialect dialect = DialectFactory.getDialect(this.dialectType);
 
 			// 获取总记录数
 			if (rowBounds instanceof MyBatisPage) {
 				Connection connection = (Connection) invocation.getArgs()[0];
 				ParameterHandler parameterHandler = statementHandler.getParameterHandler();
 				String countSql = dialect.getCountString(originalSql);
-				int totalRecord = getTotalRecord(parameterHandler, connection, countSql);
-				((MyBatisPage) rowBounds).setTotalRecord(totalRecord);
+				long totalRecord = getTotalRecord(parameterHandler, connection, countSql);
+				((MyBatisPage<?>) rowBounds).setTotalRecord(totalRecord);
 			}
 
 			// 设置物理分页语句
@@ -113,17 +114,17 @@ public class PageInterceptor implements Interceptor {
 	 * @return 结果集记录数
 	 * @throws SQLException
 	 */
-	protected int getTotalRecord(ParameterHandler parameterHandler, Connection connection, String countSql)
+	protected long getTotalRecord(ParameterHandler parameterHandler, Connection connection, String countSql)
 			throws SQLException {
 		PreparedStatement prepareStatement = null;
 		ResultSet rs = null;
-		int count = 0;
+		long count = 0;
 		try {
 			prepareStatement = connection.prepareStatement(countSql);
 			parameterHandler.setParameters(prepareStatement);
 			rs = prepareStatement.executeQuery();
 			if (rs.next()) {
-				count = rs.getInt(1);
+				count = rs.getLong(1);
 			}
 			return count;
 		} finally {
@@ -132,12 +133,12 @@ public class PageInterceptor implements Interceptor {
 		}
 	}
 
-	public String getDbType() {
-		return dbType;
+	public String getDialectType() {
+		return dialectType;
 	}
 
-	public void setDbType(String dbType) {
-		this.dbType = dbType;
+	public void setDialectType(String dialectType) {
+		this.dialectType = dialectType;
 	}
 
 }

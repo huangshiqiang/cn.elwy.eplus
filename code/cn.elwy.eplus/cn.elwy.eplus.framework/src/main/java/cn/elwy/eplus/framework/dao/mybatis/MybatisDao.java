@@ -195,9 +195,11 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 		Assert.notNull(page);
 		String sqlName = getSqlName(selectByCondition);
 		try {
-			MyBatisPage<E> myBatisPage = new MyBatisPage<E>(page.getOffset(), page.getLimit());
-			List<E> data = getSqlSession().selectList(sqlName, myBatisPage);
-			page.setData(data);
+			MyBatisPage<E> mbPage = new MyBatisPage<E>(page.getOffset(), page.getLimit());
+			List<E> datas = getSqlSession().selectList(sqlName, mbPage);
+
+			page.setDatas(datas);
+			page.setTotalRecord(mbPage.getTotalRecord());
 			return page;
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据条件分页查询对象出错！语句：%s", sqlName), e);
@@ -219,11 +221,11 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 		Assert.notNull(parameter);
 		Assert.notNull(page);
 		String sqlName = getSqlName(selectByCondition);
-		// String sqlName = getSqlName(selectByConditionPage);
 		try {
-			MyBatisPage<E> myBatisPage = new MyBatisPage<E>(page.getOffset(), page.getLimit());
-			List<E> data = getSqlSession().selectList(sqlName, parameter, myBatisPage);
-			page.setData(data);
+			MyBatisPage<E> mbPage = new MyBatisPage<E>(page.getOffset(), page.getLimit());
+			List<E> datas = getSqlSession().selectList(sqlName, parameter, mbPage);
+			page.setDatas(datas);
+			page.setTotalRecord(mbPage.getTotalRecord());
 			return page;
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据条件分页查询对象出错！语句：%s", sqlName), e);

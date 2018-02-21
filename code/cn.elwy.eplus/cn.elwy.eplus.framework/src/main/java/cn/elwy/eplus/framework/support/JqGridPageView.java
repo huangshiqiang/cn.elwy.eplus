@@ -32,7 +32,7 @@ public class JqGridPageView<E> {
 	}
 
 	public void setQueryResult(Page<E> qr) {
-		setRows(qr.getData());
+		setRows(qr.getDatas());
 		setRecords(qr.getTotalRecord());
 	}
 

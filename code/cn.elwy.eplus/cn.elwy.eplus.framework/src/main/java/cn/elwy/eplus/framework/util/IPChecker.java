@@ -1,7 +1,7 @@
 package cn.elwy.eplus.framework.util;
 
 /**
- * @description 判断IP
+ * 判断IP
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

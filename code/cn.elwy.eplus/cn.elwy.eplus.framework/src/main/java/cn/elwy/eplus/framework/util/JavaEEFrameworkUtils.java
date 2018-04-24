@@ -7,7 +7,7 @@ import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang.math.RandomUtils;
 
 /**
- * @description 框架的Utils
+ * 框架的Utils
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

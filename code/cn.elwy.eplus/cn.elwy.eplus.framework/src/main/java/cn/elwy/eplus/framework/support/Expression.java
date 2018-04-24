@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @description 表达式连接.
+ * 表达式连接.
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

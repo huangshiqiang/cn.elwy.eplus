@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.Role;
 import cn.elwy.eplus.framework.dao.Dao;
 
 /**
- * @description RoleDao接口
+ * RoleDao接口
  * @author elwy
  * @version 1.0, 2018-02-19
  */

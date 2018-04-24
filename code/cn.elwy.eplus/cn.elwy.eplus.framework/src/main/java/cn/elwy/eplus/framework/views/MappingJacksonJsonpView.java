@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

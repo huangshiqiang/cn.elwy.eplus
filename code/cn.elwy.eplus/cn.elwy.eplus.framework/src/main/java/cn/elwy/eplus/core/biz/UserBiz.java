@@ -2,12 +2,12 @@ package cn.elwy.eplus.core.biz;
 
 import java.util.List;
 
-import cn.elwy.common.entity.Parameter;
+import cn.elwy.common.model.Parameter;
 import cn.elwy.eplus.core.entity.User;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
- * @description UserBiz
+ * UserBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */

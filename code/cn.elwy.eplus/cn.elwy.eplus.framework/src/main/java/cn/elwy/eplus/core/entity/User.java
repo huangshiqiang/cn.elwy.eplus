@@ -2,19 +2,19 @@ package cn.elwy.eplus.core.entity;
 
 import java.util.Date;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class User extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String userName; // 名称
-	private String userCode; // 代码
 	private String userType; // 类型
+	private String userCode; // 代码
+	private String userName; // 名称
+	private String roleCode; // 角色代码
+	private String orgCode; // 机构代码
+	private String postCode; // 岗位代码
 	private String nickname; // 昵称
-	private String roleId; // 角色ID
-	private String orgId; // 机构ID
-	private String postId; // 岗位ID
 	private Integer editState; // 编辑状态
 	private Integer lockState; // 锁定状态
 	private Integer online; // 是否在线
@@ -44,12 +44,12 @@ public class User extends CommonEntity {
 		super(id);
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUserType() {
+		return userType;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName == null ? null : userName.trim();
+	public void setUserType(String userType) {
+		this.userType = userType == null ? null : userType.trim();
 	}
 
 	public String getUserCode() {
@@ -60,12 +60,36 @@ public class User extends CommonEntity {
 		this.userCode = userCode == null ? null : userCode.trim();
 	}
 
-	public String getUserType() {
-		return userType;
+	public String getUserName() {
+		return userName;
 	}
 
-	public void setUserType(String userType) {
-		this.userType = userType == null ? null : userType.trim();
+	public void setUserName(String userName) {
+		this.userName = userName == null ? null : userName.trim();
+	}
+
+	public String getRoleCode() {
+		return roleCode;
+	}
+
+	public void setRoleCode(String roleCode) {
+		this.roleCode = roleCode == null ? null : roleCode.trim();
+	}
+
+	public String getOrgCode() {
+		return orgCode;
+	}
+
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode == null ? null : orgCode.trim();
+	}
+
+	public String getPostCode() {
+		return postCode;
+	}
+
+	public void setPostCode(String postCode) {
+		this.postCode = postCode == null ? null : postCode.trim();
 	}
 
 	public String getNickname() {
@@ -74,30 +98,6 @@ public class User extends CommonEntity {
 
 	public void setNickname(String nickname) {
 		this.nickname = nickname == null ? null : nickname.trim();
-	}
-
-	public String getRoleId() {
-		return roleId;
-	}
-
-	public void setRoleId(String roleId) {
-		this.roleId = roleId == null ? null : roleId.trim();
-	}
-
-	public String getOrgId() {
-		return orgId;
-	}
-
-	public void setOrgId(String orgId) {
-		this.orgId = orgId == null ? null : orgId.trim();
-	}
-
-	public String getPostId() {
-		return postId;
-	}
-
-	public void setPostId(String postId) {
-		this.postId = postId == null ? null : postId.trim();
 	}
 
 	public Integer getEditState() {

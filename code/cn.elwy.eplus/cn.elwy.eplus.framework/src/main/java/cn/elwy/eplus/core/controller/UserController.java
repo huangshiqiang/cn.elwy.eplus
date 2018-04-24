@@ -10,16 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import cn.elwy.common.entity.ResultDto;
+import cn.elwy.common.model.ResultDto;
 import cn.elwy.common.util.AssertUtil;
 import cn.elwy.eplus.core.entity.User;
 import cn.elwy.eplus.core.service.UserService;
 import cn.elwy.eplus.framework.annotation.Function;
+import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.controller.BaseController;
 import cn.elwy.eplus.framework.web.WebUtil;
 
 /**
- * @description UserController
+ * UserController
  * @author elwy
  * @version 1.0, 2018-02-19
  */
@@ -38,6 +39,7 @@ public class UserController extends BaseController<User> {
 	}
 
 	@Override
+	@Operation(code = "list")
 	public ModelAndView list(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("list");
 		return super.list(request, response);
@@ -68,9 +70,9 @@ public class UserController extends BaseController<User> {
 		user.setUserCode("userCode");
 		user.setUserType("userType");
 		user.setNickname("nickname");
-		user.setRoleId("11");
-		user.setOrgId("11");
-		user.setPostId("11");
+		user.setRoleCode("11");
+		user.setOrgCode("11");
+		user.setPostCode("11");
 		user.setEditState(1);
 		user.setAuditState(1);
 		user.setPassword("sddfsd");

@@ -10,7 +10,6 @@ import cn.elwy.eplus.framework.context.AppContext;
 import cn.elwy.eplus.framework.context.AppSession;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

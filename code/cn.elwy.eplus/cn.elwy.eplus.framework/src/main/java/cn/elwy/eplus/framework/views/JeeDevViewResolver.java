@@ -11,7 +11,7 @@ import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.ViewResolver;
 
 /**
- * @description 自定义视图解析(通过配置实现多视图整合,如jsp,velocity,freemarker,pdf,excel...)
+ * 自定义视图解析(通过配置实现多视图整合,如jsp,velocity,freemarker,pdf,excel...)
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

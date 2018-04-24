@@ -11,7 +11,7 @@ import cn.elwy.eplus.core.service.HandDetailService;
 import cn.elwy.eplus.framework.service.BaseService;
 
 /**
- * @description HandDetailService
+ * HandDetailService
  * @author elwy
  * @version 1.0, 2018-02-19
  */

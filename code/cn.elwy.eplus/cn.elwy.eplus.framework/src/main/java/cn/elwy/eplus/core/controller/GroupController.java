@@ -9,7 +9,7 @@ import cn.elwy.eplus.core.service.GroupService;
 import cn.elwy.eplus.framework.controller.BaseController;
 
 /**
- * @description GroupController
+ * GroupController
  * @author elwy
  * @version 1.0, 2018-02-19
  */

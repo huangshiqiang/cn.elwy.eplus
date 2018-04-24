@@ -15,7 +15,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

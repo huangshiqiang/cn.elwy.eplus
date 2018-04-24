@@ -18,7 +18,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

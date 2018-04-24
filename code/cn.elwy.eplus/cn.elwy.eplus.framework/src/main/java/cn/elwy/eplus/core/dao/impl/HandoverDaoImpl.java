@@ -7,7 +7,7 @@ import cn.elwy.eplus.core.entity.Handover;
 import cn.elwy.eplus.framework.dao.BaseDao;
 
 /**
- * @description HandoverDao实现类
+ * HandoverDao实现类
  * @author elwy
  * @version 1.0, 2018-02-19
  */

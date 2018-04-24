@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @description 缓存注解（自动缓存拦截）,用于标识一个方法的输出结果是可以自动缓存的.
+ * 缓存注解（自动缓存拦截）,用于标识一个方法的输出结果是可以自动缓存的.
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

@@ -7,7 +7,7 @@ import cn.elwy.eplus.core.entity.User;
 import cn.elwy.eplus.framework.dao.BaseDao;
 
 /**
- * @description UserDao实现类
+ * UserDao实现类
  * @author elwy
  * @version 1.0, 2018-02-19
  */

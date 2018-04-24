@@ -7,8 +7,7 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
 import cn.elwy.common.log.Logger;
 import cn.elwy.common.log.LoggerFactory;
@@ -18,13 +17,11 @@ import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.support.InterceptorSupport;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
 @Aspect
-@Order(0)
-@Component
+@Configuration
 public class ControllerAspect {
 
 	private static Logger logger = LoggerFactory.getLogger(ControllerAspect.class);

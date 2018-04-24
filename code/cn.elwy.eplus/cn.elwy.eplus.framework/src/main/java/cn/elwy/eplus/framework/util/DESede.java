@@ -6,7 +6,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * @description DESede加解密
+ * DESede加解密
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

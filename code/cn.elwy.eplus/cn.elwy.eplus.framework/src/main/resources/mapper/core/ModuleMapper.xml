@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.elwy.eplus.core.entity.ModuleMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.Module">
+		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FMODULE_TYPE" property="moduleType" jdbcType="VARCHAR" />
+		<result column="FMODULE_CODE" property="moduleCode" jdbcType="VARCHAR" />
+		<result column="FMODULE_NAME" property="moduleName" jdbcType="VARCHAR" />
+		<result column="FENABLE" property="enable" jdbcType="BIT" />
+		<result column="FORDER" property="order" jdbcType="INTEGER" />
+		<result column="FICON" property="icon" jdbcType="VARCHAR" />
+		<result column="FREMARK" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Condition_Where_Clause">
+		<where>
+			<choose>
+				<when test="criterias != null and criterias.size() &gt; 0">
+					<foreach collection="criterias" item="criteria" separator="AND">
+						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.rules" item="item">
+									<choose>
+										<when test="item.isNoValue()">
+											${criteria.op} ${item.field} ${item.op}
+										</when>
+										<when test="item.isSingleValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value}
+										</when>
+										<when test="item.isBetweenValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+										</when>
+										<when test="item.isListValue()">
+											${criteria.op} ${item.field} ${item.op}
+											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
+												#{listItem}
+											</foreach>
+										</when>
+									</choose>
+								</foreach>
+							</trim>
+						</if>
+						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
+							${criteria.gop}
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.groups" item="groupItem">
+									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
+										${criteria.rgop}
+										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+											<foreach collection="groupItem.rules" item="ruleItem">
+												<choose>
+													<when test="ruleItem.isNoValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													</when>
+													<when test="ruleItem.isSingleValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													</when>
+													<when test="ruleItem.isBetweenValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													</when>
+													<when test="ruleItem.isListValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+															#{listItem}
+														</foreach>
+													</when>
+												</choose>
+											</foreach>
+										</trim>
+									</if>
+								</foreach>
+							</trim>
+						</if>
+					</foreach>
+				</when>
+				<when test="param != null">
+					<foreach item="value" index="key" collection="param.entrySet()" separator="AND">  
+						${key} = #{value}
+					</foreach>
+				</when>
+			</choose>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<choose>
+			<when test="filterColumns == null || filterColumns.isEmpty()">
+		FID, FMODULE_TYPE, FMODULE_CODE, FMODULE_NAME, FENABLE, FORDER, FICON, FREMARK 
+			</when>
+			<otherwise>
+				<trim prefixOverrides=",">
+					<if test="!filterColumns.contains(&quot;FID&quot;)">
+						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FMODULE_TYPE&quot;)">
+						FMODULE_TYPE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FMODULE_CODE&quot;)">
+						FMODULE_CODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FMODULE_NAME&quot;)">
+						FMODULE_NAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FENABLE&quot;)">
+						FENABLE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FORDER&quot;)">
+						FORDER, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FICON&quot;)">
+						FICON, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FREMARK&quot;)">
+						FREMARK 
+					</if>
+				</trim>
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select
+		<include refid="Base_Column_List" />
+		from ect_module
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+		<if test="orderRules != null">
+			order by 
+			<foreach collection="orderRules" item="item" separator=",">
+				${item.field}
+				<if test="item.desc">
+					desc
+				</if>
+			</foreach>
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select 
+		<include refid="Base_Column_List" />
+		from ect_module
+		where FID = #{_parameter.id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from ect_module
+		where FID = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimaryKeys">
+		delete from ect_module
+		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+	</delete>
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
+		delete from ect_module
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Module">
+		insert into ect_module (FID, FMODULE_TYPE, FMODULE_CODE, FMODULE_NAME, FENABLE, FORDER, FICON, FREMARK )
+		values (
+			#{id, jdbcType=VARCHAR}, 
+			#{moduleType, jdbcType=VARCHAR}, 
+			#{moduleCode, jdbcType=VARCHAR}, 
+			#{moduleName, jdbcType=VARCHAR}, 
+			#{enable, jdbcType=BIT}, 
+			#{order, jdbcType=INTEGER}, 
+			#{icon, jdbcType=VARCHAR}, 
+			#{remark, jdbcType=VARCHAR} 
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.Module">
+		insert into ect_module
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				FID,
+			</if>
+			<if test="moduleType != null">
+				FMODULE_TYPE,
+			</if>
+			<if test="moduleCode != null">
+				FMODULE_CODE,
+			</if>
+			<if test="moduleName != null">
+				FMODULE_NAME,
+			</if>
+			<if test="enable != null">
+				FENABLE,
+			</if>
+			<if test="order != null">
+				FORDER,
+			</if>
+			<if test="icon != null">
+				FICON,
+			</if>
+			<if test="remark != null">
+				FREMARK
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id, jdbcType=VARCHAR},
+			</if>
+			<if test="moduleType != null">
+				#{moduleType, jdbcType=VARCHAR},
+			</if>
+			<if test="moduleCode != null">
+				#{moduleCode, jdbcType=VARCHAR},
+			</if>
+			<if test="moduleName != null">
+				#{moduleName, jdbcType=VARCHAR},
+			</if>
+			<if test="enable != null">
+				#{enable, jdbcType=BIT},
+			</if>
+			<if test="order != null">
+				#{order, jdbcType=INTEGER},
+			</if>
+			<if test="icon != null">
+				#{icon, jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
+		select count(*) from ect_module
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByConditionSelective" parameterType="map">
+		update ect_module
+		<set>
+			<if test="data.moduleType != null">
+				FMODULE_TYPE = #{data.moduleType, jdbcType=VARCHAR},
+			</if>
+			<if test="data.moduleCode != null">
+				FMODULE_CODE = #{data.moduleCode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.moduleName != null">
+				FMODULE_NAME = #{data.moduleName, jdbcType=VARCHAR},
+			</if>
+			<if test="data.enable != null">
+				FENABLE = #{data.enable, jdbcType=BIT},
+			</if>
+			<if test="data.order != null">
+				FORDER = #{data.order, jdbcType=INTEGER},
+			</if>
+			<if test="data.icon != null">
+				FICON = #{data.icon, jdbcType=VARCHAR},
+			</if>
+			<if test="data.remark != null">
+				FREMARK = #{data.remark, jdbcType=VARCHAR}
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByCondition" parameterType="map">
+		update ect_module
+		set 
+			FMODULE_TYPE = #{data.moduleType, jdbcType=VARCHAR},
+			FMODULE_CODE = #{data.moduleCode, jdbcType=VARCHAR},
+			FMODULE_NAME = #{data.moduleName, jdbcType=VARCHAR},
+			FENABLE = #{data.enable, jdbcType=BIT},
+			FORDER = #{data.order, jdbcType=INTEGER},
+			FICON = #{data.icon, jdbcType=VARCHAR},
+			FREMARK = #{data.remark, jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.Module">
+		update ect_module
+		<set>
+			<if test="moduleType != null">
+				FMODULE_TYPE = #{moduleType, jdbcType=VARCHAR},
+			</if>
+			<if test="moduleCode != null">
+				FMODULE_CODE = #{moduleCode, jdbcType=VARCHAR},
+			</if>
+			<if test="moduleName != null">
+				FMODULE_NAME = #{moduleName, jdbcType=VARCHAR},
+			</if>
+			<if test="enable != null">
+				FENABLE = #{enable, jdbcType=BIT},
+			</if>
+			<if test="order != null">
+				FORDER = #{order, jdbcType=INTEGER},
+			</if>
+			<if test="icon != null">
+				FICON = #{icon, jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				FREMARK = #{remark, jdbcType=VARCHAR}
+			</if>
+		</set>
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.Module">
+		update ect_module
+		set 
+			
+			FMODULE_TYPE = #{moduleType, jdbcType=VARCHAR},
+			FMODULE_CODE = #{moduleCode, jdbcType=VARCHAR},
+			FMODULE_NAME = #{moduleName, jdbcType=VARCHAR},
+			FENABLE = #{enable, jdbcType=BIT},
+			FORDER = #{order, jdbcType=INTEGER},
+			FICON = #{icon, jdbcType=VARCHAR},
+			FREMARK = #{remark, jdbcType=VARCHAR}
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

@@ -11,7 +11,7 @@ import cn.elwy.eplus.core.service.DataAuthorityService;
 import cn.elwy.eplus.framework.service.BaseService;
 
 /**
- * @description DataAuthorityService
+ * DataAuthorityService
  * @author elwy
  * @version 1.0, 2018-02-19
  */

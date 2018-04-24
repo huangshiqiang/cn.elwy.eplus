@@ -7,7 +7,7 @@ import cn.elwy.eplus.core.entity.Role;
 import cn.elwy.eplus.framework.dao.BaseDao;
 
 /**
- * @description RoleDao实现类
+ * RoleDao实现类
  * @author elwy
  * @version 1.0, 2018-02-19
  */

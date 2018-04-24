@@ -10,7 +10,7 @@ import cn.elwy.eplus.core.entity.HandDetail;
 import cn.elwy.eplus.framework.biz.impl.BizImpl;
 
 /**
- * @description HandDetailBiz
+ * HandDetailBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */

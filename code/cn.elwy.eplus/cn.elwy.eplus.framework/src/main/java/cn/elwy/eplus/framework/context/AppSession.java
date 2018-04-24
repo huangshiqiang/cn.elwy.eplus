@@ -17,7 +17,6 @@ import cn.elwy.eplus.framework.context.exception.InvalidSessionException;
 import cn.elwy.eplus.framework.context.exception.StoppedSessionException;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

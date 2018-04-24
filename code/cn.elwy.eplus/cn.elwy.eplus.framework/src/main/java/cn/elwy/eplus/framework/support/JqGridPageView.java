@@ -2,10 +2,9 @@ package cn.elwy.eplus.framework.support;
 
 import java.util.List;
 
-import cn.elwy.common.entity.Page;
+import cn.elwy.common.model.Pageable;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
@@ -31,7 +30,7 @@ public class JqGridPageView<E> {
 		this.currentPage = currentPage;
 	}
 
-	public void setQueryResult(Page<E> qr) {
+	public void setQueryResult(Pageable<E> qr) {
 		setRows(qr.getDatas());
 		setRecords(qr.getTotalRecord());
 	}

@@ -18,7 +18,7 @@ import cn.elwy.eplus.framework.util.ValidateCode;
 import cn.elwy.eplus.framework.web.WebUtil;
 
 /**
- * @description 视图控制类
+ * 视图控制类
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
@@ -37,11 +37,23 @@ public class ViewController {
 		return mv;
 	}
 
+	@RequestMapping("/404")
+	public ModelAndView _404(HttpServletRequest request) {
+		ModelAndView mv = ControllerSupport.getView(request, "404");
+		return mv;
+	}
+
 	@RequestMapping("/500")
 	public ModelAndView _500(HttpServletRequest request) {
 		ModelAndView mv = ControllerSupport.getView(request, "500");
 		return mv;
 	}
+
+	// @RequestMapping("/error")
+	// public ModelAndView error(HttpServletRequest request) {
+	// ModelAndView mv = ControllerSupport.getView(request, "error");
+	// return mv;
+	// }
 
 	@RequestMapping(value = "/v")
 	public ModelAndView v(HttpServletRequest request) {

@@ -4,7 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @description Postgre 数据库 方言
+ * Postgre 数据库 方言
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

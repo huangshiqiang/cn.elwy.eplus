@@ -3,37 +3,33 @@ package cn.elwy.eplus.framework.dao.mybatis;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.elwy.common.entity.Page;
-import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.exception.DaoException;
+import cn.elwy.common.model.Pageable;
+import cn.elwy.common.model.Parameter;
 import cn.elwy.common.util.Assert;
 import cn.elwy.common.util.ClassUtil;
 import cn.elwy.eplus.framework.Constant;
+import cn.elwy.eplus.framework.annotation.DS.DsId;
 import cn.elwy.eplus.framework.dao.Dao;
 import cn.elwy.eplus.framework.dao.SqlIdConst;
+import cn.elwy.eplus.framework.dao.config.DynamicSqlSessionDaoSupport;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
-public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
+public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>, Constant, SqlIdConst {
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String SQLNAME_SEPARATOR = ".";
 
-	@Autowired(required = true)
-	private SqlSession sqlSession;
-
 	/** 数据源ID */
-	private String dsId = "default";
+	private String dsId = DsId.dataSource.name();
 
 	/**
 	 * @fields sqlNamespace SqlMapping命名空间
@@ -191,7 +187,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public Page<E> selectAllByPage(Page<E> page) {
+	public Pageable<E> selectAllByPage(Pageable<E> page) {
 		Assert.notNull(page);
 		String sqlName = getSqlName(selectByCondition);
 		try {
@@ -217,7 +213,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public Page<E> selectByConditionPage(Parameter parameter, Page<E> page) {
+	public Pageable<E> selectByConditionPage(Parameter parameter, Pageable<E> page) {
 		Assert.notNull(parameter);
 		Assert.notNull(page);
 		String sqlName = getSqlName(selectByCondition);
@@ -319,14 +315,6 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 			result += this.updateByPrimaryKeySelective(entity);
 		}
 		return result;
-	}
-
-	public SqlSession getSqlSession() {
-		return sqlSession;
-	}
-
-	public void setSqlSession(SqlSession sqlSession) {
-		this.sqlSession = sqlSession;
 	}
 
 	public String getDsId() {

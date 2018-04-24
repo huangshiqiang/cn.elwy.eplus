@@ -1,17 +1,17 @@
 package cn.elwy.eplus.core.entity;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class Appl extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String applName; // 名称
-	private String applCode; // 代码
 	private String applType; // 类型
-	private Integer editState; // 编辑状态
-	private Integer order; // 显示次序
+	private String applCode; // 代码
+	private String applName; // 名称
 	private String icon; // 图标
+	private Integer order; // 显示次序
+	private Integer editState; // 编辑状态
 	private String remark; // 备注
 
 	public Appl() {
@@ -22,12 +22,12 @@ public class Appl extends CommonEntity {
 		super(id);
 	}
 
-	public String getApplName() {
-		return applName;
+	public String getApplType() {
+		return applType;
 	}
 
-	public void setApplName(String applName) {
-		this.applName = applName == null ? null : applName.trim();
+	public void setApplType(String applType) {
+		this.applType = applType == null ? null : applType.trim();
 	}
 
 	public String getApplCode() {
@@ -38,20 +38,20 @@ public class Appl extends CommonEntity {
 		this.applCode = applCode == null ? null : applCode.trim();
 	}
 
-	public String getApplType() {
-		return applType;
+	public String getApplName() {
+		return applName;
 	}
 
-	public void setApplType(String applType) {
-		this.applType = applType == null ? null : applType.trim();
+	public void setApplName(String applName) {
+		this.applName = applName == null ? null : applName.trim();
 	}
 
-	public Integer getEditState() {
-		return editState;
+	public String getIcon() {
+		return icon;
 	}
 
-	public void setEditState(Integer editState) {
-		this.editState = editState;
+	public void setIcon(String icon) {
+		this.icon = icon == null ? null : icon.trim();
 	}
 
 	public Integer getOrder() {
@@ -62,12 +62,12 @@ public class Appl extends CommonEntity {
 		this.order = order;
 	}
 
-	public String getIcon() {
-		return icon;
+	public Integer getEditState() {
+		return editState;
 	}
 
-	public void setIcon(String icon) {
-		this.icon = icon == null ? null : icon.trim();
+	public void setEditState(Integer editState) {
+		this.editState = editState;
 	}
 
 	public String getRemark() {

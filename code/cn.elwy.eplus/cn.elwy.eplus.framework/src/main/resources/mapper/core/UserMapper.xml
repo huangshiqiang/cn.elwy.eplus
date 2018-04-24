@@ -3,17 +3,17 @@
 <mapper namespace="cn.elwy.eplus.core.entity.UserMapper">
 	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.User">
 		<id column="FID" property="id" jdbcType="VARCHAR" />
-		<result column="FUSER_NAME" property="userName" jdbcType="VARCHAR" />
-		<result column="FUSER_CODE" property="userCode" jdbcType="VARCHAR" />
 		<result column="FUSER_TYPE" property="userType" jdbcType="VARCHAR" />
+		<result column="FUSER_CODE" property="userCode" jdbcType="VARCHAR" />
+		<result column="FUSER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="FROLE_CODE" property="roleCode" jdbcType="VARCHAR" />
+		<result column="FORG_CODE" property="orgCode" jdbcType="VARCHAR" />
+		<result column="FPOST_CODE" property="postCode" jdbcType="VARCHAR" />
 		<result column="FNICKNAME" property="nickname" jdbcType="VARCHAR" />
-		<result column="FROLE_ID" property="roleId" jdbcType="VARCHAR" />
-		<result column="FORG_ID" property="orgId" jdbcType="VARCHAR" />
-		<result column="FPOST_ID" property="postId" jdbcType="VARCHAR" />
 		<result column="FENABLE" property="enable" jdbcType="BIT" />
-		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDIT_STATE" property="auditState" jdbcType="SMALLINT" />
 		<result column="FDELETE_STATE" property="deleteState" jdbcType="SMALLINT" />
+		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FLOCK_STATE" property="lockState" jdbcType="SMALLINT" />
 		<result column="FONLINE" property="online" jdbcType="SMALLINT" />
 		<result column="FSAFETY" property="safety" jdbcType="VARCHAR" />
@@ -114,45 +114,45 @@
 	<sql id="Base_Column_List">
 		<choose>
 			<when test="filterColumns == null || filterColumns.isEmpty()">
-		FID, FUSER_NAME, FUSER_CODE, FUSER_TYPE, FNICKNAME, FROLE_ID, FORG_ID, FPOST_ID, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
+		FID, FUSER_TYPE, FUSER_CODE, FUSER_NAME, FROLE_CODE, FORG_CODE, FPOST_CODE, FNICKNAME, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
 			</when>
 			<otherwise>
 				<trim prefixOverrides=",">
 					<if test="!filterColumns.contains(&quot;FID&quot;)">
 						FID, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FUSER_NAME&quot;)">
-						FUSER_NAME, 
+					<if test="!filterColumns.contains(&quot;FUSER_TYPE&quot;)">
+						FUSER_TYPE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FUSER_CODE&quot;)">
 						FUSER_CODE, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FUSER_TYPE&quot;)">
-						FUSER_TYPE, 
+					<if test="!filterColumns.contains(&quot;FUSER_NAME&quot;)">
+						FUSER_NAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FROLE_CODE&quot;)">
+						FROLE_CODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FORG_CODE&quot;)">
+						FORG_CODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FPOST_CODE&quot;)">
+						FPOST_CODE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FNICKNAME&quot;)">
 						FNICKNAME, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FROLE_ID&quot;)">
-						FROLE_ID, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FORG_ID&quot;)">
-						FORG_ID, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FPOST_ID&quot;)">
-						FPOST_ID, 
-					</if>
 					<if test="!filterColumns.contains(&quot;FENABLE&quot;)">
 						FENABLE, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
-						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAUDIT_STATE&quot;)">
 						FAUDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FDELETE_STATE&quot;)">
 						FDELETE_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
+						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FLOCK_STATE&quot;)">
 						FLOCK_STATE, 
@@ -239,7 +239,7 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select
 		<include refid="Base_Column_List" />
 		from ect_user
@@ -256,7 +256,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_user
@@ -270,27 +270,27 @@
 		delete from ect_user
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
 		delete from ect_user
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
 	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.User">
-		insert into ect_user (FID, FUSER_NAME, FUSER_CODE, FUSER_TYPE, FNICKNAME, FROLE_ID, FORG_ID, FPOST_ID, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
+		insert into ect_user (FID, FUSER_TYPE, FUSER_CODE, FUSER_NAME, FROLE_CODE, FORG_CODE, FPOST_CODE, FNICKNAME, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
-			#{userName, jdbcType=VARCHAR}, 
-			#{userCode, jdbcType=VARCHAR}, 
 			#{userType, jdbcType=VARCHAR}, 
+			#{userCode, jdbcType=VARCHAR}, 
+			#{userName, jdbcType=VARCHAR}, 
+			#{roleCode, jdbcType=VARCHAR}, 
+			#{orgCode, jdbcType=VARCHAR}, 
+			#{postCode, jdbcType=VARCHAR}, 
 			#{nickname, jdbcType=VARCHAR}, 
-			#{roleId, jdbcType=VARCHAR}, 
-			#{orgId, jdbcType=VARCHAR}, 
-			#{postId, jdbcType=VARCHAR}, 
 			#{enable, jdbcType=BIT}, 
-			#{editState, jdbcType=SMALLINT}, 
 			#{auditState, jdbcType=SMALLINT}, 
 			#{deleteState, jdbcType=SMALLINT}, 
+			#{editState, jdbcType=SMALLINT}, 
 			#{lockState, jdbcType=SMALLINT}, 
 			#{online, jdbcType=SMALLINT}, 
 			#{safety, jdbcType=VARCHAR}, 
@@ -326,38 +326,38 @@
 			<if test="id != null">
 				FID,
 			</if>
-			<if test="userName != null">
-				FUSER_NAME,
+			<if test="userType != null">
+				FUSER_TYPE,
 			</if>
 			<if test="userCode != null">
 				FUSER_CODE,
 			</if>
-			<if test="userType != null">
-				FUSER_TYPE,
+			<if test="userName != null">
+				FUSER_NAME,
+			</if>
+			<if test="roleCode != null">
+				FROLE_CODE,
+			</if>
+			<if test="orgCode != null">
+				FORG_CODE,
+			</if>
+			<if test="postCode != null">
+				FPOST_CODE,
 			</if>
 			<if test="nickname != null">
 				FNICKNAME,
 			</if>
-			<if test="roleId != null">
-				FROLE_ID,
-			</if>
-			<if test="orgId != null">
-				FORG_ID,
-			</if>
-			<if test="postId != null">
-				FPOST_ID,
-			</if>
 			<if test="enable != null">
 				FENABLE,
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE,
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE,
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE,
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE,
 			</if>
 			<if test="lockState != null">
 				FLOCK_STATE,
@@ -445,38 +445,38 @@
 			<if test="id != null">
 				#{id, jdbcType=VARCHAR},
 			</if>
-			<if test="userName != null">
-				#{userName, jdbcType=VARCHAR},
+			<if test="userType != null">
+				#{userType, jdbcType=VARCHAR},
 			</if>
 			<if test="userCode != null">
 				#{userCode, jdbcType=VARCHAR},
 			</if>
-			<if test="userType != null">
-				#{userType, jdbcType=VARCHAR},
+			<if test="userName != null">
+				#{userName, jdbcType=VARCHAR},
+			</if>
+			<if test="roleCode != null">
+				#{roleCode, jdbcType=VARCHAR},
+			</if>
+			<if test="orgCode != null">
+				#{orgCode, jdbcType=VARCHAR},
+			</if>
+			<if test="postCode != null">
+				#{postCode, jdbcType=VARCHAR},
 			</if>
 			<if test="nickname != null">
 				#{nickname, jdbcType=VARCHAR},
 			</if>
-			<if test="roleId != null">
-				#{roleId, jdbcType=VARCHAR},
-			</if>
-			<if test="orgId != null">
-				#{orgId, jdbcType=VARCHAR},
-			</if>
-			<if test="postId != null">
-				#{postId, jdbcType=VARCHAR},
-			</if>
 			<if test="enable != null">
 				#{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				#{auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="deleteState != null">
 				#{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="editState != null">
+				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="lockState != null">
 				#{lockState, jdbcType=SMALLINT},
@@ -561,7 +561,7 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
 		select count(*) from ect_user
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -570,38 +570,38 @@
 	<update id="updateByConditionSelective" parameterType="map">
 		update ect_user
 		<set>
-			<if test="data.userName != null">
-				FUSER_NAME = #{data.userName, jdbcType=VARCHAR},
+			<if test="data.userType != null">
+				FUSER_TYPE = #{data.userType, jdbcType=VARCHAR},
 			</if>
 			<if test="data.userCode != null">
 				FUSER_CODE = #{data.userCode, jdbcType=VARCHAR},
 			</if>
-			<if test="data.userType != null">
-				FUSER_TYPE = #{data.userType, jdbcType=VARCHAR},
+			<if test="data.userName != null">
+				FUSER_NAME = #{data.userName, jdbcType=VARCHAR},
+			</if>
+			<if test="data.roleCode != null">
+				FROLE_CODE = #{data.roleCode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.orgCode != null">
+				FORG_CODE = #{data.orgCode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.postCode != null">
+				FPOST_CODE = #{data.postCode, jdbcType=VARCHAR},
 			</if>
 			<if test="data.nickname != null">
 				FNICKNAME = #{data.nickname, jdbcType=VARCHAR},
 			</if>
-			<if test="data.roleId != null">
-				FROLE_ID = #{data.roleId, jdbcType=VARCHAR},
-			</if>
-			<if test="data.orgId != null">
-				FORG_ID = #{data.orgId, jdbcType=VARCHAR},
-			</if>
-			<if test="data.postId != null">
-				FPOST_ID = #{data.postId, jdbcType=VARCHAR},
-			</if>
 			<if test="data.enable != null">
 				FENABLE = #{data.enable, jdbcType=BIT},
-			</if>
-			<if test="data.editState != null">
-				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditState != null">
 				FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.deleteState != null">
 				FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.editState != null">
+				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.lockState != null">
 				FLOCK_STATE = #{data.lockState, jdbcType=SMALLINT},
@@ -692,17 +692,17 @@
 	<update id="updateByCondition" parameterType="map">
 		update ect_user
 		set 
-			FUSER_NAME = #{data.userName, jdbcType=VARCHAR},
-			FUSER_CODE = #{data.userCode, jdbcType=VARCHAR},
 			FUSER_TYPE = #{data.userType, jdbcType=VARCHAR},
+			FUSER_CODE = #{data.userCode, jdbcType=VARCHAR},
+			FUSER_NAME = #{data.userName, jdbcType=VARCHAR},
+			FROLE_CODE = #{data.roleCode, jdbcType=VARCHAR},
+			FORG_CODE = #{data.orgCode, jdbcType=VARCHAR},
+			FPOST_CODE = #{data.postCode, jdbcType=VARCHAR},
 			FNICKNAME = #{data.nickname, jdbcType=VARCHAR},
-			FROLE_ID = #{data.roleId, jdbcType=VARCHAR},
-			FORG_ID = #{data.orgId, jdbcType=VARCHAR},
-			FPOST_ID = #{data.postId, jdbcType=VARCHAR},
 			FENABLE = #{data.enable, jdbcType=BIT},
-			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FLOCK_STATE = #{data.lockState, jdbcType=SMALLINT},
 			FONLINE = #{data.online, jdbcType=SMALLINT},
 			FSAFETY = #{data.safety, jdbcType=VARCHAR},
@@ -737,38 +737,38 @@
 	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.User">
 		update ect_user
 		<set>
-			<if test="userName != null">
-				FUSER_NAME = #{userName, jdbcType=VARCHAR},
+			<if test="userType != null">
+				FUSER_TYPE = #{userType, jdbcType=VARCHAR},
 			</if>
 			<if test="userCode != null">
 				FUSER_CODE = #{userCode, jdbcType=VARCHAR},
 			</if>
-			<if test="userType != null">
-				FUSER_TYPE = #{userType, jdbcType=VARCHAR},
+			<if test="userName != null">
+				FUSER_NAME = #{userName, jdbcType=VARCHAR},
+			</if>
+			<if test="roleCode != null">
+				FROLE_CODE = #{roleCode, jdbcType=VARCHAR},
+			</if>
+			<if test="orgCode != null">
+				FORG_CODE = #{orgCode, jdbcType=VARCHAR},
+			</if>
+			<if test="postCode != null">
+				FPOST_CODE = #{postCode, jdbcType=VARCHAR},
 			</if>
 			<if test="nickname != null">
 				FNICKNAME = #{nickname, jdbcType=VARCHAR},
 			</if>
-			<if test="roleId != null">
-				FROLE_ID = #{roleId, jdbcType=VARCHAR},
-			</if>
-			<if test="orgId != null">
-				FORG_ID = #{orgId, jdbcType=VARCHAR},
-			</if>
-			<if test="postId != null">
-				FPOST_ID = #{postId, jdbcType=VARCHAR},
-			</if>
 			<if test="enable != null">
 				FENABLE = #{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="lockState != null">
 				FLOCK_STATE = #{lockState, jdbcType=SMALLINT},
@@ -858,17 +858,17 @@
 		update ect_user
 		set 
 			
-			FUSER_NAME = #{userName, jdbcType=VARCHAR},
-			FUSER_CODE = #{userCode, jdbcType=VARCHAR},
 			FUSER_TYPE = #{userType, jdbcType=VARCHAR},
+			FUSER_CODE = #{userCode, jdbcType=VARCHAR},
+			FUSER_NAME = #{userName, jdbcType=VARCHAR},
+			FROLE_CODE = #{roleCode, jdbcType=VARCHAR},
+			FORG_CODE = #{orgCode, jdbcType=VARCHAR},
+			FPOST_CODE = #{postCode, jdbcType=VARCHAR},
 			FNICKNAME = #{nickname, jdbcType=VARCHAR},
-			FROLE_ID = #{roleId, jdbcType=VARCHAR},
-			FORG_ID = #{orgId, jdbcType=VARCHAR},
-			FPOST_ID = #{postId, jdbcType=VARCHAR},
 			FENABLE = #{enable, jdbcType=BIT},
-			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FLOCK_STATE = #{lockState, jdbcType=SMALLINT},
 			FONLINE = #{online, jdbcType=SMALLINT},
 			FSAFETY = #{safety, jdbcType=VARCHAR},

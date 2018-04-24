@@ -14,7 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * @description MD5加密
+ * MD5加密
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

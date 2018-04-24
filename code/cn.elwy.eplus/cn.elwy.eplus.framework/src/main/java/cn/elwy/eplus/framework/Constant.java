@@ -3,7 +3,7 @@ package cn.elwy.eplus.framework;
 import org.springframework.context.ApplicationContext;
 
 /**
- * @description 系统常量
+ * 系统常量
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
@@ -51,5 +51,8 @@ public interface Constant {
 	public static final String FILEPATHFILE = "uploadFiles/file/"; // 文件上传路径
 
 	public static ApplicationContext WEB_APP_CONTEXT = null; // 该值会在web容器启动时由WebAppContextListener初始化
+
+	public static String REDIRECT = "redirect:";
+	public static String FORWARD = "forward:";
 
 }

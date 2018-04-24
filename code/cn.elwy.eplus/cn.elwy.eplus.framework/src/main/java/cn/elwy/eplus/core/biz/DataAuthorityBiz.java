@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.DataAuthority;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
- * @description DataAuthorityBiz
+ * DataAuthorityBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */

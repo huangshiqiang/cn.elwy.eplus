@@ -1,15 +1,15 @@
 package cn.elwy.eplus.core.entity;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class Group extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String groupType; // 类型
 	private String groupCode; // 代码
 	private String groupName; // 名称
-	private String groupType; // 类型
-	private String parentId; // 上级ID
+	private String parentCode; // 上级代码
 	private Integer editState; // 编辑状态
 	private Integer order; // 显示次序
 	private Integer lvalue; // 左值
@@ -24,6 +24,14 @@ public class Group extends CommonEntity {
 
 	public Group(String id) {
 		super(id);
+	}
+
+	public String getGroupType() {
+		return groupType;
+	}
+
+	public void setGroupType(String groupType) {
+		this.groupType = groupType == null ? null : groupType.trim();
 	}
 
 	public String getGroupCode() {
@@ -42,20 +50,12 @@ public class Group extends CommonEntity {
 		this.groupName = groupName == null ? null : groupName.trim();
 	}
 
-	public String getGroupType() {
-		return groupType;
+	public String getParentCode() {
+		return parentCode;
 	}
 
-	public void setGroupType(String groupType) {
-		this.groupType = groupType == null ? null : groupType.trim();
-	}
-
-	public String getParentId() {
-		return parentId;
-	}
-
-	public void setParentId(String parentId) {
-		this.parentId = parentId == null ? null : parentId.trim();
+	public void setParentCode(String parentCode) {
+		this.parentCode = parentCode == null ? null : parentCode.trim();
 	}
 
 	public Integer getEditState() {

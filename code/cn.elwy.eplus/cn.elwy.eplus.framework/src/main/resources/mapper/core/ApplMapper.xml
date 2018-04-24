@@ -3,15 +3,15 @@
 <mapper namespace="cn.elwy.eplus.core.entity.ApplMapper">
 	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.Appl">
 		<id column="FID" property="id" jdbcType="VARCHAR" />
-		<result column="FAPPL_NAME" property="applName" jdbcType="VARCHAR" />
-		<result column="FAPPL_CODE" property="applCode" jdbcType="VARCHAR" />
 		<result column="FAPPL_TYPE" property="applType" jdbcType="VARCHAR" />
+		<result column="FAPPL_CODE" property="applCode" jdbcType="VARCHAR" />
+		<result column="FAPPL_NAME" property="applName" jdbcType="VARCHAR" />
+		<result column="FICON" property="icon" jdbcType="VARCHAR" />
+		<result column="FORDER" property="order" jdbcType="INTEGER" />
 		<result column="FENABLE" property="enable" jdbcType="BIT" />
-		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDIT_STATE" property="auditState" jdbcType="SMALLINT" />
 		<result column="FDELETE_STATE" property="deleteState" jdbcType="SMALLINT" />
-		<result column="FORDER" property="order" jdbcType="INTEGER" />
-		<result column="FICON" property="icon" jdbcType="VARCHAR" />
+		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDITOR_ID" property="auditorId" jdbcType="VARCHAR" />
 		<result column="FAUDIT_TIME" property="auditTime" jdbcType="TIMESTAMP" />
 		<result column="FCREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
@@ -94,27 +94,30 @@
 	<sql id="Base_Column_List">
 		<choose>
 			<when test="filterColumns == null || filterColumns.isEmpty()">
-		FID, FAPPL_NAME, FAPPL_CODE, FAPPL_TYPE, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FORDER, FICON, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
+		FID, FAPPL_TYPE, FAPPL_CODE, FAPPL_NAME, FICON, FORDER, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
 			</when>
 			<otherwise>
 				<trim prefixOverrides=",">
 					<if test="!filterColumns.contains(&quot;FID&quot;)">
 						FID, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FAPPL_NAME&quot;)">
-						FAPPL_NAME, 
+					<if test="!filterColumns.contains(&quot;FAPPL_TYPE&quot;)">
+						FAPPL_TYPE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAPPL_CODE&quot;)">
 						FAPPL_CODE, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FAPPL_TYPE&quot;)">
-						FAPPL_TYPE, 
+					<if test="!filterColumns.contains(&quot;FAPPL_NAME&quot;)">
+						FAPPL_NAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FICON&quot;)">
+						FICON, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FORDER&quot;)">
+						FORDER, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FENABLE&quot;)">
 						FENABLE, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
-						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAUDIT_STATE&quot;)">
 						FAUDIT_STATE, 
@@ -122,11 +125,8 @@
 					<if test="!filterColumns.contains(&quot;FDELETE_STATE&quot;)">
 						FDELETE_STATE, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FORDER&quot;)">
-						FORDER, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FICON&quot;)">
-						FICON, 
+					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
+						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAUDITOR_ID&quot;)">
 						FAUDITOR_ID, 
@@ -159,7 +159,7 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select
 		<include refid="Base_Column_List" />
 		from ect_appl
@@ -176,7 +176,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_appl
@@ -190,25 +190,25 @@
 		delete from ect_appl
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
 		delete from ect_appl
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
 	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Appl">
-		insert into ect_appl (FID, FAPPL_NAME, FAPPL_CODE, FAPPL_TYPE, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FORDER, FICON, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
+		insert into ect_appl (FID, FAPPL_TYPE, FAPPL_CODE, FAPPL_NAME, FICON, FORDER, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
-			#{applName, jdbcType=VARCHAR}, 
-			#{applCode, jdbcType=VARCHAR}, 
 			#{applType, jdbcType=VARCHAR}, 
+			#{applCode, jdbcType=VARCHAR}, 
+			#{applName, jdbcType=VARCHAR}, 
+			#{icon, jdbcType=VARCHAR}, 
+			#{order, jdbcType=INTEGER}, 
 			#{enable, jdbcType=BIT}, 
-			#{editState, jdbcType=SMALLINT}, 
 			#{auditState, jdbcType=SMALLINT}, 
 			#{deleteState, jdbcType=SMALLINT}, 
-			#{order, jdbcType=INTEGER}, 
-			#{icon, jdbcType=VARCHAR}, 
+			#{editState, jdbcType=SMALLINT}, 
 			#{auditorId, jdbcType=VARCHAR}, 
 			#{auditTime, jdbcType=TIMESTAMP}, 
 			#{creatorId, jdbcType=VARCHAR}, 
@@ -226,20 +226,23 @@
 			<if test="id != null">
 				FID,
 			</if>
-			<if test="applName != null">
-				FAPPL_NAME,
+			<if test="applType != null">
+				FAPPL_TYPE,
 			</if>
 			<if test="applCode != null">
 				FAPPL_CODE,
 			</if>
-			<if test="applType != null">
-				FAPPL_TYPE,
+			<if test="applName != null">
+				FAPPL_NAME,
+			</if>
+			<if test="icon != null">
+				FICON,
+			</if>
+			<if test="order != null">
+				FORDER,
 			</if>
 			<if test="enable != null">
 				FENABLE,
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE,
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE,
@@ -247,11 +250,8 @@
 			<if test="deleteState != null">
 				FDELETE_STATE,
 			</if>
-			<if test="order != null">
-				FORDER,
-			</if>
-			<if test="icon != null">
-				FICON,
+			<if test="editState != null">
+				FEDIT_STATE,
 			</if>
 			<if test="auditorId != null">
 				FAUDITOR_ID,
@@ -285,20 +285,23 @@
 			<if test="id != null">
 				#{id, jdbcType=VARCHAR},
 			</if>
-			<if test="applName != null">
-				#{applName, jdbcType=VARCHAR},
+			<if test="applType != null">
+				#{applType, jdbcType=VARCHAR},
 			</if>
 			<if test="applCode != null">
 				#{applCode, jdbcType=VARCHAR},
 			</if>
-			<if test="applType != null">
-				#{applType, jdbcType=VARCHAR},
+			<if test="applName != null">
+				#{applName, jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				#{icon, jdbcType=VARCHAR},
+			</if>
+			<if test="order != null">
+				#{order, jdbcType=INTEGER},
 			</if>
 			<if test="enable != null">
 				#{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				#{auditState, jdbcType=SMALLINT},
@@ -306,11 +309,8 @@
 			<if test="deleteState != null">
 				#{deleteState, jdbcType=SMALLINT},
 			</if>
-			<if test="order != null">
-				#{order, jdbcType=INTEGER},
-			</if>
-			<if test="icon != null">
-				#{icon, jdbcType=VARCHAR},
+			<if test="editState != null">
+				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditorId != null">
 				#{auditorId, jdbcType=VARCHAR},
@@ -341,7 +341,7 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
 		select count(*) from ect_appl
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -350,20 +350,23 @@
 	<update id="updateByConditionSelective" parameterType="map">
 		update ect_appl
 		<set>
-			<if test="data.applName != null">
-				FAPPL_NAME = #{data.applName, jdbcType=VARCHAR},
+			<if test="data.applType != null">
+				FAPPL_TYPE = #{data.applType, jdbcType=VARCHAR},
 			</if>
 			<if test="data.applCode != null">
 				FAPPL_CODE = #{data.applCode, jdbcType=VARCHAR},
 			</if>
-			<if test="data.applType != null">
-				FAPPL_TYPE = #{data.applType, jdbcType=VARCHAR},
+			<if test="data.applName != null">
+				FAPPL_NAME = #{data.applName, jdbcType=VARCHAR},
+			</if>
+			<if test="data.icon != null">
+				FICON = #{data.icon, jdbcType=VARCHAR},
+			</if>
+			<if test="data.order != null">
+				FORDER = #{data.order, jdbcType=INTEGER},
 			</if>
 			<if test="data.enable != null">
 				FENABLE = #{data.enable, jdbcType=BIT},
-			</if>
-			<if test="data.editState != null">
-				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditState != null">
 				FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
@@ -371,11 +374,8 @@
 			<if test="data.deleteState != null">
 				FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
 			</if>
-			<if test="data.order != null">
-				FORDER = #{data.order, jdbcType=INTEGER},
-			</if>
-			<if test="data.icon != null">
-				FICON = #{data.icon, jdbcType=VARCHAR},
+			<if test="data.editState != null">
+				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditorId != null">
 				FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
@@ -412,15 +412,15 @@
 	<update id="updateByCondition" parameterType="map">
 		update ect_appl
 		set 
-			FAPPL_NAME = #{data.applName, jdbcType=VARCHAR},
-			FAPPL_CODE = #{data.applCode, jdbcType=VARCHAR},
 			FAPPL_TYPE = #{data.applType, jdbcType=VARCHAR},
+			FAPPL_CODE = #{data.applCode, jdbcType=VARCHAR},
+			FAPPL_NAME = #{data.applName, jdbcType=VARCHAR},
+			FICON = #{data.icon, jdbcType=VARCHAR},
+			FORDER = #{data.order, jdbcType=INTEGER},
 			FENABLE = #{data.enable, jdbcType=BIT},
-			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
-			FORDER = #{data.order, jdbcType=INTEGER},
-			FICON = #{data.icon, jdbcType=VARCHAR},
+			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
 			FAUDIT_TIME = #{data.auditTime, jdbcType=TIMESTAMP},
 			FCREATOR_ID = #{data.creatorId, jdbcType=VARCHAR},
@@ -437,20 +437,23 @@
 	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.Appl">
 		update ect_appl
 		<set>
-			<if test="applName != null">
-				FAPPL_NAME = #{applName, jdbcType=VARCHAR},
+			<if test="applType != null">
+				FAPPL_TYPE = #{applType, jdbcType=VARCHAR},
 			</if>
 			<if test="applCode != null">
 				FAPPL_CODE = #{applCode, jdbcType=VARCHAR},
 			</if>
-			<if test="applType != null">
-				FAPPL_TYPE = #{applType, jdbcType=VARCHAR},
+			<if test="applName != null">
+				FAPPL_NAME = #{applName, jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				FICON = #{icon, jdbcType=VARCHAR},
+			</if>
+			<if test="order != null">
+				FORDER = #{order, jdbcType=INTEGER},
 			</if>
 			<if test="enable != null">
 				FENABLE = #{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
@@ -458,11 +461,8 @@
 			<if test="deleteState != null">
 				FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
 			</if>
-			<if test="order != null">
-				FORDER = #{order, jdbcType=INTEGER},
-			</if>
-			<if test="icon != null">
-				FICON = #{icon, jdbcType=VARCHAR},
+			<if test="editState != null">
+				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditorId != null">
 				FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
@@ -498,15 +498,15 @@
 		update ect_appl
 		set 
 			
-			FAPPL_NAME = #{applName, jdbcType=VARCHAR},
-			FAPPL_CODE = #{applCode, jdbcType=VARCHAR},
 			FAPPL_TYPE = #{applType, jdbcType=VARCHAR},
+			FAPPL_CODE = #{applCode, jdbcType=VARCHAR},
+			FAPPL_NAME = #{applName, jdbcType=VARCHAR},
+			FICON = #{icon, jdbcType=VARCHAR},
+			FORDER = #{order, jdbcType=INTEGER},
 			FENABLE = #{enable, jdbcType=BIT},
-			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
-			FORDER = #{order, jdbcType=INTEGER},
-			FICON = #{icon, jdbcType=VARCHAR},
+			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
 			FAUDIT_TIME = #{auditTime, jdbcType=TIMESTAMP},
 			FCREATOR_ID = #{creatorId, jdbcType=VARCHAR},

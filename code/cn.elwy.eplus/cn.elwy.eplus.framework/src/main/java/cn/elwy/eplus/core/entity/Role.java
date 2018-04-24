@@ -1,16 +1,16 @@
 package cn.elwy.eplus.core.entity;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class Role extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String orgId; // 机构ID
+	private String roleType; // 类型
 	private String roleCode; // 代码
 	private String roleName; // 名称
-	private String roleType; // 类型
-	private String parentId; // 上级ID
+	private String orgCode; // 机构代码
+	private String parentCode; // 上级代码
 	private Integer editState; // 编辑状态
 	private Integer order; // 显示次序
 	private Integer lvalue; // 左值
@@ -27,12 +27,12 @@ public class Role extends CommonEntity {
 		super(id);
 	}
 
-	public String getOrgId() {
-		return orgId;
+	public String getRoleType() {
+		return roleType;
 	}
 
-	public void setOrgId(String orgId) {
-		this.orgId = orgId == null ? null : orgId.trim();
+	public void setRoleType(String roleType) {
+		this.roleType = roleType == null ? null : roleType.trim();
 	}
 
 	public String getRoleCode() {
@@ -51,20 +51,20 @@ public class Role extends CommonEntity {
 		this.roleName = roleName == null ? null : roleName.trim();
 	}
 
-	public String getRoleType() {
-		return roleType;
+	public String getOrgCode() {
+		return orgCode;
 	}
 
-	public void setRoleType(String roleType) {
-		this.roleType = roleType == null ? null : roleType.trim();
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode == null ? null : orgCode.trim();
 	}
 
-	public String getParentId() {
-		return parentId;
+	public String getParentCode() {
+		return parentCode;
 	}
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId == null ? null : parentId.trim();
+	public void setParentCode(String parentCode) {
+		this.parentCode = parentCode == null ? null : parentCode.trim();
 	}
 
 	public Integer getEditState() {

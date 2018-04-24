@@ -2,10 +2,9 @@ package cn.elwy.eplus.framework.support;
 
 import java.util.LinkedHashMap;
 
-import cn.elwy.common.entity.Page;
+import cn.elwy.common.model.Pageable;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
@@ -62,8 +61,8 @@ public class DataMap extends LinkedHashMap<String, Object> {
 		this.put(STATE, state);
 	}
 
-	public Page<?> getPage() {
-		return (Page<?>) this.get(PAGE);
+	public Pageable<?> getPage() {
+		return (Pageable<?>) this.get(PAGE);
 	}
 
 	public void setPage(Object page) {

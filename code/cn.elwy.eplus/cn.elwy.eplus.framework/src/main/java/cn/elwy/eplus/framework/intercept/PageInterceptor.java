@@ -26,7 +26,7 @@ import cn.elwy.eplus.framework.dao.dialect.DialectFactory;
 import cn.elwy.eplus.framework.dao.mybatis.MyBatisPage;
 
 /**
- * @description 数据库分页插件，只拦截查询语句.
+ * 数据库分页插件，只拦截查询语句.
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

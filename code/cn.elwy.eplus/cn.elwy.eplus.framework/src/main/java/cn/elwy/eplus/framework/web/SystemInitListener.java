@@ -22,7 +22,6 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import cn.elwy.eplus.framework.service.Service;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

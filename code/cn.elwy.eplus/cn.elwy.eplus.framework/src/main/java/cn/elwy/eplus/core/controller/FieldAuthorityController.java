@@ -9,7 +9,7 @@ import cn.elwy.eplus.core.service.FieldAuthorityService;
 import cn.elwy.eplus.framework.controller.BaseController;
 
 /**
- * @description FieldAuthorityController
+ * FieldAuthorityController
  * @author elwy
  * @version 1.0, 2018-02-19
  */

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

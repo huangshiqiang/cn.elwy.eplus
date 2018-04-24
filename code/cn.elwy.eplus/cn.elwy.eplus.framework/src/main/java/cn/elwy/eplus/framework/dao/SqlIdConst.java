@@ -1,7 +1,7 @@
 package cn.elwy.eplus.framework.dao;
 
 /**
- * @description Mybatis Sql脚本的ID名称
+ * Mybatis Sql脚本的ID名称
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

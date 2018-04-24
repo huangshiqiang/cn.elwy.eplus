@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.elwy.common.PropertyConstant;
-import cn.elwy.common.entity.BaseEntity;
-import cn.elwy.common.entity.Page;
-import cn.elwy.common.entity.Parameter;
-import cn.elwy.common.entity.ResultDto;
 import cn.elwy.common.i18n.Msg;
+import cn.elwy.common.model.BaseEntity;
+import cn.elwy.common.model.Page;
+import cn.elwy.common.model.Parameter;
+import cn.elwy.common.model.ResultDto;
 import cn.elwy.common.util.AssertUtil;
 import cn.elwy.eplus.framework.Constant;
 import cn.elwy.eplus.framework.annotation.Operation;
@@ -31,7 +31,6 @@ import cn.elwy.eplus.framework.web.CustomDateEditor;
 import cn.elwy.eplus.framework.web.WebUtil;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

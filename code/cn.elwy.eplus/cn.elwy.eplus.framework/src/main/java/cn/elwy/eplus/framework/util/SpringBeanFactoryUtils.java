@@ -12,7 +12,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import cn.elwy.eplus.framework.Constant;
 
 /**
- * @description SpringBeanFactory容器的Utils
+ * SpringBeanFactory容器的Utils
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

@@ -2,16 +2,15 @@ package cn.elwy.eplus.core.entity;
 
 import java.util.Date;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class DataAuthority extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String subjectId; // 主体ID
 	private String subjectType; // 主体类型
-	private String funcId; // 功能ID
-	private String dataId; // 数据权限ID
+	private String subjectCode; // 主体代码
+	private String dataCode; // 数据权限CODE
 	private String dataValue; // 数据权限值
 	private Integer permission; // 权限：0.禁用、1.只读、2.可授权
 	private Date inceptTime; // 生效时间
@@ -27,14 +26,6 @@ public class DataAuthority extends CommonEntity {
 		super(id);
 	}
 
-	public String getSubjectId() {
-		return subjectId;
-	}
-
-	public void setSubjectId(String subjectId) {
-		this.subjectId = subjectId == null ? null : subjectId.trim();
-	}
-
 	public String getSubjectType() {
 		return subjectType;
 	}
@@ -43,20 +34,20 @@ public class DataAuthority extends CommonEntity {
 		this.subjectType = subjectType == null ? null : subjectType.trim();
 	}
 
-	public String getFuncId() {
-		return funcId;
+	public String getSubjectCode() {
+		return subjectCode;
 	}
 
-	public void setFuncId(String funcId) {
-		this.funcId = funcId == null ? null : funcId.trim();
+	public void setSubjectCode(String subjectCode) {
+		this.subjectCode = subjectCode == null ? null : subjectCode.trim();
 	}
 
-	public String getDataId() {
-		return dataId;
+	public String getDataCode() {
+		return dataCode;
 	}
 
-	public void setDataId(String dataId) {
-		this.dataId = dataId == null ? null : dataId.trim();
+	public void setDataCode(String dataCode) {
+		this.dataCode = dataCode == null ? null : dataCode.trim();
 	}
 
 	public String getDataValue() {

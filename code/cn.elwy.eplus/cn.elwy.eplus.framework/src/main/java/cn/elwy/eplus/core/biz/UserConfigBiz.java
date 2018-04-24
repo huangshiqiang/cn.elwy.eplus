@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.UserConfig;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
- * @description UserConfigBiz
+ * UserConfigBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */

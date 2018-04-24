@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import cn.elwy.common.entity.Criteria;
+import cn.elwy.common.model.Criteria;
 import cn.elwy.eplus.framework.annotation.DataAuth;
 import cn.elwy.eplus.framework.annotation.Function;
 import cn.elwy.eplus.framework.biz.impl.BizImpl;
@@ -13,7 +13,6 @@ import cn.elwy.eplus.framework.dao.Dao;
 import cn.elwy.eplus.framework.security.service.DataAuthorityBiz;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

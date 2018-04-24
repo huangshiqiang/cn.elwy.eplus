@@ -7,22 +7,28 @@ import javax.annotation.Resource;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import cn.elwy.common.entity.Parameter;
+import cn.elwy.common.model.Pageable;
+import cn.elwy.common.model.Parameter;
 import cn.elwy.eplus.core.biz.UserBiz;
 import cn.elwy.eplus.core.dao.UserDao;
 import cn.elwy.eplus.core.entity.User;
+import cn.elwy.eplus.framework.annotation.DS;
+import cn.elwy.eplus.framework.annotation.DS.DsId;
 import cn.elwy.eplus.framework.annotation.DataAuth;
-import cn.elwy.eplus.framework.annotation.Function;
+import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.biz.impl.BizImpl;
 
 /**
- * @description UserBiz
+ * UserBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */
 @Component
-@Function(code = "user")
+// @Function(code = "user")
+@DS(DsId.master)
 public class UserBizImpl extends BizImpl<User> implements UserBiz {
 
 	/**
@@ -41,6 +47,7 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 
 	@Override
 	@DataAuth(codes = { "tt" })
+	@DS(DsId.cluster)
 	@Cacheable(value = CONSTANT, key = "#parameter.toString()")
 	public List<User> queryByCondition(Parameter parameter) {
 		System.out.println(parameter);
@@ -54,11 +61,20 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 		return super.queryByCondition(parameter);
 	}
 
+	@Operation(code = "queryByCondition")
+	// @Cacheable(value = CONSTANT, key = "#parameter.toString()")
+	@Transactional(propagation = Propagation.REQUIRED)
+	@DS(DsId.master)
+	public Pageable<User> queryByCondition(Parameter parameter, Pageable<User> page) {
+		System.out.println("queryByCondition没走缓存");
+		return dao.selectByConditionPage(parameter, page);
+	}
+
 	@Override
 	@DataAuth(codes = { "tt" })
 	@Cacheable(value = CONSTANT)
 	public List<User> queryAll() {
-		System.out.println("没走缓存");
+		System.out.println("queryAll没走缓存");
 		return super.queryAll();
 	}
 

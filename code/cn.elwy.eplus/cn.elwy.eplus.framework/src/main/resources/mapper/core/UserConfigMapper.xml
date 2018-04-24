@@ -3,9 +3,9 @@
 <mapper namespace="cn.elwy.eplus.core.entity.UserConfigMapper">
 	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.UserConfig">
 		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FUSER_ID" property="userId" jdbcType="VARCHAR" />
 		<result column="FCONF_CODE" property="confCode" jdbcType="VARCHAR" />
 		<result column="FCONF_NAME" property="confName" jdbcType="VARCHAR" />
-		<result column="FUSER_ID" property="userId" jdbcType="VARCHAR" />
 		<result column="FVERSION" property="version" jdbcType="INTEGER" />
 		<result column="FENABLE" property="enable" jdbcType="BIT" />
 		<result column="FDELETE_TIME" property="deleteTime" jdbcType="TIMESTAMP" />
@@ -85,21 +85,21 @@
 	<sql id="Base_Column_List">
 		<choose>
 			<when test="filterColumns == null || filterColumns.isEmpty()">
-		FID, FCONF_CODE, FCONF_NAME, FUSER_ID, FVERSION, FENABLE, FDELETE_TIME, FEDIT_STATE, FCONTENT, FREMARK 
+		FID, FUSER_ID, FCONF_CODE, FCONF_NAME, FVERSION, FENABLE, FDELETE_TIME, FEDIT_STATE, FCONTENT, FREMARK 
 			</when>
 			<otherwise>
 				<trim prefixOverrides=",">
 					<if test="!filterColumns.contains(&quot;FID&quot;)">
 						FID, 
 					</if>
+					<if test="!filterColumns.contains(&quot;FUSER_ID&quot;)">
+						FUSER_ID, 
+					</if>
 					<if test="!filterColumns.contains(&quot;FCONF_CODE&quot;)">
 						FCONF_CODE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FCONF_NAME&quot;)">
 						FCONF_NAME, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FUSER_ID&quot;)">
-						FUSER_ID, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FVERSION&quot;)">
 						FVERSION, 
@@ -123,7 +123,7 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select
 		<include refid="Base_Column_List" />
 		from ect_user_config
@@ -140,7 +140,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_user_config
@@ -154,19 +154,19 @@
 		delete from ect_user_config
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
 		delete from ect_user_config
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
 	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.UserConfig">
-		insert into ect_user_config (FID, FCONF_CODE, FCONF_NAME, FUSER_ID, FVERSION, FENABLE, FDELETE_TIME, FEDIT_STATE, FCONTENT, FREMARK )
+		insert into ect_user_config (FID, FUSER_ID, FCONF_CODE, FCONF_NAME, FVERSION, FENABLE, FDELETE_TIME, FEDIT_STATE, FCONTENT, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
+			#{userId, jdbcType=VARCHAR}, 
 			#{confCode, jdbcType=VARCHAR}, 
 			#{confName, jdbcType=VARCHAR}, 
-			#{userId, jdbcType=VARCHAR}, 
 			#{version, jdbcType=INTEGER}, 
 			#{enable, jdbcType=BIT}, 
 			#{deleteTime, jdbcType=TIMESTAMP}, 
@@ -181,14 +181,14 @@
 			<if test="id != null">
 				FID,
 			</if>
+			<if test="userId != null">
+				FUSER_ID,
+			</if>
 			<if test="confCode != null">
 				FCONF_CODE,
 			</if>
 			<if test="confName != null">
 				FCONF_NAME,
-			</if>
-			<if test="userId != null">
-				FUSER_ID,
 			</if>
 			<if test="version != null">
 				FVERSION,
@@ -213,14 +213,14 @@
 			<if test="id != null">
 				#{id, jdbcType=VARCHAR},
 			</if>
+			<if test="userId != null">
+				#{userId, jdbcType=VARCHAR},
+			</if>
 			<if test="confCode != null">
 				#{confCode, jdbcType=VARCHAR},
 			</if>
 			<if test="confName != null">
 				#{confName, jdbcType=VARCHAR},
-			</if>
-			<if test="userId != null">
-				#{userId, jdbcType=VARCHAR},
 			</if>
 			<if test="version != null">
 				#{version, jdbcType=INTEGER},
@@ -242,7 +242,7 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
 		select count(*) from ect_user_config
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -251,14 +251,14 @@
 	<update id="updateByConditionSelective" parameterType="map">
 		update ect_user_config
 		<set>
+			<if test="data.userId != null">
+				FUSER_ID = #{data.userId, jdbcType=VARCHAR},
+			</if>
 			<if test="data.confCode != null">
 				FCONF_CODE = #{data.confCode, jdbcType=VARCHAR},
 			</if>
 			<if test="data.confName != null">
 				FCONF_NAME = #{data.confName, jdbcType=VARCHAR},
-			</if>
-			<if test="data.userId != null">
-				FUSER_ID = #{data.userId, jdbcType=VARCHAR},
 			</if>
 			<if test="data.version != null">
 				FVERSION = #{data.version, jdbcType=INTEGER},
@@ -286,9 +286,9 @@
 	<update id="updateByCondition" parameterType="map">
 		update ect_user_config
 		set 
+			FUSER_ID = #{data.userId, jdbcType=VARCHAR},
 			FCONF_CODE = #{data.confCode, jdbcType=VARCHAR},
 			FCONF_NAME = #{data.confName, jdbcType=VARCHAR},
-			FUSER_ID = #{data.userId, jdbcType=VARCHAR},
 			FVERSION = #{data.version, jdbcType=INTEGER},
 			FENABLE = #{data.enable, jdbcType=BIT},
 			FDELETE_TIME = #{data.deleteTime, jdbcType=TIMESTAMP},
@@ -302,14 +302,14 @@
 	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.UserConfig">
 		update ect_user_config
 		<set>
+			<if test="userId != null">
+				FUSER_ID = #{userId, jdbcType=VARCHAR},
+			</if>
 			<if test="confCode != null">
 				FCONF_CODE = #{confCode, jdbcType=VARCHAR},
 			</if>
 			<if test="confName != null">
 				FCONF_NAME = #{confName, jdbcType=VARCHAR},
-			</if>
-			<if test="userId != null">
-				FUSER_ID = #{userId, jdbcType=VARCHAR},
 			</if>
 			<if test="version != null">
 				FVERSION = #{version, jdbcType=INTEGER},
@@ -336,9 +336,9 @@
 		update ect_user_config
 		set 
 			
+			FUSER_ID = #{userId, jdbcType=VARCHAR},
 			FCONF_CODE = #{confCode, jdbcType=VARCHAR},
 			FCONF_NAME = #{confName, jdbcType=VARCHAR},
-			FUSER_ID = #{userId, jdbcType=VARCHAR},
 			FVERSION = #{version, jdbcType=INTEGER},
 			FENABLE = #{enable, jdbcType=BIT},
 			FDELETE_TIME = #{deleteTime, jdbcType=TIMESTAMP},

@@ -13,6 +13,7 @@
 		<result column="FEXEC_STATE" property="execState" jdbcType="SMALLINT" />
 		<result column="FAUDIT_STATE" property="auditState" jdbcType="SMALLINT" />
 		<result column="FDELETE_STATE" property="deleteState" jdbcType="SMALLINT" />
+		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDITOR_ID" property="auditorId" jdbcType="VARCHAR" />
 		<result column="FAUDIT_TIME" property="auditTime" jdbcType="TIMESTAMP" />
 		<result column="FCREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
@@ -95,7 +96,7 @@
 	<sql id="Base_Column_List">
 		<choose>
 			<when test="filterColumns == null || filterColumns.isEmpty()">
-		FID, FUSER_ID, FTRUSTEE_ID, FHANDOVER, FALL_AUTH, FINCEPT_TIME, FEXPIRY_TIME, FEXEC_TIME, FEXEC_STATE, FAUDIT_STATE, FDELETE_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
+		FID, FUSER_ID, FTRUSTEE_ID, FHANDOVER, FALL_AUTH, FINCEPT_TIME, FEXPIRY_TIME, FEXEC_TIME, FEXEC_STATE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
 			</when>
 			<otherwise>
 				<trim prefixOverrides=",">
@@ -132,6 +133,9 @@
 					<if test="!filterColumns.contains(&quot;FDELETE_STATE&quot;)">
 						FDELETE_STATE, 
 					</if>
+					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
+						FEDIT_STATE, 
+					</if>
 					<if test="!filterColumns.contains(&quot;FAUDITOR_ID&quot;)">
 						FAUDITOR_ID, 
 					</if>
@@ -163,7 +167,7 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select
 		<include refid="Base_Column_List" />
 		from ect_handover
@@ -180,7 +184,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_handover
@@ -194,14 +198,14 @@
 		delete from ect_handover
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
 		delete from ect_handover
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
 	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Handover">
-		insert into ect_handover (FID, FUSER_ID, FTRUSTEE_ID, FHANDOVER, FALL_AUTH, FINCEPT_TIME, FEXPIRY_TIME, FEXEC_TIME, FEXEC_STATE, FAUDIT_STATE, FDELETE_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
+		insert into ect_handover (FID, FUSER_ID, FTRUSTEE_ID, FHANDOVER, FALL_AUTH, FINCEPT_TIME, FEXPIRY_TIME, FEXEC_TIME, FEXEC_STATE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
 			#{userId, jdbcType=VARCHAR}, 
@@ -214,6 +218,7 @@
 			#{execState, jdbcType=SMALLINT}, 
 			#{auditState, jdbcType=SMALLINT}, 
 			#{deleteState, jdbcType=SMALLINT}, 
+			#{editState, jdbcType=SMALLINT}, 
 			#{auditorId, jdbcType=VARCHAR}, 
 			#{auditTime, jdbcType=TIMESTAMP}, 
 			#{creatorId, jdbcType=VARCHAR}, 
@@ -260,6 +265,9 @@
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE,
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE,
 			</if>
 			<if test="auditorId != null">
 				FAUDITOR_ID,
@@ -323,6 +331,9 @@
 			<if test="deleteState != null">
 				#{deleteState, jdbcType=SMALLINT},
 			</if>
+			<if test="editState != null">
+				#{editState, jdbcType=SMALLINT},
+			</if>
 			<if test="auditorId != null">
 				#{auditorId, jdbcType=VARCHAR},
 			</if>
@@ -352,7 +363,7 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
 		select count(*) from ect_handover
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -390,6 +401,9 @@
 			</if>
 			<if test="data.deleteState != null">
 				FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.editState != null">
+				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditorId != null">
 				FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
@@ -436,6 +450,7 @@
 			FEXEC_STATE = #{data.execState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
 			FAUDIT_TIME = #{data.auditTime, jdbcType=TIMESTAMP},
 			FCREATOR_ID = #{data.creatorId, jdbcType=VARCHAR},
@@ -482,6 +497,9 @@
 			<if test="deleteState != null">
 				FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
 			</if>
+			<if test="editState != null">
+				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
+			</if>
 			<if test="auditorId != null">
 				FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
 			</if>
@@ -526,6 +544,7 @@
 			FEXEC_STATE = #{execState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
 			FAUDIT_TIME = #{auditTime, jdbcType=TIMESTAMP},
 			FCREATOR_ID = #{creatorId, jdbcType=VARCHAR},

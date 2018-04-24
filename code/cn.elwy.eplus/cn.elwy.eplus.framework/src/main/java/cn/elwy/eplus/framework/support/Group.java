@@ -3,7 +3,6 @@ package cn.elwy.eplus.framework.support;
 import java.util.Map;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

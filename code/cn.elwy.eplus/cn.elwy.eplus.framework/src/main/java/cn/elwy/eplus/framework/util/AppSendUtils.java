@@ -9,7 +9,7 @@ import java.net.URL;
 import org.apache.log4j.Logger;
 
 /**
- * @description APP接口的Utils类
+ * APP接口的Utils类
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

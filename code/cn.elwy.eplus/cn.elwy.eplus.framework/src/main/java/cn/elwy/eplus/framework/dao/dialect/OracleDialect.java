@@ -1,7 +1,7 @@
 package cn.elwy.eplus.framework.dao.dialect;
 
 /**
- * @description Oracle数据库方言
+ * Oracle数据库方言
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

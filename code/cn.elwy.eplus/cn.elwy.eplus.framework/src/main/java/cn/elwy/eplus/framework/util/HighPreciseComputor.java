@@ -3,7 +3,7 @@ package cn.elwy.eplus.framework.util;
 import java.math.BigDecimal;
 
 /**
- * @description 精度运算
+ * 精度运算
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

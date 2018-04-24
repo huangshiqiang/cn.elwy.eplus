@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.FuncAuthority;
 import cn.elwy.eplus.framework.service.Service;
 
 /**
- * @description FuncAuthorityService
+ * FuncAuthorityService
  * @author elwy
  * @version 1.0, 2018-02-19
  */

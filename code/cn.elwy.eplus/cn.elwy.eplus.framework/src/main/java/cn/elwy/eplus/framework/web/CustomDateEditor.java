@@ -6,7 +6,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

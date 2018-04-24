@@ -2,7 +2,7 @@ package cn.elwy.eplus.core.entity;
 
 import java.util.Date;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class Handover extends CommonEntity {
 
@@ -16,6 +16,7 @@ public class Handover extends CommonEntity {
 	private Date expiryTime; // 失效时间
 	private Date execTime; // 执行时间
 	private Integer execState; // 执行状态
+	private Integer editState; // 编辑状态
 	private String remark; // 备注
 
 	public Handover() {
@@ -88,6 +89,14 @@ public class Handover extends CommonEntity {
 
 	public void setExecState(Integer execState) {
 		this.execState = execState;
+	}
+
+	public Integer getEditState() {
+		return editState;
+	}
+
+	public void setEditState(Integer editState) {
+		this.editState = editState;
 	}
 
 	public String getRemark() {

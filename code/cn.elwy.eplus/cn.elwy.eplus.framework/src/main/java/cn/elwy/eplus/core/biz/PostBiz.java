@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.Post;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
- * @description PostBiz
+ * PostBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */

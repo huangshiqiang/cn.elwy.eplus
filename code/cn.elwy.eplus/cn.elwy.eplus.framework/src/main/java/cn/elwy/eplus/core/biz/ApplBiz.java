@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.Appl;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
- * @description ApplBiz
+ * ApplBiz
  * @author elwy
  * @version 1.0, 2018-02-19
  */

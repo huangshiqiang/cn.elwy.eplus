@@ -4,7 +4,7 @@ import cn.elwy.common.i18n.Msg;
 import cn.elwy.common.i18n.NLS;
 
 /**
- * @description 常用国际化信息类,信息按首字母分类 E:错误信息,F:需要格式化的信息,T:文本信息,,M:提示信息,
+ * 常用国际化信息类,信息按首字母分类 E:错误信息,F:需要格式化的信息,T:文本信息,,M:提示信息,
  * @author huangsq
  * @version 1.0, 2018-02-20
  */

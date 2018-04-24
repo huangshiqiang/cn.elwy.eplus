@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * @description 处理HTML代码
+ * 处理HTML代码
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

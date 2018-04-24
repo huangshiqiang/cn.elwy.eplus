@@ -7,12 +7,11 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import cn.elwy.common.entity.Page;
-import cn.elwy.common.entity.Parameter;
+import cn.elwy.common.model.Pageable;
+import cn.elwy.common.model.Parameter;
 import cn.elwy.eplus.framework.dao.Dao;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
@@ -69,7 +68,7 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public Page<E> selectByConditionPage(Parameter parameter, Page<E> page) {
+	public Pageable<E> selectByConditionPage(Parameter parameter, Pageable<E> page) {
 		return null;
 	}
 

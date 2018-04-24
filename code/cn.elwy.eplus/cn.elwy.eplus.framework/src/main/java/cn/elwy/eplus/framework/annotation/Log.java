@@ -6,7 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

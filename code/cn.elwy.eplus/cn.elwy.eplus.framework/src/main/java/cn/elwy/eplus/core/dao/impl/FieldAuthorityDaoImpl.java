@@ -7,7 +7,7 @@ import cn.elwy.eplus.core.entity.FieldAuthority;
 import cn.elwy.eplus.framework.dao.BaseDao;
 
 /**
- * @description FieldAuthorityDao实现类
+ * FieldAuthorityDao实现类
  * @author elwy
  * @version 1.0, 2018-02-19
  */

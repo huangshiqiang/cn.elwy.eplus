@@ -18,12 +18,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.pagehelper.Page;
+
 import cn.elwy.common.PropertyConstant;
-import cn.elwy.common.entity.Criteria;
-import cn.elwy.common.entity.OrderRule;
-import cn.elwy.common.entity.Page;
-import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.exception.ExceptionSupport;
+import cn.elwy.common.model.Criteria;
+import cn.elwy.common.model.OrderRule;
+import cn.elwy.common.model.Parameter;
 import cn.elwy.common.util.AssertUtil;
 import cn.elwy.common.util.ConvertTypeUtil;
 import cn.elwy.common.util.DateUtil;
@@ -31,7 +32,6 @@ import cn.elwy.common.util.JsonUtil;
 import cn.elwy.common.util.ReflectUtil;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

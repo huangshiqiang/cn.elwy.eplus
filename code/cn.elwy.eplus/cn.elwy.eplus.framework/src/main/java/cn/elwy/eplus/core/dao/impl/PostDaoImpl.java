@@ -7,7 +7,7 @@ import cn.elwy.eplus.core.entity.Post;
 import cn.elwy.eplus.framework.dao.BaseDao;
 
 /**
- * @description PostDao实现类
+ * PostDao实现类
  * @author elwy
  * @version 1.0, 2018-02-19
  */

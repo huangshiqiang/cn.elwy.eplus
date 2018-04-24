@@ -17,216 +17,160 @@ SET FOREIGN_KEY_CHECKS=0;
 
 /*
 -- --------------------------------------------------------
--- 创建数据库: `CN_ELWY_FOSGI`
+-- 创建数据库: `CN_ELWY_EPLUS`
 --
 */
-CREATE DATABASE IF not EXISTS `CN_ELWY_FOSGI`;
-USE `CN_ELWY_FOSGI`;
+CREATE DATABASE IF not EXISTS `CN_ELWY_EPLUS`;
+USE `CN_ELWY_EPLUS`;
 
 
 -- ----------------------------
--- 表的结构 `EFT_WIDGETS`
+-- 表的结构 `ECT_FUNC_SERVICE`
 -- ----------------------------
-DROP TABLE IF EXISTS `EFT_WIDGETS`;
-CREATE TABLE `EFT_WIDGETS` (
+DROP TABLE IF EXISTS `ECT_FUNC_SERVICE`;
+CREATE TABLE `ECT_FUNC_SERVICE` (
+  `FID` varchar(30) not null comment '主键',
+  `FFUNC_CODE` varchar(30) default null comment '功能代码',
+  `FOBJECT_TYPE` varchar(20) not null comment '类型:TABLE、VIEW',
+  `FOBJECT_NAME` varchar(30) not null comment '表或视图名',
+  `FCLASS_NAME` varchar(50) default null comment '类名称',
+--  `FPARENT_TABLE` varchar(500) default null comment '关联父表',
+--  `FPARENT_TABLE_FK` varchar(500) default null comment '关联父表外键',
+  `FISSYNC` bit(1) default null comment '同步',
+  `FENABLE` bit(1) default 0 comment '是否启用',
+	`FAUDIT_STATE` smallint(6) default 0 comment '审核状态',
+	`FDELETE_STATE` smallint(6) default 0 comment '删除状态',
+	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
+	`FAUDITOR_ID` varchar(30) default null comment '审核员',
+	`FAUDIT_TIME` datetime default null comment '审核时间',
+	`FCREATOR_ID` varchar(30) not null comment '创建者',
+	`FCREATE_TIME` datetime not null comment '创建时间',
+	`FDELETOR_ID` varchar(30) default null comment '删除者',
+	`FDELETE_TIME` datetime default null comment '删除时间',
+	`FEDITOR_ID` varchar(30) default null comment '修改者',
+	`FEDIT_TIME` datetime default null comment '修改时间',
+  `FREMARK` varchar(200) default null comment '备注',
+  PRIMARY KEY (`FID`)
+) ENGINE=InnoDB default charset=utf8 comment='数据表格功能列表';
+
+-- ----------------------------
+-- 表的结构 `ECT_GRID`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_GRID`;
+CREATE TABLE `ECT_GRID` (
+  `FID` varchar(30) not null comment '主键',
+	`FGRID_CODE` varchar(30) not null comment '代码',
+	`FGRID_NAME` varchar(50) not null comment '名称',
+  `FFUNC_CODE` varchar(30) default null comment '功能代码',
+  `FCAN_CUSTOM` bit(1) default 0 comment '可自定义显示',
+--  `FORDER_NO` int(11) default 0 comment '显示次序',
+	`FAUDIT_STATE` smallint(6) default 0 comment '审核状态',
+	`FDELETE_STATE` smallint(6) default 0 comment '删除状态',
+	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
+	`FAUDITOR_ID` varchar(30) default null comment '审核员',
+	`FAUDIT_TIME` datetime default null comment '审核时间',
+	`FCREATOR_ID` varchar(30) not null comment '创建者',
+	`FCREATE_TIME` datetime not null comment '创建时间',
+	`FDELETOR_ID` varchar(30) default null comment '删除者',
+	`FDELETE_TIME` datetime default null comment '删除时间',
+	`FEDITOR_ID` varchar(30) default null comment '修改者',
+	`FEDIT_TIME` datetime default null comment '修改时间',
+  `FREMARK` varchar(200) default null comment '备注',
+  PRIMARY KEY (`FID`)
+) ENGINE=InnoDB default charset=utf8 comment='数据表格功能列表';
+
+-- ----------------------------
+-- 表的结构 `ECT_GRID_INFO`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_GRID_INFO`;
+CREATE TABLE `ECT_GRID_INFO` (
+	`FID` varchar(30) not null comment '主键',
+	`FGRID_CODE` varchar(30) not null comment '表格代码',
+	`FCOLUMN_CODE` varchar(30) not null comment '代码',
+	`FCOLUMN_NAME` varchar(50) not null comment '名称',
+	`FPROPERTY` varchar(30) not null comment '属性',
+	`FIS_LIST` bit(1) default null comment '是否列表字段',
+	`FIS_SHOW` bit(1) default null comment '是否显示字段',
+	`FIS_FORM` bit(1) default null comment '是否表单显示',
+	`FIS_EDIT` bit(1) default null comment '是否编辑字段',
+	`FWIDTH` int(11) not null comment '列宽',
+	`FCOLSPAN` int(11) default 1 comment '跨列',
+	`FROWSPAN` int(11) default 1 comment '跨行',
+	`FLEVEL` int(11) default null comment '层级',
+	`FALIGN` varchar(20) not null comment '对齐',
+	`FQUERY_STATE` int(11) default null comment '是否高级查询',
+	`FQUERY_TYPE` VARCHAR(30) default null comment '查询方式（等于、不等于、大于、小于、范围、左LIKE、右LIKE、左右LIKE）',
+	`FDICT_TYPE` varchar(30) default null comment '字典类型',
+	`FFORMAT` varchar(50) not null comment '格式化',
+
+	`FREQUIRED` bit(1) default 0 comment '是否必填',
+	`FMIN_LENGTH` int(11) default 0 comment '最小长度',
+	`FMAX_LENGTH` int(11) default 0 comment '最大长度',
+	`FMIN_VALUE` VARCHAR(20) default null comment '最小值',
+	`FMAX_VALUE` VARCHAR(20) default null comment '最大值',
+	`FVALIDATE_TYPE` VARCHAR(30) default null comment '验证类型',
+	`FWIDGET_ID` varchar(30) not null comment '控件类型（文本框、文本域、下拉框、复选框、单选框、字典选择、人员选择、部门选择、区域选择）',
+
+	`FIS_PK` bit(1) default null comment '是否主键',
+	`FIS_NULL` bit(1) default null comment '是否可为空',
+	`FIS_INSERT` bit(1) default null comment '是否为插入字段',
+	`FJAVA_TYPE` varchar(30) default null comment 'JAVA类型',
+	`FJDBC_TYPE` varchar(30) default null comment 'JDBC类型',
+--	`FWIDGET_PARAMS` varchar(2000) not null comment '控件JSON参数',
+--	`FFIELD_LABELS` VARCHAR(50) default null comment '字段标签',
+--	`FFIELD_KEYS` VARCHAR(512) default null comment '字段关键字',
+--	`FSEARCH_LABEL` VARCHAR(50) default null comment '查询标签',
+--	`FSEARC_HKEY` VARCHAR(50) default null comment '查询快捷键',
+--	`FSETTINGS` VARCHAR(2000) default null comment '其它设置（扩展字段JSON）',
+
+--	`FDISPLAYABLE` varchar(30) not null comment '可显示',
+	`FORDER` int(11) default 0 comment '显示次序',
+	`FREMARK` varchar(200) default null comment '备注',
+	PRIMARY KEY (`FID`)
+) ENGINE=InnoDB default charset=utf8 comment='数据表格列信息表';
+
+
+-- ----------------------------
+-- 表的结构 `ECT_WIDGETS`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_WIDGETS`;
+CREATE TABLE `ECT_WIDGETS` (
 	`FID` varchar(30) not null comment '主键',
 	`FNAME` varchar(50) not null comment '名称',
 	`FCODE` varchar(30) not null comment '代码',
 	`FTYPE` varchar(20) not null comment '类型',
 	`FGROUP` varchar(20) not null comment '分组',
 	`FENABLE` bit(1) default 0 comment '是否启用',
-	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
-	`FCHECK_STATE` smallint(6) default 0 comment '审核状态',
+	`FAUDIT_STATE` smallint(6) default 0 comment '审核状态',
 	`FDELETE_STATE` smallint(6) default 0 comment '删除状态',
+	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
 	`FORDER` int(11) default 0 comment '显示次序',
 	`FICON` varchar(100) default null comment '图标',
 	`FCONTENT` text not null comment '控件内容',
-	`FCHECKER_ID` varchar(30) default null comment '审核员',
-	`FCHECK_TIME` datetime default null comment '审核时间',
+  `FINCLUDE_FILE` text not null comment '引用文件',
+  `FTEMPLATE` text not null comment '控件模版',
+	`FAUDITOR_ID` varchar(30) default null comment '审核员',
+	`FAUDIT_TIME` datetime default null comment '审核时间',
 	`FCREATOR_ID` varchar(30) not null comment '创建者',
 	`FCREATE_TIME` datetime not null comment '创建时间',
 	`FDELETOR_ID` varchar(30) default null comment '删除者',
 	`FDELETE_TIME` datetime default null comment '删除时间',
-	`FLAST_EDITOR_ID` varchar(30) default null comment '修改者',
-	`FLAST_EDIT_TIME` datetime default null comment '修改时间',
+	`FEDITOR_ID` varchar(30) default null comment '修改者',
+	`FEDIT_TIME` datetime default null comment '修改时间',
 	`FREMARK` varchar(200) default null comment '备注',
 	PRIMARY KEY (`FID`)
 ) ENGINE=InnoDB default charset=utf8 comment='控件库列表';
 
--- ----------------------------
--- 表的结构 `ECT_GRID_HEAD`
--- ----------------------------
-DROP TABLE IF EXISTS `ECT_GRID_HEAD`;
-CREATE TABLE `ECT_GRID_HEAD` (
-	`FID` varchar(30) not null comment '主键',
-	`FNAME` varchar(50) not null comment '名称',
-	`FKEY` varchar(50) not null comment '关键字',
-	`FWIDTH` int(11) not null comment '列宽',
-	`FCOLSPAN` int(11) default 1 comment '跨列',
-	`FROWSPAN` int(11) default 1 comment '跨行',
-	`FLEVEL` int(11) default null comment '层级',
-	`FALIGN` varchar(20) not null comment '对齐',
-	`FFORMAT` varchar(50) not null comment '格式化',
-	`FDICT_SERVICE` varchar(50) not null comment '字典代码',
-	`FGRID_ID` varchar(30) not null comment '表格ID',
-	`FDISPLAYABLE` varchar(30) not null comment '可显示',
-	`FENABLE` bit(1) default 0 comment '是否启用',
-	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
-	`FCHECK_STATE` smallint(6) default 0 comment '审核状态',
-	`FDELETE_STATE` smallint(6) default 0 comment '删除状态',
-	`FORDER` int(11) default 0 comment '显示次序',
-	`FCHECKER_ID` varchar(30) default null comment '审核员',
-	`FCHECK_TIME` datetime default null comment '审核时间',
-	`FCREATOR_ID` varchar(30) not null comment '创建者',
-	`FCREATE_TIME` datetime not null comment '创建时间',
-	`FDELETOR_ID` varchar(30) default null comment '删除者',
-	`FDELETE_TIME` datetime default null comment '删除时间',
-	`FLAST_EDITOR_ID` varchar(30) default null comment '修改者',
-	`FLAST_EDIT_TIME` datetime default null comment '修改时间',
-	`FREMARK` varchar(200) default null comment '备注',
-	PRIMARY KEY (`FID`)
-) ENGINE=InnoDB default charset=utf8 comment='数据表格列信息表';
 
 -- ----------------------------
--- 表的结构 `EFT_GRID_HEAD`
+-- 表的结构 `ECT_GENERATE_CONFIG`
 -- ----------------------------
-DROP TABLE IF EXISTS `EFT_FORM_ITEM`;
-CREATE TABLE `EFT_GRID_HEAD` (
+DROP TABLE IF EXISTS `ECT_GENERATE_CONFIG`;
+CREATE TABLE `ECT_GENERATE_CONFIG` (
 	`FID` varchar(30) not null comment '主键',
-	`FNAME` varchar(50) not null comment '名称',
-	`FCODE` varchar(30) not null comment '代码',
-	`FCOLUMN_CODE` varchar(50) default null comment '列代码',
-	`FFIELD_NAME` varchar(50) default null comment '字段名称',
---	`FJAVA_TYPE` varchar(20) default null comment '类型',
-	`FDATA_TYPE` varchar(100) not null comment '数据类型',
-	`FJDBC_TYPE` varchar(20) default null comment 'JDBC数据类型',
+	`FGENE_CODE` varchar(50) not null comment '代码',
+	`FGENE_NAME` varchar(50) not null comment '名称',
 	
-	
-	`FCOLSPAN` int(11) default 1 comment '跨列',
-	`FROWSPAN` int(11) default 1 comment '跨行',
-	`FDICT_TYPE` varchar(20) not null comment '字典类型',
-	
-	`FDICT_TYPE` VARCHAR(100) default null comment '字典类型',
-	`FFORMAT` varchar(50) not null comment '格式化',
-	`FWIDTH` int(11) not null comment '列宽',
-	`FLEVEL` int(11) default null comment '层级',
-	`FGRID_ID` varchar(30) not null comment '表格ID',
-	`FORDER` int(11) default 0 comment '显示次序',
-	`FEDITABLE` varchar(30) not null comment '可编辑',
-	`FDISPLAYABLE` varchar(30) not null comment '可显示',
-	`FIS_NULL` bit(1) default null comment '是否可为空',
---	`FTABLE_ID` varchar(30) not null comment '表格ID',
---	`FMODEL_ID` varchar(30) not null comment '模型ID',
---	`FMODEL_CODE` varchar(50) default null comment '模型代码',
-
-
- 
- 
-
-	`FIS_PK` bit(1) default null comment '是否主键',
-	`FIS_NULL` bit(1) default null comment '是否可为空',
-	`FIS_INSERT` bit(1) default null comment '是否为插入字段',
-	`FIS_EDIT` bit(1) default null comment '是否编辑字段',
-	`FIS_LIST` bit(1) default null comment '是否列表字段',
-	`FIS_QUERY` bit(1) default null comment '是否查询字段',
-	`FIS_FORM` bit(1) default null comment '是否表单显示',
-	`FQUERY_TYPE` VARCHAR(50) default null comment '查询方式（等于、不等于、大于、小于、范围、左LIKE、右LIKE、左右LIKE）',
-	`FWIDGET_ID` varchar(30) not null comment '控件类型（文本框、文本域、下拉框、复选框、单选框、字典选择、人员选择、部门选择、区域选择）',--	`FWIDGET_PARAMS` varchar(2000) not null comment '控件JSON参数',
---	`FFIELD_LABELS` VARCHAR(50) default NULL,
---	`FFIELD_KEYS` VARCHAR(512) default NULL,
-	`FSEARCH_LABEL` VARCHAR(50) default NULL,
-	`FSEARC_HKEY` VARCHAR(50) default NULL,
-	`FVALIDATE_TYPE` VARCHAR(50) default NULL,
-	`FMIN_LENGTH` VARCHAR(20) default NULL,
-	`FMAX_LENGTH` VARCHAR(20) default NULL,
-	`FMIN_VALUE` VARCHAR(20) default NULL,
-	`FMAX_VALUE` VARCHAR(20) default NULL,
-	`FENABLE` bit(1) default 0 comment '是否启用',
-	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
-	`FSETTINGS` VARCHAR(2000) default null comment '其它设置（扩展字段JSON）',
-	PRIMARY KEY (`FID`)
-) ENGINE=InnoDB default charset=utf8 comment='数据表格列信息表';
-
--- ----------------------------
--- 表的结构 `EFT_GRID`
--- ----------------------------
-DROP TABLE IF EXISTS `EFT_GRID`;
-CREATE TABLE `EFT_GRID` (
-	`FID` varchar(30) not null comment '主键',
-	`FFUNC_ID` varchar(30) not null comment '功能ID',
-	`FCLASS_NAME` varchar(50) default null comment '类名称',
-	`FPARENT_TABLE` varchar(500) default null comment '关联父表',
-	`FPARENT_TABLE_FK` varchar(500) default null comment '关联父表外键',
-	`FISSYNC` bit(1) default null comment '同步',
-	`FTYPE` varchar(20) not null comment '类型:TABLE、VIEW',
-	`FENABLE` bit(1) default 0 comment '是否启用',
-	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
-	`FCHECK_STATE` smallint(6) default 0 comment '审核状态',
-	`FDELETE_STATE` smallint(6) default 0 comment '删除状态',
-	`FCAN_CUSTOM` bit(1) default 0 comment '可自定义显示',
-	`FORDER` int(11) default 0 comment '显示次序',
-	`FCHECKER_ID` varchar(30) default null comment '审核员',
-	`FCHECK_TIME` datetime default null comment '审核时间',
-	`FCREATOR_ID` varchar(30) not null comment '创建者',
-	`FCREATE_TIME` datetime not null comment '创建时间',
-	`FDELETOR_ID` varchar(30) default null comment '删除者',
-	`FDELETE_TIME` datetime default null comment '删除时间',
-	`FLAST_EDITOR_ID` varchar(30) default null comment '修改者',
-	`FLAST_EDIT_TIME` datetime default null comment '修改时间',
-	`FREMARK` varchar(200) default null comment '备注',
-	PRIMARY KEY (`FID`)
-) ENGINE=InnoDB default charset=utf8 comment='数据表格功能列表';
-
--- ----------------------------
--- 表的结构 `EFT_GRID_COLUMN`
--- ----------------------------
-DROP TABLE IF EXISTS `EFT_GRID_COLUMN`;
-CREATE TABLE `EFT_GRID_COLUMN` (
-	`FID` varchar(30) not null comment '主键',
-	`FTABLE_ID` varchar(30) not null comment '表格ID',
---	`FMODEL_ID` varchar(30) not null comment '模型ID',
---	`FMODEL_CODE` varchar(50) default null comment '模型代码',
-	`FCODE` varchar(30) not null comment '代码',
-	`FNAME` varchar(50) not null comment '名称',
-	`FJAVA_FIELD` varchar(200) default null comment 'JAVA字段名',
-	`FJAVA_TYPE` varchar(100) default null comment 'JAVA类型',
-	`FJDBC_TYPE` varchar(100) default null comment 'JDBC类型',
-	`FDICT_TYPE` VARCHAR(100) default null comment '字典类型',
-	`FIS_PK` bit(1) default null comment '是否主键',
-	`FIS_NULL` bit(1) default null comment '是否可为空',
-	`FIS_INSERT` bit(1) default null comment '是否为插入字段',
-	`FIS_EDIT` bit(1) default null comment '是否编辑字段',
-	`FIS_LIST` bit(1) default null comment '是否列表字段',
-	`FIS_QUERY` bit(1) default null comment '是否查询字段',
-	`FIS_FORM` bit(1) default null comment '是否表单显示',
-	`FQUERY_TYPE` VARCHAR(50) default null comment '查询方式（等于、不等于、大于、小于、范围、左LIKE、右LIKE、左右LIKE）',
-	`FWIDGET_ID` varchar(30) not null comment '控件类型（文本框、文本域、下拉框、复选框、单选框、字典选择、人员选择、部门选择、区域选择）',
---	`FWIDGET_PARAMS` varchar(2000) not null comment '控件JSON参数',
---	`FFIELD_LABELS` VARCHAR(50) default NULL,
---	`FFIELD_KEYS` VARCHAR(512) default NULL,
-	`FSEARCH_LABEL` VARCHAR(50) default NULL,
-	`FSEARC_HKEY` VARCHAR(50) default NULL,
-	`FVALIDATE_TYPE` VARCHAR(50) default NULL,
-	`FMIN_LENGTH` VARCHAR(20) default NULL,
-	`FMAX_LENGTH` VARCHAR(20) default NULL,
-	`FMIN_VALUE` VARCHAR(20) default NULL,
-	`FMAX_VALUE` VARCHAR(20) default NULL,
-	`FENABLE` bit(1) default 0 comment '是否启用',
-	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
-	`FORDER` int(11) default 0 comment '显示次序',
-	`FSETTINGS` VARCHAR(2000) default null comment '其它设置（扩展字段JSON）',
-	PRIMARY KEY (`FID`)
-) ENGINE=InnoDB default charset=utf8 comment='数据表格列信息表';
-
--- ----------------------------
--- 表的结构 `EFT_CODE_CONFIG`
--- ----------------------------
-DROP TABLE IF EXISTS `EFT_CODE_CONFIG`;
-CREATE TABLE `EFT_CODE_CONFIG` (
-	`FID` varchar(30) not null comment '主键',
---	`FMODEL_ID` varchar(30) not null comment '模型ID',
-	`FNAME` varchar(50) not null comment '名称',
-	`FCATEGORY` varchar(50) default null comment '分类',
 	`FFILE_PATH` varchar(500) default null comment '生成文件路径',
 	`FPACKAGE_NAME` varchar(200) default null comment '生成包路径',
 	`FMODULE_NAME` varchar(30) default null comment '生成模块名',
@@ -234,36 +178,40 @@ CREATE TABLE `EFT_CODE_CONFIG` (
 	`FFUNCTION_CODE` varchar(50) default null comment '功能代码',
 	`FFUNCTION_NAME` varchar(50) default null comment '功能名称',
 	`FFUNCTION_AUTHOR` varchar(50) default null comment '功能作者',
-	`FCHECKER_ID` varchar(30) default null comment '审核员',
-	`FCHECK_TIME` datetime default null comment '审核时间',
+	`FAUDITOR_ID` varchar(30) default null comment '审核员',
+	`FAUDIT_TIME` datetime default null comment '审核时间',
 	`FCREATOR_ID` varchar(30) not null comment '创建者',
 	`FCREATE_TIME` datetime not null comment '创建时间',
 	`FDELETOR_ID` varchar(30) default null comment '删除者',
 	`FDELETE_TIME` datetime default null comment '删除时间',
-	`FLAST_EDITOR_ID` varchar(30) default null comment '修改者',
-	`FLAST_EDIT_TIME` datetime default null comment '修改时间',
+	`FEDITOR_ID` varchar(30) default null comment '修改者',
+	`FEDIT_TIME` datetime default null comment '修改时间',
 	`FREMARK` varchar(200) default null comment '备注',
 	PRIMARY KEY (`FID`)
 ) ENGINE=InnoDB default charset=utf8 comment='代码生成配置信息表';
 
-
 -- ----------------------------
--- 表的结构 `EFT_WIDGET`
+-- 表的结构 `ECT_GENERATE_CODE`
 -- ----------------------------
-DROP TABLE IF EXISTS `EFT_WIDGET`;
-CREATE TABLE `EFT_WIDGET` (
+DROP TABLE IF EXISTS `ECT_GENERATE_CODE`;
+CREATE TABLE `ECT_GENERATE_CODE` (
 	`FID` varchar(30) not null comment '主键',
-	`FCODE` varchar(30) not null comment '代码',
-	`FNAME` varchar(50) not null comment '名称',
-	`FTYPE` varchar(20) not null comment '类型',
-	`FENABLE` bit(1) default 0 comment '是否启用',
+	`FGENE_CODE` varchar(30) not null comment '生成配置代码',
+	`FGRID_CODE` varchar(30) not null comment '表格代码',
+	`FAUDIT_STATE` smallint(6) default 0 comment '审核状态',
+	`FDELETE_STATE` smallint(6) default 0 comment '删除状态',
 	`FEDIT_STATE` smallint(6) not null comment '编辑状态',
-	`FORDER` int(11) default 0 comment '显示次序',
-	`FINCLUDE_FILE` text not null comment '引用文件',
-	`FTEMPLATE` text not null comment '控件模版',
+	`FAUDITOR_ID` varchar(30) default null comment '审核员',
+	`FAUDIT_TIME` datetime default null comment '审核时间',
+	`FCREATOR_ID` varchar(30) not null comment '创建者',
+	`FCREATE_TIME` datetime not null comment '创建时间',
+	`FDELETOR_ID` varchar(30) default null comment '删除者',
+	`FDELETE_TIME` datetime default null comment '删除时间',
+	`FEDITOR_ID` varchar(30) default null comment '修改者',
+	`FEDIT_TIME` datetime default null comment '修改时间',
 	`FREMARK` varchar(200) default null comment '备注',
 	PRIMARY KEY (`FID`)
-) ENGINE=InnoDB default charset=utf8 comment='控件类型信息表';
+) ENGINE=InnoDB default charset=utf8 comment='代码生成配置信息表';
 
 
 -- ----------------------------

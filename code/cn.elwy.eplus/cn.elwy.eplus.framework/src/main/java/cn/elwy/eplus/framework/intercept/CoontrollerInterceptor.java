@@ -20,7 +20,7 @@ import cn.elwy.eplus.framework.annotation.Log;
 import cn.elwy.eplus.framework.annotation.Operation;
 
 /**
- * @description Coontroller拦截器
+ * Coontroller拦截器
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

@@ -3,13 +3,13 @@
 <mapper namespace="cn.elwy.eplus.core.entity.PostMapper">
 	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.Post">
 		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FPOST_TYPE" property="postType" jdbcType="VARCHAR" />
 		<result column="FPOST_CODE" property="postCode" jdbcType="VARCHAR" />
 		<result column="FPOST_NAME" property="postName" jdbcType="VARCHAR" />
-		<result column="FPOST_TYPE" property="postType" jdbcType="VARCHAR" />
 		<result column="FENABLE" property="enable" jdbcType="BIT" />
-		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDIT_STATE" property="auditState" jdbcType="SMALLINT" />
 		<result column="FDELETE_STATE" property="deleteState" jdbcType="SMALLINT" />
+		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDITOR_ID" property="auditorId" jdbcType="VARCHAR" />
 		<result column="FAUDIT_TIME" property="auditTime" jdbcType="TIMESTAMP" />
 		<result column="FCREATOR_ID" property="creatorId" jdbcType="VARCHAR" />
@@ -92,12 +92,15 @@
 	<sql id="Base_Column_List">
 		<choose>
 			<when test="filterColumns == null || filterColumns.isEmpty()">
-		FID, FPOST_CODE, FPOST_NAME, FPOST_TYPE, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
+		FID, FPOST_TYPE, FPOST_CODE, FPOST_NAME, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
 			</when>
 			<otherwise>
 				<trim prefixOverrides=",">
 					<if test="!filterColumns.contains(&quot;FID&quot;)">
 						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FPOST_TYPE&quot;)">
+						FPOST_TYPE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FPOST_CODE&quot;)">
 						FPOST_CODE, 
@@ -105,20 +108,17 @@
 					<if test="!filterColumns.contains(&quot;FPOST_NAME&quot;)">
 						FPOST_NAME, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FPOST_TYPE&quot;)">
-						FPOST_TYPE, 
-					</if>
 					<if test="!filterColumns.contains(&quot;FENABLE&quot;)">
 						FENABLE, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
-						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAUDIT_STATE&quot;)">
 						FAUDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FDELETE_STATE&quot;)">
 						FDELETE_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
+						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAUDITOR_ID&quot;)">
 						FAUDITOR_ID, 
@@ -151,7 +151,7 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select
 		<include refid="Base_Column_List" />
 		from ect_post
@@ -168,7 +168,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_post
@@ -182,23 +182,23 @@
 		delete from ect_post
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
 		delete from ect_post
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
 	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Post">
-		insert into ect_post (FID, FPOST_CODE, FPOST_NAME, FPOST_TYPE, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
+		insert into ect_post (FID, FPOST_TYPE, FPOST_CODE, FPOST_NAME, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
+			#{postType, jdbcType=VARCHAR}, 
 			#{postCode, jdbcType=VARCHAR}, 
 			#{postName, jdbcType=VARCHAR}, 
-			#{postType, jdbcType=VARCHAR}, 
 			#{enable, jdbcType=BIT}, 
-			#{editState, jdbcType=SMALLINT}, 
 			#{auditState, jdbcType=SMALLINT}, 
 			#{deleteState, jdbcType=SMALLINT}, 
+			#{editState, jdbcType=SMALLINT}, 
 			#{auditorId, jdbcType=VARCHAR}, 
 			#{auditTime, jdbcType=TIMESTAMP}, 
 			#{creatorId, jdbcType=VARCHAR}, 
@@ -216,26 +216,26 @@
 			<if test="id != null">
 				FID,
 			</if>
+			<if test="postType != null">
+				FPOST_TYPE,
+			</if>
 			<if test="postCode != null">
 				FPOST_CODE,
 			</if>
 			<if test="postName != null">
 				FPOST_NAME,
 			</if>
-			<if test="postType != null">
-				FPOST_TYPE,
-			</if>
 			<if test="enable != null">
 				FENABLE,
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE,
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE,
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE,
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE,
 			</if>
 			<if test="auditorId != null">
 				FAUDITOR_ID,
@@ -269,26 +269,26 @@
 			<if test="id != null">
 				#{id, jdbcType=VARCHAR},
 			</if>
+			<if test="postType != null">
+				#{postType, jdbcType=VARCHAR},
+			</if>
 			<if test="postCode != null">
 				#{postCode, jdbcType=VARCHAR},
 			</if>
 			<if test="postName != null">
 				#{postName, jdbcType=VARCHAR},
 			</if>
-			<if test="postType != null">
-				#{postType, jdbcType=VARCHAR},
-			</if>
 			<if test="enable != null">
 				#{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				#{auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="deleteState != null">
 				#{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="editState != null">
+				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditorId != null">
 				#{auditorId, jdbcType=VARCHAR},
@@ -319,7 +319,7 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
 		select count(*) from ect_post
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -328,26 +328,26 @@
 	<update id="updateByConditionSelective" parameterType="map">
 		update ect_post
 		<set>
+			<if test="data.postType != null">
+				FPOST_TYPE = #{data.postType, jdbcType=VARCHAR},
+			</if>
 			<if test="data.postCode != null">
 				FPOST_CODE = #{data.postCode, jdbcType=VARCHAR},
 			</if>
 			<if test="data.postName != null">
 				FPOST_NAME = #{data.postName, jdbcType=VARCHAR},
 			</if>
-			<if test="data.postType != null">
-				FPOST_TYPE = #{data.postType, jdbcType=VARCHAR},
-			</if>
 			<if test="data.enable != null">
 				FENABLE = #{data.enable, jdbcType=BIT},
-			</if>
-			<if test="data.editState != null">
-				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditState != null">
 				FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.deleteState != null">
 				FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.editState != null">
+				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditorId != null">
 				FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
@@ -384,13 +384,13 @@
 	<update id="updateByCondition" parameterType="map">
 		update ect_post
 		set 
+			FPOST_TYPE = #{data.postType, jdbcType=VARCHAR},
 			FPOST_CODE = #{data.postCode, jdbcType=VARCHAR},
 			FPOST_NAME = #{data.postName, jdbcType=VARCHAR},
-			FPOST_TYPE = #{data.postType, jdbcType=VARCHAR},
 			FENABLE = #{data.enable, jdbcType=BIT},
-			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDITOR_ID = #{data.auditorId, jdbcType=VARCHAR},
 			FAUDIT_TIME = #{data.auditTime, jdbcType=TIMESTAMP},
 			FCREATOR_ID = #{data.creatorId, jdbcType=VARCHAR},
@@ -407,26 +407,26 @@
 	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.Post">
 		update ect_post
 		<set>
+			<if test="postType != null">
+				FPOST_TYPE = #{postType, jdbcType=VARCHAR},
+			</if>
 			<if test="postCode != null">
 				FPOST_CODE = #{postCode, jdbcType=VARCHAR},
 			</if>
 			<if test="postName != null">
 				FPOST_NAME = #{postName, jdbcType=VARCHAR},
 			</if>
-			<if test="postType != null">
-				FPOST_TYPE = #{postType, jdbcType=VARCHAR},
-			</if>
 			<if test="enable != null">
 				FENABLE = #{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditorId != null">
 				FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
@@ -462,13 +462,13 @@
 		update ect_post
 		set 
 			
+			FPOST_TYPE = #{postType, jdbcType=VARCHAR},
 			FPOST_CODE = #{postCode, jdbcType=VARCHAR},
 			FPOST_NAME = #{postName, jdbcType=VARCHAR},
-			FPOST_TYPE = #{postType, jdbcType=VARCHAR},
 			FENABLE = #{enable, jdbcType=BIT},
-			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDITOR_ID = #{auditorId, jdbcType=VARCHAR},
 			FAUDIT_TIME = #{auditTime, jdbcType=TIMESTAMP},
 			FCREATOR_ID = #{creatorId, jdbcType=VARCHAR},

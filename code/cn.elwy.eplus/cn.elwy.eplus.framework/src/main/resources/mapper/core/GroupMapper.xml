@@ -3,14 +3,14 @@
 <mapper namespace="cn.elwy.eplus.core.entity.GroupMapper">
 	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.Group">
 		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FGROUP_TYPE" property="groupType" jdbcType="VARCHAR" />
 		<result column="FGROUP_CODE" property="groupCode" jdbcType="VARCHAR" />
 		<result column="FGROUP_NAME" property="groupName" jdbcType="VARCHAR" />
-		<result column="FGROUP_TYPE" property="groupType" jdbcType="VARCHAR" />
-		<result column="FPARENT_ID" property="parentId" jdbcType="VARCHAR" />
+		<result column="FPARENT_CODE" property="parentCode" jdbcType="VARCHAR" />
 		<result column="FENABLE" property="enable" jdbcType="BIT" />
-		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FAUDIT_STATE" property="auditState" jdbcType="SMALLINT" />
 		<result column="FDELETE_STATE" property="deleteState" jdbcType="SMALLINT" />
+		<result column="FEDIT_STATE" property="editState" jdbcType="SMALLINT" />
 		<result column="FORDER" property="order" jdbcType="INTEGER" />
 		<result column="FLVALUE" property="lvalue" jdbcType="INTEGER" />
 		<result column="FRVALUE" property="rvalue" jdbcType="INTEGER" />
@@ -98,12 +98,15 @@
 	<sql id="Base_Column_List">
 		<choose>
 			<when test="filterColumns == null || filterColumns.isEmpty()">
-		FID, FGROUP_CODE, FGROUP_NAME, FGROUP_TYPE, FPARENT_ID, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FORDER, FLVALUE, FRVALUE, FLEVEL, FSUBNUM, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
+		FID, FGROUP_TYPE, FGROUP_CODE, FGROUP_NAME, FPARENT_CODE, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FORDER, FLVALUE, FRVALUE, FLEVEL, FSUBNUM, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK 
 			</when>
 			<otherwise>
 				<trim prefixOverrides=",">
 					<if test="!filterColumns.contains(&quot;FID&quot;)">
 						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FGROUP_TYPE&quot;)">
+						FGROUP_TYPE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FGROUP_CODE&quot;)">
 						FGROUP_CODE, 
@@ -111,23 +114,20 @@
 					<if test="!filterColumns.contains(&quot;FGROUP_NAME&quot;)">
 						FGROUP_NAME, 
 					</if>
-					<if test="!filterColumns.contains(&quot;FGROUP_TYPE&quot;)">
-						FGROUP_TYPE, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FPARENT_ID&quot;)">
-						FPARENT_ID, 
+					<if test="!filterColumns.contains(&quot;FPARENT_CODE&quot;)">
+						FPARENT_CODE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FENABLE&quot;)">
 						FENABLE, 
-					</if>
-					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
-						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FAUDIT_STATE&quot;)">
 						FAUDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FDELETE_STATE&quot;)">
 						FDELETE_STATE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FEDIT_STATE&quot;)">
+						FEDIT_STATE, 
 					</if>
 					<if test="!filterColumns.contains(&quot;FORDER&quot;)">
 						FORDER, 
@@ -175,7 +175,7 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select
 		<include refid="Base_Column_List" />
 		from ect_group
@@ -192,7 +192,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_group
@@ -206,24 +206,24 @@
 		delete from ect_group
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
 		delete from ect_group
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
 	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Group">
-		insert into ect_group (FID, FGROUP_CODE, FGROUP_NAME, FGROUP_TYPE, FPARENT_ID, FENABLE, FEDIT_STATE, FAUDIT_STATE, FDELETE_STATE, FORDER, FLVALUE, FRVALUE, FLEVEL, FSUBNUM, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
+		insert into ect_group (FID, FGROUP_TYPE, FGROUP_CODE, FGROUP_NAME, FPARENT_CODE, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FORDER, FLVALUE, FRVALUE, FLEVEL, FSUBNUM, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
+			#{groupType, jdbcType=VARCHAR}, 
 			#{groupCode, jdbcType=VARCHAR}, 
 			#{groupName, jdbcType=VARCHAR}, 
-			#{groupType, jdbcType=VARCHAR}, 
-			#{parentId, jdbcType=VARCHAR}, 
+			#{parentCode, jdbcType=VARCHAR}, 
 			#{enable, jdbcType=BIT}, 
-			#{editState, jdbcType=SMALLINT}, 
 			#{auditState, jdbcType=SMALLINT}, 
 			#{deleteState, jdbcType=SMALLINT}, 
+			#{editState, jdbcType=SMALLINT}, 
 			#{order, jdbcType=INTEGER}, 
 			#{lvalue, jdbcType=INTEGER}, 
 			#{rvalue, jdbcType=INTEGER}, 
@@ -246,29 +246,29 @@
 			<if test="id != null">
 				FID,
 			</if>
+			<if test="groupType != null">
+				FGROUP_TYPE,
+			</if>
 			<if test="groupCode != null">
 				FGROUP_CODE,
 			</if>
 			<if test="groupName != null">
 				FGROUP_NAME,
 			</if>
-			<if test="groupType != null">
-				FGROUP_TYPE,
-			</if>
-			<if test="parentId != null">
-				FPARENT_ID,
+			<if test="parentCode != null">
+				FPARENT_CODE,
 			</if>
 			<if test="enable != null">
 				FENABLE,
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE,
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE,
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE,
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE,
 			</if>
 			<if test="order != null">
 				FORDER,
@@ -317,29 +317,29 @@
 			<if test="id != null">
 				#{id, jdbcType=VARCHAR},
 			</if>
+			<if test="groupType != null">
+				#{groupType, jdbcType=VARCHAR},
+			</if>
 			<if test="groupCode != null">
 				#{groupCode, jdbcType=VARCHAR},
 			</if>
 			<if test="groupName != null">
 				#{groupName, jdbcType=VARCHAR},
 			</if>
-			<if test="groupType != null">
-				#{groupType, jdbcType=VARCHAR},
-			</if>
-			<if test="parentId != null">
-				#{parentId, jdbcType=VARCHAR},
+			<if test="parentCode != null">
+				#{parentCode, jdbcType=VARCHAR},
 			</if>
 			<if test="enable != null">
 				#{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				#{auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="deleteState != null">
 				#{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="editState != null">
+				#{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="order != null">
 				#{order, jdbcType=INTEGER},
@@ -385,7 +385,7 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.entity.Parameter" resultType="java.lang.Long">
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
 		select count(*) from ect_group
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -394,29 +394,29 @@
 	<update id="updateByConditionSelective" parameterType="map">
 		update ect_group
 		<set>
+			<if test="data.groupType != null">
+				FGROUP_TYPE = #{data.groupType, jdbcType=VARCHAR},
+			</if>
 			<if test="data.groupCode != null">
 				FGROUP_CODE = #{data.groupCode, jdbcType=VARCHAR},
 			</if>
 			<if test="data.groupName != null">
 				FGROUP_NAME = #{data.groupName, jdbcType=VARCHAR},
 			</if>
-			<if test="data.groupType != null">
-				FGROUP_TYPE = #{data.groupType, jdbcType=VARCHAR},
-			</if>
-			<if test="data.parentId != null">
-				FPARENT_ID = #{data.parentId, jdbcType=VARCHAR},
+			<if test="data.parentCode != null">
+				FPARENT_CODE = #{data.parentCode, jdbcType=VARCHAR},
 			</if>
 			<if test="data.enable != null">
 				FENABLE = #{data.enable, jdbcType=BIT},
-			</if>
-			<if test="data.editState != null">
-				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.auditState != null">
 				FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.deleteState != null">
 				FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="data.editState != null">
+				FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			</if>
 			<if test="data.order != null">
 				FORDER = #{data.order, jdbcType=INTEGER},
@@ -468,14 +468,14 @@
 	<update id="updateByCondition" parameterType="map">
 		update ect_group
 		set 
+			FGROUP_TYPE = #{data.groupType, jdbcType=VARCHAR},
 			FGROUP_CODE = #{data.groupCode, jdbcType=VARCHAR},
 			FGROUP_NAME = #{data.groupName, jdbcType=VARCHAR},
-			FGROUP_TYPE = #{data.groupType, jdbcType=VARCHAR},
-			FPARENT_ID = #{data.parentId, jdbcType=VARCHAR},
+			FPARENT_CODE = #{data.parentCode, jdbcType=VARCHAR},
 			FENABLE = #{data.enable, jdbcType=BIT},
-			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{data.auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{data.deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{data.editState, jdbcType=SMALLINT},
 			FORDER = #{data.order, jdbcType=INTEGER},
 			FLVALUE = #{data.lvalue, jdbcType=INTEGER},
 			FRVALUE = #{data.rvalue, jdbcType=INTEGER},
@@ -497,29 +497,29 @@
 	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.Group">
 		update ect_group
 		<set>
+			<if test="groupType != null">
+				FGROUP_TYPE = #{groupType, jdbcType=VARCHAR},
+			</if>
 			<if test="groupCode != null">
 				FGROUP_CODE = #{groupCode, jdbcType=VARCHAR},
 			</if>
 			<if test="groupName != null">
 				FGROUP_NAME = #{groupName, jdbcType=VARCHAR},
 			</if>
-			<if test="groupType != null">
-				FGROUP_TYPE = #{groupType, jdbcType=VARCHAR},
-			</if>
-			<if test="parentId != null">
-				FPARENT_ID = #{parentId, jdbcType=VARCHAR},
+			<if test="parentCode != null">
+				FPARENT_CODE = #{parentCode, jdbcType=VARCHAR},
 			</if>
 			<if test="enable != null">
 				FENABLE = #{enable, jdbcType=BIT},
-			</if>
-			<if test="editState != null">
-				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="auditState != null">
 				FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			</if>
 			<if test="deleteState != null">
 				FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			</if>
+			<if test="editState != null">
+				FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			</if>
 			<if test="order != null">
 				FORDER = #{order, jdbcType=INTEGER},
@@ -570,14 +570,14 @@
 		update ect_group
 		set 
 			
+			FGROUP_TYPE = #{groupType, jdbcType=VARCHAR},
 			FGROUP_CODE = #{groupCode, jdbcType=VARCHAR},
 			FGROUP_NAME = #{groupName, jdbcType=VARCHAR},
-			FGROUP_TYPE = #{groupType, jdbcType=VARCHAR},
-			FPARENT_ID = #{parentId, jdbcType=VARCHAR},
+			FPARENT_CODE = #{parentCode, jdbcType=VARCHAR},
 			FENABLE = #{enable, jdbcType=BIT},
-			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FAUDIT_STATE = #{auditState, jdbcType=SMALLINT},
 			FDELETE_STATE = #{deleteState, jdbcType=SMALLINT},
+			FEDIT_STATE = #{editState, jdbcType=SMALLINT},
 			FORDER = #{order, jdbcType=INTEGER},
 			FLVALUE = #{lvalue, jdbcType=INTEGER},
 			FRVALUE = #{rvalue, jdbcType=INTEGER},

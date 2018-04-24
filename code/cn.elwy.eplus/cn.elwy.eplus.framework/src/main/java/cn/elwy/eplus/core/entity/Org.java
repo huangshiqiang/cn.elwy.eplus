@@ -2,16 +2,16 @@ package cn.elwy.eplus.core.entity;
 
 import java.util.Date;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class Org extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	private String orgName; // 名称
-	private String orgCode; // 代码
 	private String orgType; // 类型
-	private String parentId; // 上级ID
+	private String orgCode; // 代码
+	private String orgName; // 名称
+	private String parentCode; // 上级代码
 	private Date inceptTime; // 生效时间
 	private Date expiryTime; // 失效时间
 	private Integer editState; // 编辑状态
@@ -36,12 +36,12 @@ public class Org extends CommonEntity {
 		super(id);
 	}
 
-	public String getOrgName() {
-		return orgName;
+	public String getOrgType() {
+		return orgType;
 	}
 
-	public void setOrgName(String orgName) {
-		this.orgName = orgName == null ? null : orgName.trim();
+	public void setOrgType(String orgType) {
+		this.orgType = orgType == null ? null : orgType.trim();
 	}
 
 	public String getOrgCode() {
@@ -52,20 +52,20 @@ public class Org extends CommonEntity {
 		this.orgCode = orgCode == null ? null : orgCode.trim();
 	}
 
-	public String getOrgType() {
-		return orgType;
+	public String getOrgName() {
+		return orgName;
 	}
 
-	public void setOrgType(String orgType) {
-		this.orgType = orgType == null ? null : orgType.trim();
+	public void setOrgName(String orgName) {
+		this.orgName = orgName == null ? null : orgName.trim();
 	}
 
-	public String getParentId() {
-		return parentId;
+	public String getParentCode() {
+		return parentCode;
 	}
 
-	public void setParentId(String parentId) {
-		this.parentId = parentId == null ? null : parentId.trim();
+	public void setParentCode(String parentCode) {
+		this.parentCode = parentCode == null ? null : parentCode.trim();
 	}
 
 	public Date getInceptTime() {

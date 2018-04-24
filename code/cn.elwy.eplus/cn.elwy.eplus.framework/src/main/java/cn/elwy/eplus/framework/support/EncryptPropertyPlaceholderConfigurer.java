@@ -5,7 +5,6 @@ import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import cn.elwy.common.util.encode.SecurityUtil;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

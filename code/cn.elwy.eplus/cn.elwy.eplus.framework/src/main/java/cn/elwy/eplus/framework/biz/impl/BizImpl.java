@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import cn.elwy.common.entity.Auditable;
-import cn.elwy.common.entity.Deletable;
-import cn.elwy.common.entity.Editable;
-import cn.elwy.common.entity.Page;
-import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.id.IdUtil;
+import cn.elwy.common.model.Auditable;
+import cn.elwy.common.model.Deletable;
+import cn.elwy.common.model.Editable;
+import cn.elwy.common.model.Pageable;
+import cn.elwy.common.model.Parameter;
 import cn.elwy.common.util.Assert;
 import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.biz.Biz;
@@ -141,7 +141,7 @@ public class BizImpl<E> implements Biz<E> {
 	}
 
 	@Operation(code = "queryAll")
-	public Page<E> queryAllByPage(Page<E> page) {
+	public Pageable<E> queryAllByPage(Pageable<E> page) {
 		return dao.selectAllByPage(page);
 	}
 
@@ -152,7 +152,7 @@ public class BizImpl<E> implements Biz<E> {
 	}
 
 	@Operation(code = "queryByCondition")
-	public Page<E> queryByCondition(Parameter parameter, Page<E> page) {
+	public Pageable<E> queryByCondition(Parameter parameter, Pageable<E> page) {
 		return dao.selectByConditionPage(parameter, page);
 	}
 

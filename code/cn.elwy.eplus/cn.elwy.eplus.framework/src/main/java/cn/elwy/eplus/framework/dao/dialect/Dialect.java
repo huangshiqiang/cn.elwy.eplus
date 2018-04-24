@@ -1,7 +1,7 @@
 package cn.elwy.eplus.framework.dao.dialect;
 
 /**
- * @description 数据库方言抽象类
+ * 数据库方言抽象类
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

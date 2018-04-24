@@ -1,7 +1,7 @@
 package cn.elwy.eplus.framework.dao.dialect;
 
 /**
- * @description MsSql2005数据库方言
+ * MsSql2005数据库方言
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

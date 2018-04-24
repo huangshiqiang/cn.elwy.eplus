@@ -18,7 +18,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @description 修改自Apache的BeanUtils，更简便操作Bean类
+ * 修改自Apache的BeanUtils，更简便操作Bean类
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

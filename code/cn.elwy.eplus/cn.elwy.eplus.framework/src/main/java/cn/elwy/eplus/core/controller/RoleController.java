@@ -9,7 +9,7 @@ import cn.elwy.eplus.core.service.RoleService;
 import cn.elwy.eplus.framework.controller.BaseController;
 
 /**
- * @description RoleController
+ * RoleController
  * @author elwy
  * @version 1.0, 2018-02-19
  */

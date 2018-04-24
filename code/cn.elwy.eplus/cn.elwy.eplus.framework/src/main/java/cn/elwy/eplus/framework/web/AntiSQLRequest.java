@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

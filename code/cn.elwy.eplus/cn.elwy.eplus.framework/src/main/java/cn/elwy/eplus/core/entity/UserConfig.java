@@ -1,14 +1,14 @@
 package cn.elwy.eplus.core.entity;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class UserConfig extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String userId; // 用户ID
 	private String confCode; // 代码
 	private String confName; // 名称
-	private String userId; // 用户ID
 	private Integer version; // 版本
 	private Integer editState; // 编辑状态
 	private String content; // 配置内容
@@ -20,6 +20,14 @@ public class UserConfig extends CommonEntity {
 
 	public UserConfig(String id) {
 		super(id);
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId == null ? null : userId.trim();
 	}
 
 	public String getConfCode() {
@@ -36,14 +44,6 @@ public class UserConfig extends CommonEntity {
 
 	public void setConfName(String confName) {
 		this.confName = confName == null ? null : confName.trim();
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId == null ? null : userId.trim();
 	}
 
 	public Integer getVersion() {

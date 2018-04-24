@@ -9,7 +9,6 @@ import cn.elwy.eplus.framework.dao.BaseDao;
 import cn.elwy.eplus.framework.security.dao.ColumnDao;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

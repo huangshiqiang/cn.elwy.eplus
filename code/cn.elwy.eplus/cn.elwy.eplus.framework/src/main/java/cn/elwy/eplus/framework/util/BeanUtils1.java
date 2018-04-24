@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanMap;
 
 /**
- * @description 对Bean进行操作的相关工具方法
+ * 对Bean进行操作的相关工具方法
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

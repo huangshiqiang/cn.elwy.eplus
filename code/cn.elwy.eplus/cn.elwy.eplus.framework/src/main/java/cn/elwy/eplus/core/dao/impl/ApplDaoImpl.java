@@ -7,7 +7,7 @@ import cn.elwy.eplus.core.entity.Appl;
 import cn.elwy.eplus.framework.dao.BaseDao;
 
 /**
- * @description ApplDao实现类
+ * ApplDao实现类
  * @author elwy
  * @version 1.0, 2018-02-19
  */

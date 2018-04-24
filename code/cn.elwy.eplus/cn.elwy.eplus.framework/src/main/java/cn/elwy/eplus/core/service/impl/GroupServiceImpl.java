@@ -11,7 +11,7 @@ import cn.elwy.eplus.core.service.GroupService;
 import cn.elwy.eplus.framework.service.BaseService;
 
 /**
- * @description GroupService
+ * GroupService
  * @author elwy
  * @version 1.0, 2018-02-19
  */

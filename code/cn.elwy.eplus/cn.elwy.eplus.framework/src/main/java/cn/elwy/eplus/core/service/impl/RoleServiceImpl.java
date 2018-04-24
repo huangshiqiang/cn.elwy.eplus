@@ -11,7 +11,7 @@ import cn.elwy.eplus.core.service.RoleService;
 import cn.elwy.eplus.framework.service.BaseService;
 
 /**
- * @description RoleService
+ * RoleService
  * @author elwy
  * @version 1.0, 2018-02-19
  */

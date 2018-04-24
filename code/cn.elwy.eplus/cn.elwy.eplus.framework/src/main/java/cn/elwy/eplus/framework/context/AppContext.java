@@ -11,7 +11,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import cn.elwy.eplus.core.entity.User;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

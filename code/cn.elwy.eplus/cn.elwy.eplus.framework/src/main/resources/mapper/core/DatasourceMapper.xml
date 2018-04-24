@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.elwy.eplus.core.entity.DatasourceMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.Datasource">
+		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FDS_KEY" property="dsKey" jdbcType="VARCHAR" />
+		<result column="FDS_CODE" property="dsCode" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Condition_Where_Clause">
+		<where>
+			<choose>
+				<when test="criterias != null and criterias.size() &gt; 0">
+					<foreach collection="criterias" item="criteria" separator="AND">
+						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.rules" item="item">
+									<choose>
+										<when test="item.isNoValue()">
+											${criteria.op} ${item.field} ${item.op}
+										</when>
+										<when test="item.isSingleValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value}
+										</when>
+										<when test="item.isBetweenValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+										</when>
+										<when test="item.isListValue()">
+											${criteria.op} ${item.field} ${item.op}
+											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
+												#{listItem}
+											</foreach>
+										</when>
+									</choose>
+								</foreach>
+							</trim>
+						</if>
+						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
+							${criteria.gop}
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.groups" item="groupItem">
+									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
+										${criteria.rgop}
+										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+											<foreach collection="groupItem.rules" item="ruleItem">
+												<choose>
+													<when test="ruleItem.isNoValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													</when>
+													<when test="ruleItem.isSingleValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													</when>
+													<when test="ruleItem.isBetweenValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													</when>
+													<when test="ruleItem.isListValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+															#{listItem}
+														</foreach>
+													</when>
+												</choose>
+											</foreach>
+										</trim>
+									</if>
+								</foreach>
+							</trim>
+						</if>
+					</foreach>
+				</when>
+				<when test="param != null">
+					<foreach item="value" index="key" collection="param.entrySet()" separator="AND">  
+						${key} = #{value}
+					</foreach>
+				</when>
+			</choose>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<choose>
+			<when test="filterColumns == null || filterColumns.isEmpty()">
+		FID, FDS_KEY, FDS_CODE 
+			</when>
+			<otherwise>
+				<trim prefixOverrides=",">
+					<if test="!filterColumns.contains(&quot;FID&quot;)">
+						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FDS_KEY&quot;)">
+						FDS_KEY, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FDS_CODE&quot;)">
+						FDS_CODE 
+					</if>
+				</trim>
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select
+		<include refid="Base_Column_List" />
+		from ect_datasource
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+		<if test="orderRules != null">
+			order by 
+			<foreach collection="orderRules" item="item" separator=",">
+				${item.field}
+				<if test="item.desc">
+					desc
+				</if>
+			</foreach>
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select 
+		<include refid="Base_Column_List" />
+		from ect_datasource
+		where FID = #{_parameter.id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from ect_datasource
+		where FID = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimaryKeys">
+		delete from ect_datasource
+		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+	</delete>
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
+		delete from ect_datasource
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Datasource">
+		insert into ect_datasource (FID, FDS_KEY, FDS_CODE )
+		values (
+			#{id, jdbcType=VARCHAR}, 
+			#{dsKey, jdbcType=VARCHAR}, 
+			#{dsCode, jdbcType=VARCHAR} 
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.Datasource">
+		insert into ect_datasource
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				FID,
+			</if>
+			<if test="dsKey != null">
+				FDS_KEY,
+			</if>
+			<if test="dsCode != null">
+				FDS_CODE
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id, jdbcType=VARCHAR},
+			</if>
+			<if test="dsKey != null">
+				#{dsKey, jdbcType=VARCHAR},
+			</if>
+			<if test="dsCode != null">
+				#{dsCode, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
+		select count(*) from ect_datasource
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByConditionSelective" parameterType="map">
+		update ect_datasource
+		<set>
+			<if test="data.dsKey != null">
+				FDS_KEY = #{data.dsKey, jdbcType=VARCHAR},
+			</if>
+			<if test="data.dsCode != null">
+				FDS_CODE = #{data.dsCode, jdbcType=VARCHAR}
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByCondition" parameterType="map">
+		update ect_datasource
+		set 
+			FDS_KEY = #{data.dsKey, jdbcType=VARCHAR},
+			FDS_CODE = #{data.dsCode, jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.Datasource">
+		update ect_datasource
+		<set>
+			<if test="dsKey != null">
+				FDS_KEY = #{dsKey, jdbcType=VARCHAR},
+			</if>
+			<if test="dsCode != null">
+				FDS_CODE = #{dsCode, jdbcType=VARCHAR}
+			</if>
+		</set>
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.Datasource">
+		update ect_datasource
+		set 
+			
+			FDS_KEY = #{dsKey, jdbcType=VARCHAR},
+			FDS_CODE = #{dsCode, jdbcType=VARCHAR}
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

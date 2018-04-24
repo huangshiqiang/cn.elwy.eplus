@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @description 默认的数据库方言管理器实现类，对数据库方言对象进行管理。 目前已经实现的数据库方言包括：
+ * 默认的数据库方言管理器实现类，对数据库方言对象进行管理。 目前已经实现的数据库方言包括：
  * 
- *              <pre>
+ * <pre>
        方言名称                      方言类
     db2            DB2Dialect
     mysql          MySqlDialect
@@ -15,9 +15,9 @@ import java.util.Map;
     mssq           MsSqlDialect
     mssql2000      MsSql2000Dialect
     mssql2005      MsSql2005Dialect
- *              </pre>
+ * </pre>
  * 
- *              如果没有指定有效的方言名称，将使用默认的方言类Dialect。
+ * 如果没有指定有效的方言名称，将使用默认的方言类Dialect。
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

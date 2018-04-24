@@ -10,7 +10,6 @@ import java.util.Set;
 import cn.elwy.common.util.AssertUtil;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

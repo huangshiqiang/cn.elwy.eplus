@@ -4,7 +4,7 @@ import cn.elwy.eplus.core.entity.Appl;
 import cn.elwy.eplus.framework.service.Service;
 
 /**
- * @description ApplService
+ * ApplService
  * @author elwy
  * @version 1.0, 2018-02-19
  */

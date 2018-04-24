@@ -1,14 +1,14 @@
 package cn.elwy.eplus.core.entity;
 
-import cn.elwy.common.entity.CommonEntity;
+import cn.elwy.common.model.CommonEntity;
 
 public class Post extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String postType; // 类型
 	private String postCode; // 代码
 	private String postName; // 名称
-	private String postType; // 类型
 	private Integer editState; // 编辑状态
 	private String remark; // 备注
 
@@ -18,6 +18,14 @@ public class Post extends CommonEntity {
 
 	public Post(String id) {
 		super(id);
+	}
+
+	public String getPostType() {
+		return postType;
+	}
+
+	public void setPostType(String postType) {
+		this.postType = postType == null ? null : postType.trim();
 	}
 
 	public String getPostCode() {
@@ -34,14 +42,6 @@ public class Post extends CommonEntity {
 
 	public void setPostName(String postName) {
 		this.postName = postName == null ? null : postName.trim();
-	}
-
-	public String getPostType() {
-		return postType;
-	}
-
-	public void setPostType(String postType) {
-		this.postType = postType == null ? null : postType.trim();
 	}
 
 	public Integer getEditState() {

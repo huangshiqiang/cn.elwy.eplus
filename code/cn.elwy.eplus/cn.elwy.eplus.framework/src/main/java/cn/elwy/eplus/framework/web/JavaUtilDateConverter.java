@@ -7,7 +7,6 @@ import org.apache.commons.beanutils.Converter;
 import org.apache.commons.lang.time.DateUtils;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

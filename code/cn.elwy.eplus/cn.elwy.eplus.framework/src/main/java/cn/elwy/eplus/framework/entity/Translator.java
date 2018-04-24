@@ -6,11 +6,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import cn.elwy.common.entity.Criteria;
-import cn.elwy.common.entity.QueryRule;
+import cn.elwy.common.model.Criteria;
+import cn.elwy.common.model.QueryRule;
 
 /**
- * @description 表达式连接.
+ * 表达式连接.
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

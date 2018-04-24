@@ -5,14 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.elwy.common.entity.Page;
-import cn.elwy.common.entity.Parameter;
-import cn.elwy.common.entity.ResultDto;
 import cn.elwy.common.exception.RunException;
+import cn.elwy.common.model.Pageable;
+import cn.elwy.common.model.Parameter;
+import cn.elwy.common.model.ResultDto;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
@@ -189,10 +188,10 @@ public class BaseService<E> implements Service<E> {
 	}
 
 	@Override
-	public ResultDto queryAllByPage(Page<E> page) {
+	public ResultDto queryAllByPage(Pageable<E> page) {
 		ResultDto rd = new ResultDto();
 		try {
-			Page<E> data = biz.queryAllByPage(page);
+			Pageable<E> data = biz.queryAllByPage(page);
 
 			rd.setPageNo(data.getPageNo());
 			rd.setPageSize(data.getPageSize());
@@ -228,10 +227,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto queryByCondition(Parameter parameter, Page<E> page) {
+	public ResultDto queryByCondition(Parameter parameter, Pageable<E> page) {
 		ResultDto rd = new ResultDto();
 		try {
-			Page<E> data = biz.queryByCondition(parameter, page);
+			Pageable<E> data = biz.queryByCondition(parameter, page);
 			rd.setPageNo(data.getPageNo());
 			rd.setPageSize(data.getPageSize());
 			rd.setTotalRecord(data.getTotalRecord());

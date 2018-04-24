@@ -14,7 +14,6 @@ import cn.elwy.eplus.framework.dao.Dao;
 import cn.elwy.eplus.framework.security.service.ColumnBiz;
 
 /**
- * @description
  * @author huangsq
  * @version 1.0, 2018-02-19
  */

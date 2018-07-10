@@ -1,0 +1,131 @@
+{
+  "ExportSetting": {
+    "Title": "20161130-000105-基金资产估值表",
+    "SubTitle": "",
+    "Description": "单位净值:1.000",
+    "PageHeader": "日期：2016-11-30",
+    "PageFooter": "制表：石龙虎   打印操作员：石龙虎       复核：               审核：            "
+  },
+  "Style": {
+    "PlusMinus": {
+      "ExpandMode": "PlusMinusOnly",
+      "PlusMinusStyle": "IconOnly",
+      "PlusMinusLineColor": "244, 247, 252"
+    },
+    "ShowCheckBox": "False",
+    "FullRowSelect": "False",
+    "MultiLine": "False",
+    "WordWrap": "False",
+    "ShowColumnHeader": "False",
+    "ColumnHeight": "20",
+    "ColumnSort": "False",
+    "Frozen": {
+      "FixedLeftCols": "2",
+      "FixedTopRows": "3",
+      "FixedBottomRows": "0"
+    }
+  },
+  "Columns": {
+    "Column": [
+      {
+        "TypeString": "Column",
+        "Text": "科目代码",
+        "DataType": "String",
+        "Visible": "True",
+        "Width": "159",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "科目名称",
+        "DataType": "String",
+        "Visible": "True",
+        "Width": "162",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "币种",
+        "DataType": "String",
+        "Visible": "True",
+        "Width": "39",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "汇率",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "39",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "数量",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "117",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "单位成本",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "63",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "成本-原币",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "146",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "成本-本币",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "146",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "成本占比",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "72",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "行情",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "39",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      },
+      {
+        "TypeString": "Column",
+        "Text": "市值-原币",
+        "DataType": "Decimal",
+        "Visible": "True",
+        "Width": "146",
+        "ColumnTextAlign": "Center",
+        "CellTextAlign": "MiddleLeft"
+      }
+    ]
+  }
+}

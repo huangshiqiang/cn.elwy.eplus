@@ -1,0 +1,2855 @@
+{
+  "Table": {
+    "Statement": {
+      "-Description": "申明：本数据为深圳市赢时胜信息技术股份有限公司（上海）控件库导出。内中所涉机密信息，仅供赢时胜科技或其授权客户使用。",
+      "-Website": "http://www.ysstech.com"
+    },
+    "ExportSetting": {
+      "Title": {
+        "-Value": "20161130-000105-基金资产估值表"
+      },
+      "SubTitle": {
+        
+      },
+      "Description": {
+        "-Value": "单位净值:1.000"
+      },
+      "PageHeader": {
+        "-Value": "日期：2016-11-30"
+      },
+      "PageFooter": {
+        "-Value": "制表：石龙虎   打印操作员：石龙虎       复核：               审核：            "
+      }
+    },
+    "Style": {
+      "PlusMinus": {
+        "-ExpandMode": "PlusMinusOnly",
+        "-PlusMinusStyle": "IconOnly",
+        "-PlusMinusLineColor": "244, 247, 252"
+      },
+      "ShowCheckBox": "False",
+      "FullRowSelect": "False",
+      "MultiLine": "False",
+      "WordWrap": "False",
+      "ShowColumnHeader": "False",
+      "ColumnHeight": "20",
+      "ColumnSort": "False",
+      "Frozen": {
+        "-FixedLeftCols": "2",
+        "-FixedTopRows": "3",
+        "-FixedBottomRows": "0"
+      }
+    },
+    "Columns": {
+      "Column": [
+        {
+          "-TypeString": "Column",
+          "-Text": "科目代码",
+          "-DataType": "String",
+          "-Visible": "True",
+          "-Width": "159",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "科目名称",
+          "-DataType": "String",
+          "-Visible": "True",
+          "-Width": "162",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "币种",
+          "-DataType": "String",
+          "-Visible": "True",
+          "-Width": "39",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "汇率",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "39",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "数量",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "117",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "单位成本",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本占比",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "72",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "行情",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "39",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "市值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "市值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "市值占比",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "72",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "估值增值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "估值增值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "停牌信息",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "wind代码",
+          "-DataType": "String",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "权益信息",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "子计划名称",
+          "-DataType": "String",
+          "-Visible": "True",
+          "-Width": "243",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "投资顾问",
+          "-DataType": "String",
+          "-Visible": "True",
+          "-Width": "63",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "收市价",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "51",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "收市价市值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "收市价市值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "收市价市值占比",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "收市价估值增值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "收市价估值增值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本价",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "51",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本价市值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本价市值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本价市值占比",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本价估值增值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "成本价估值增值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "买一价",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "51",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "买一价市值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "买一价市值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "买一价市值占比",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "买一价估值增值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "买一价估值增值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "卖一价",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "51",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "卖一价市值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "卖一价市值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "146",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "卖一价市值占比",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "卖一价估值增值-原币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        },
+        {
+          "-TypeString": "Column",
+          "-Text": "卖一价估值增值-本币",
+          "-DataType": "Decimal",
+          "-Visible": "True",
+          "-Width": "100",
+          "-ColumnTextAlign": "Center",
+          "-CellTextAlign": "MiddleLeft"
+        }
+      ]
+    },
+    "Rows": {
+      "Row": [
+        {
+          "-IsHeader": "True",
+          "-Height": "18",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "科目代码",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "科目名称",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "币种",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "汇率",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "数量",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "单位成本",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "成本",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "成本"
+              },
+              {
+                "-Text": "成本占比",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "行情",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "市值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "市值"
+              },
+              {
+                "-Text": "市值占比",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "估值增值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "估值增值"
+              },
+              {
+                "-Text": "停牌信息",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "wind代码",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "权益信息",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "子计划名称",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "投资顾问",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "收市价",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "收市价市值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "收市价市值"
+              },
+              {
+                "-Text": "收市价市值占比",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "收市价估值增值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "收市价估值增值"
+              },
+              {
+                "-Text": "成本价",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "成本价市值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "成本价市值"
+              },
+              {
+                "-Text": "成本价市值占比",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "成本价估值增值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "成本价估值增值"
+              },
+              {
+                "-Text": "买一价",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "买一价市值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "买一价市值"
+              },
+              {
+                "-Text": "买一价市值占比",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "买一价估值增值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "买一价估值增值"
+              },
+              {
+                "-Text": "卖一价",
+                "-TextAlign": "MiddleCenter",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "卖一价市值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "卖一价市值"
+              },
+              {
+                "-Text": "卖一价市值占比",
+                "-RowSpan": "3"
+              },
+              {
+                "-Text": "卖一价估值增值",
+                "-TextAlign": "MiddleCenter",
+                "-ColSpan": "2"
+              },
+              {
+                "-Text": "卖一价估值增值"
+              }
+            ]
+          }
+        },
+        {
+          "-IsHeader": "True",
+          "-Height": "18",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "原币",
+                "-TextAlign": "MiddleCenter"
+              },
+              {
+                "-Text": "本币",
+                "-TextAlign": "MiddleCenter"
+              }
+            ]
+          }
+        },
+        {
+          "-IsHeader": "True",
+          "-Height": "18",
+          "Cells": {
+            "Cell": [
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "1002"
+              },
+              {
+                "-Text": "银行存款"
+              },
+              {
+                "-Text": "***"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "0.0337%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "0.0337%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "-长江养老金色理财16号集合资产管理产品"
+              },
+              {
+                "-Text": "无"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "0.0337%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "0.0337%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "0.0337%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "539978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "0.0337%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          },
+          "Rows": {
+            "Row": {
+              "-ShowChild": "False",
+              "-Visible": "False",
+              "Cells": {
+                "Cell": [
+                  {
+                    "-Text": "1002.01"
+                  },
+                  {
+                    "-Text": "银行存款_活期"
+                  },
+                  {
+                    "-Text": "CNY"
+                  },
+                  {
+                    "-Text": "1",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "0.0337%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "0.0337%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "-长江养老金色理财16号集合资产管理产品"
+                  },
+                  {
+                    "-Text": "无"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "0.0337%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "0.0337%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "0.0337%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "539978.40",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "0.0337%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  }
+                ]
+              },
+              "Rows": {
+                "Row": {
+                  "-ShowChild": "False",
+                  "-Visible": "False",
+                  "Cells": {
+                    "Cell": [
+                      {
+                        "-Text": "1002.01.01"
+                      },
+                      {
+                        "-Text": "银行存款_活期_银行存款"
+                      },
+                      {
+                        "-Text": "CNY"
+                      },
+                      {
+                        "-Text": "1",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "0.0337%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "0.0337%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "-长江养老金色理财16号集合资产管理产品"
+                      },
+                      {
+                        "-Text": "无"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "0.0337%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "0.0337%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "0.0337%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "539978.40",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "0.0337%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "1108"
+              },
+              {
+                "-Text": "理财投资"
+              },
+              {
+                "-Text": "***"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "-长江养老金色理财16号集合资产管理产品"
+              },
+              {
+                "-Text": "无"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-Text": "1600000000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TypeString": "AmountCell",
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          },
+          "Rows": {
+            "Row": {
+              "-ShowChild": "False",
+              "-Visible": "False",
+              "Cells": {
+                "Cell": [
+                  {
+                    "-Text": "1108.17"
+                  },
+                  {
+                    "-Text": "场外_股权"
+                  },
+                  {
+                    "-Text": "CNY"
+                  },
+                  {
+                    "-Text": "1",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "99.9663%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "99.9663%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "-长江养老金色理财16号集合资产管理产品"
+                  },
+                  {
+                    "-Text": "无"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "99.9663%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "99.9663%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "99.9663%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-Text": "1600000000.00",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-Text": "99.9663%",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  },
+                  {
+                    "-TypeString": "AmountCell",
+                    "-TextAlign": "MiddleRight"
+                  }
+                ]
+              },
+              "Rows": {
+                "Row": {
+                  "-ShowChild": "False",
+                  "-Visible": "False",
+                  "Cells": {
+                    "Cell": [
+                      {
+                        "-Text": "1108.17.01"
+                      },
+                      {
+                        "-Text": "场外_股权"
+                      },
+                      {
+                        "-Text": "CNY"
+                      },
+                      {
+                        "-Text": "1",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "99.9663%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "99.9663%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "-长江养老金色理财16号集合资产管理产品"
+                      },
+                      {
+                        "-Text": "无"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "99.9663%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "99.9663%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "99.9663%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-Text": "1600000000.00",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-Text": "99.9663%",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      },
+                      {
+                        "-TypeString": "AmountCell",
+                        "-TextAlign": "MiddleRight"
+                      }
+                    ]
+                  },
+                  "Rows": {
+                    "Row": {
+                      "-ShowChild": "False",
+                      "-Visible": "False",
+                      "Cells": {
+                        "Cell": [
+                          {
+                            "-Text": "1108.17.01.WKGXJT OTC"
+                          },
+                          {
+                            "-Text": "五矿信托供销集团股权基金"
+                          },
+                          {
+                            "-Text": "CNY"
+                          },
+                          {
+                            "-Text": "1",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "1,600,000,000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "1.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "99.9663%",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "99.9663%",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "无行情"
+                          },
+                          {
+                            "-Text": "WKGXJT"
+                          },
+                          {
+                            "-Text": "-长江养老金色理财16号集合资产管理产品"
+                          },
+                          {
+                            "-Text": "无"
+                          },
+                          {
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "99.9663%",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "1.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "99.9663%",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "99.9663%",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-Text": "1600000000.00",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-Text": "99.9663%",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          },
+                          {
+                            "-TypeString": "AmountCell",
+                            "-TextAlign": "MiddleRight"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "证券投资合计"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "今日可用头寸"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "实收资本"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "99.9663%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,000,000.00",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "资产合计"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "100.0000%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "100.0000%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "资产净值"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "100.0000%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "100.0000%",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-Text": "1,600,539,978.40",
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              },
+              {
+                "-TextAlign": "MiddleRight"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "期初单位净值"
+              },
+              {
+                "-Text": "1.000"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "今日单位净值"
+              },
+              {
+                "-Text": "1.000"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "昨日单位净值"
+              },
+              {
+                "-Text": "1.000"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "累计派现金额"
+              },
+              {
+                "-Text": "0"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "累计单位净值"
+              },
+              {
+                "-Text": "1.000"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "日净值增长率"
+              },
+              {
+                "-Text": "0.0000%"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "本期净值增长率"
+              },
+              {
+                "-Text": "0.0000%"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "累计净值增长率"
+              },
+              {
+                "-Text": "0.00%"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "实现收益"
+              },
+              {
+                "-Text": "-1,817,355.32"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "可分配收益"
+              },
+              {
+                "-Text": "539,978.4"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "单位可分配收益"
+              },
+              {
+                "-Text": "0.000"
+              }
+            ]
+          }
+        },
+        {
+          "-ShowChild": "False",
+          "Cells": {
+            "Cell": [
+              {
+                "-Text": "现金类占净值比"
+              },
+              {
+                "-Text": "0.03%"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

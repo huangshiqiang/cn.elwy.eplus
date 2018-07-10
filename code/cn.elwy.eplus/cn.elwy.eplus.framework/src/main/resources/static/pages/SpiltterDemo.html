@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>H+ 后台主题UI框架 - 客户管理</title>
+    <meta name="keywords" content="H+后台主题,后台bootstrap框架,会员中心主题,后台HTML,响应式后台">
+    <meta name="description" content="H+是一个完全响应式，基于Bootstrap3最新版本开发的扁平化主题，她采用了主流的左右两栏式布局，使用了Html5+CSS3等现代技术">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="../resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resource/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- jqgrid-->
+    <link href="../resource/plugins/jqgrid/ui.jqgrid.css" rel="stylesheet">
+
+    <link href="../resource/css/animate.min.css" rel="stylesheet">
+    <link href="../resource/css/style.min.css" rel="stylesheet">
+    <link href="../resource/plugins/jqwidgets/jqx.base.css" rel="stylesheet">
+    <style type="text/css">
+    .full{
+    	height: 100%;
+    	width: 100%
+    }
+    .noScrollBar{
+    	overflow:hidden
+    }
+    .fullWidth{
+    	width:100%;
+    }
+    </style>
+</head>
+
+<body class="gray-bg noScrollBar" >
+<div id="jqxWidget" class="full">
+<div id="mainSplitter">
+    <div id="A_Area" class="noScrollBar" style="background-color: #97FFAF;">
+        <form id="searchForm" modelAttribute="role" action="${bundlePath}/post" method="post" class="form-inline fullWidth">
+            <div id="input_div" class="input-group fullWidth">
+                <input id="search" type="text" class="form-control">
+                <div class="input-group-btn">
+                    <button id="btn_search" type="button" class="btn btn-success">搜索</button>
+                </div>
+            </div>
+        </form>
+       <div id="titleSpan" style="height: 30px;background: WhiteSmoke;">
+           <span style="line-height:30px;text-align:left; margin-left: 10px;">岗位管理</span>
+       </div>
+       <div id="table_div" class="full">
+           <table id="dataGrid1"></table>
+           <div id="pager_list_1"></div>
+       </div>
+    </div>
+    <div>
+        <div id="rightSplitter">
+            <div class="full noScrollBar" style="background-color: #E8C0AF;">
+	               <table id="dataGrid2"></table>
+	               <div id="pager_list_2"></div>
+            </div>
+            <div class="full noScrollBar" style="background-color: #6699FF;">
+                <table id="dataGrid3"></table>
+	            <div id="pager_list_3"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- 全局js -->
+<script src="../resource/plugins/jquery/jquery.min.js"></script>
+<script src="../resource/plugins/bootstrap/bootstrap.min.js"></script>
+<script src="../resource/plugins/jqwidgets/jqxcore.js"></script>
+<script src="../resource/plugins/jqwidgets/jqxsplitter.js"></script>
+<!-- 自定义js -->
+<script src="../resource/js/content.min.js"></script>
+<script src="../resource/js/demo/spiltter-demo.js"></script>
+<script type="text/javascript" src="../resource/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+<script type="text/javascript" src="../resource/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script type="text/javascript" src="../resource/js/common/jquery.YssDataGrid.js"></script>
+<script type="text/javascript" src="../resource/js/common/common.js"></script>
+
+</body>
+
+</html>

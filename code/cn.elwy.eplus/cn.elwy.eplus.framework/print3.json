@@ -1,0 +1,43 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "datas": [
+    {
+      "id": null,
+      "c_DV_CODE": "000126",
+      "c_DV_NAME": "天风证券天时添利2号集合资产管理计划",
+      "c_DV_TYPE": "资产管理计划",
+      "n_ORDER": "",
+      "c_DESC": "",
+      "c_AUTH_ORG_CODE": null
+    },
+    {
+      "id": null,
+      "c_DV_CODE": "000125",
+      "c_DV_NAME": "天风证券天时添利1号集合资产管理计划",
+      "c_DV_TYPE": "资产管理计划",
+      "n_ORDER": "",
+      "c_DESC": "",
+      "c_AUTH_ORG_CODE": null
+    },
+    {
+      "id": null,
+      "c_DV_CODE": "000078",
+      "c_DV_NAME": "中融鼎新-宏观对冲1号证券投资基金",
+      "c_DV_TYPE": "资产管理计划",
+      "n_ORDER": "",
+      "c_DESC": "",
+      "c_AUTH_ORG_CODE": null
+    },
+    {
+      "id": null,
+      "c_DV_CODE": "001",
+      "c_DV_NAME": "test",
+      "c_DV_TYPE": "资产管理计划",
+      "n_ORDER": "",
+      "c_DESC": "",
+      "c_AUTH_ORG_CODE": null
+    }
+  ],
+  "message": "查找信息成功"
+}

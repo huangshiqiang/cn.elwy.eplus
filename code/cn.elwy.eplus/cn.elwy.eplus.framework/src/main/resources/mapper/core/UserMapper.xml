@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.elwy.eplus.core.entity.UserMapper">
-	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.User">
+<mapper namespace="cn.elwy.eplus.framework.entity.UserMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.framework.entity.User">
 		<id column="FID" property="id" jdbcType="VARCHAR" />
 		<result column="FUSER_TYPE" property="userType" jdbcType="VARCHAR" />
 		<result column="FUSER_CODE" property="userCode" jdbcType="VARCHAR" />
@@ -276,7 +276,7 @@
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</delete>
-	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.User">
+	<insert id="insert" parameterType="cn.elwy.eplus.framework.entity.User">
 		insert into ect_user (FID, FUSER_TYPE, FUSER_CODE, FUSER_NAME, FROLE_CODE, FORG_CODE, FPOST_CODE, FNICKNAME, FENABLE, FAUDIT_STATE, FDELETE_STATE, FEDIT_STATE, FLOCK_STATE, FONLINE, FSAFETY, FINCEPT_TIME, FEXPIRY_TIME, FLOGIN_TIME, FLOGIN_COUNT, FCLIENT_IP, FPASSWORD, FREAL_NAME, FSEX, FBIRTHDAY, FTELEPHONE, FMOBILE, FJOB, FPOSTCODE, FEMAIL, FADDRESS, FAUDITOR_ID, FAUDIT_TIME, FCREATOR_ID, FCREATE_TIME, FDELETOR_ID, FDELETE_TIME, FEDITOR_ID, FEDIT_TIME, FREMARK )
 		values (
 			#{id, jdbcType=VARCHAR}, 
@@ -320,7 +320,7 @@
 			#{remark, jdbcType=VARCHAR} 
 		)
 	</insert>
-	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.User">
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.framework.entity.User">
 		insert into ect_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
@@ -734,7 +734,7 @@
 			<include refid="Condition_Where_Clause" />
 		</if>
 	</update>
-	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.User">
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.framework.entity.User">
 		update ect_user
 		<set>
 			<if test="userType != null">
@@ -854,7 +854,7 @@
 		</set>
 		where FID = #{id, jdbcType=VARCHAR}
 	</update>
-	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.User">
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.framework.entity.User">
 		update ect_user
 		set 
 			

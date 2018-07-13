@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.elwy.eplus.core.entity.OperationMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.Operation">
+		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FOPER_TYPE" property="operType" jdbcType="VARCHAR" />
+		<result column="FOPER_CODE" property="operCode" jdbcType="VARCHAR" />
+		<result column="FOPER_NAME" property="operName" jdbcType="VARCHAR" />
+		<result column="FPARENT_CODE" property="parentCode" jdbcType="VARCHAR" />
+		<result column="FICON" property="icon" jdbcType="VARCHAR" />
+		<result column="FURL" property="url" jdbcType="VARCHAR" />
+		<result column="FACTION" property="action" jdbcType="VARCHAR" />
+		<result column="FREMARK" property="remark" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Condition_Where_Clause">
+		<where>
+			<choose>
+				<when test="criterias != null and criterias.size() &gt; 0">
+					<foreach collection="criterias" item="criteria" separator="AND">
+						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.rules" item="item">
+									<choose>
+										<when test="item.isNoValue()">
+											${criteria.op} ${item.field} ${item.op}
+										</when>
+										<when test="item.isSingleValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value}
+										</when>
+										<when test="item.isBetweenValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+										</when>
+										<when test="item.isListValue()">
+											${criteria.op} ${item.field} ${item.op}
+											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
+												#{listItem}
+											</foreach>
+										</when>
+									</choose>
+								</foreach>
+							</trim>
+						</if>
+						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
+							${criteria.gop}
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.groups" item="groupItem">
+									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
+										${criteria.rgop}
+										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+											<foreach collection="groupItem.rules" item="ruleItem">
+												<choose>
+													<when test="ruleItem.isNoValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													</when>
+													<when test="ruleItem.isSingleValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													</when>
+													<when test="ruleItem.isBetweenValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													</when>
+													<when test="ruleItem.isListValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+															#{listItem}
+														</foreach>
+													</when>
+												</choose>
+											</foreach>
+										</trim>
+									</if>
+								</foreach>
+							</trim>
+						</if>
+					</foreach>
+				</when>
+				<when test="param != null">
+					<foreach item="value" index="key" collection="param.entrySet()" separator="AND">  
+						${key} = #{value}
+					</foreach>
+				</when>
+			</choose>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<choose>
+			<when test="filterColumns == null || filterColumns.isEmpty()">
+		FID, FOPER_TYPE, FOPER_CODE, FOPER_NAME, FPARENT_CODE, FICON, FURL, FACTION, FREMARK 
+			</when>
+			<otherwise>
+				<trim prefixOverrides=",">
+					<if test="!filterColumns.contains(&quot;FID&quot;)">
+						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FOPER_TYPE&quot;)">
+						FOPER_TYPE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FOPER_CODE&quot;)">
+						FOPER_CODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FOPER_NAME&quot;)">
+						FOPER_NAME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FPARENT_CODE&quot;)">
+						FPARENT_CODE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FICON&quot;)">
+						FICON, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FURL&quot;)">
+						FURL, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FACTION&quot;)">
+						FACTION, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FREMARK&quot;)">
+						FREMARK 
+					</if>
+				</trim>
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select
+		<include refid="Base_Column_List" />
+		from ect_operation
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+		<if test="orderRules != null">
+			order by 
+			<foreach collection="orderRules" item="item" separator=",">
+				${item.field}
+				<if test="item.desc">
+					desc
+				</if>
+			</foreach>
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select 
+		<include refid="Base_Column_List" />
+		from ect_operation
+		where FID = #{_parameter.id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from ect_operation
+		where FID = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimaryKeys">
+		delete from ect_operation
+		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+	</delete>
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
+		delete from ect_operation
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.Operation">
+		insert into ect_operation (FID, FOPER_TYPE, FOPER_CODE, FOPER_NAME, FPARENT_CODE, FICON, FURL, FACTION, FREMARK )
+		values (
+			#{id, jdbcType=VARCHAR}, 
+			#{operType, jdbcType=VARCHAR}, 
+			#{operCode, jdbcType=VARCHAR}, 
+			#{operName, jdbcType=VARCHAR}, 
+			#{parentCode, jdbcType=VARCHAR}, 
+			#{icon, jdbcType=VARCHAR}, 
+			#{url, jdbcType=VARCHAR}, 
+			#{action, jdbcType=VARCHAR}, 
+			#{remark, jdbcType=VARCHAR} 
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.Operation">
+		insert into ect_operation
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				FID,
+			</if>
+			<if test="operType != null">
+				FOPER_TYPE,
+			</if>
+			<if test="operCode != null">
+				FOPER_CODE,
+			</if>
+			<if test="operName != null">
+				FOPER_NAME,
+			</if>
+			<if test="parentCode != null">
+				FPARENT_CODE,
+			</if>
+			<if test="icon != null">
+				FICON,
+			</if>
+			<if test="url != null">
+				FURL,
+			</if>
+			<if test="action != null">
+				FACTION,
+			</if>
+			<if test="remark != null">
+				FREMARK
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id, jdbcType=VARCHAR},
+			</if>
+			<if test="operType != null">
+				#{operType, jdbcType=VARCHAR},
+			</if>
+			<if test="operCode != null">
+				#{operCode, jdbcType=VARCHAR},
+			</if>
+			<if test="operName != null">
+				#{operName, jdbcType=VARCHAR},
+			</if>
+			<if test="parentCode != null">
+				#{parentCode, jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				#{icon, jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url, jdbcType=VARCHAR},
+			</if>
+			<if test="action != null">
+				#{action, jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				#{remark, jdbcType=VARCHAR}
+			</if>
+		</trim>
+	</insert>
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
+		select count(*) from ect_operation
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByConditionSelective" parameterType="map">
+		update ect_operation
+		<set>
+			<if test="data.operType != null">
+				FOPER_TYPE = #{data.operType, jdbcType=VARCHAR},
+			</if>
+			<if test="data.operCode != null">
+				FOPER_CODE = #{data.operCode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.operName != null">
+				FOPER_NAME = #{data.operName, jdbcType=VARCHAR},
+			</if>
+			<if test="data.parentCode != null">
+				FPARENT_CODE = #{data.parentCode, jdbcType=VARCHAR},
+			</if>
+			<if test="data.icon != null">
+				FICON = #{data.icon, jdbcType=VARCHAR},
+			</if>
+			<if test="data.url != null">
+				FURL = #{data.url, jdbcType=VARCHAR},
+			</if>
+			<if test="data.action != null">
+				FACTION = #{data.action, jdbcType=VARCHAR},
+			</if>
+			<if test="data.remark != null">
+				FREMARK = #{data.remark, jdbcType=VARCHAR}
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByCondition" parameterType="map">
+		update ect_operation
+		set 
+			FOPER_TYPE = #{data.operType, jdbcType=VARCHAR},
+			FOPER_CODE = #{data.operCode, jdbcType=VARCHAR},
+			FOPER_NAME = #{data.operName, jdbcType=VARCHAR},
+			FPARENT_CODE = #{data.parentCode, jdbcType=VARCHAR},
+			FICON = #{data.icon, jdbcType=VARCHAR},
+			FURL = #{data.url, jdbcType=VARCHAR},
+			FACTION = #{data.action, jdbcType=VARCHAR},
+			FREMARK = #{data.remark, jdbcType=VARCHAR}
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.Operation">
+		update ect_operation
+		<set>
+			<if test="operType != null">
+				FOPER_TYPE = #{operType, jdbcType=VARCHAR},
+			</if>
+			<if test="operCode != null">
+				FOPER_CODE = #{operCode, jdbcType=VARCHAR},
+			</if>
+			<if test="operName != null">
+				FOPER_NAME = #{operName, jdbcType=VARCHAR},
+			</if>
+			<if test="parentCode != null">
+				FPARENT_CODE = #{parentCode, jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null">
+				FICON = #{icon, jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				FURL = #{url, jdbcType=VARCHAR},
+			</if>
+			<if test="action != null">
+				FACTION = #{action, jdbcType=VARCHAR},
+			</if>
+			<if test="remark != null">
+				FREMARK = #{remark, jdbcType=VARCHAR}
+			</if>
+		</set>
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.Operation">
+		update ect_operation
+		set 
+			
+			FOPER_TYPE = #{operType, jdbcType=VARCHAR},
+			FOPER_CODE = #{operCode, jdbcType=VARCHAR},
+			FOPER_NAME = #{operName, jdbcType=VARCHAR},
+			FPARENT_CODE = #{parentCode, jdbcType=VARCHAR},
+			FICON = #{icon, jdbcType=VARCHAR},
+			FURL = #{url, jdbcType=VARCHAR},
+			FACTION = #{action, jdbcType=VARCHAR},
+			FREMARK = #{remark, jdbcType=VARCHAR}
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

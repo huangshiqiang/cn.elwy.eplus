@@ -1,0 +1,439 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>表单设计器</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="author" content="leipi.org">
+<link rel="stylesheet" href="../resource/css/bootstrap.min.css">
+<link rel="stylesheet" href="../resource/css/bootstrap-select.css">
+<link rel="stylesheet" href="../resource/js/formBuild/ueditor/formdesign/formBuild.css">
+<link href="../resource/css/style.min.css" rel="stylesheet">
+
+<style type="text/css">
+.iBox {
+	padding: 8px !important;
+	color: black !important;
+	font-weight: 300 !important;
+}
+.Interval{
+	padding-left: 0px !important;
+}
+.headerColor{
+	background-color: #f3f3f4 !important;
+}
+.label_Header{
+	background-color : #EDEDED !important;
+	color : blue !important;
+	margin-top: 0px;
+	padding: 5px;
+} 
+.ibox-content{
+	padding: 0px;
+}
+.laber_group{
+	padding-left: 0px;
+}
+a {
+text-decoration:none !important;
+}
+.character{
+	float: left
+}
+.form-control-inline classPadding {
+    width:30%;
+    display:inline;
+}
+</style>
+</head>
+
+<body class="gray-bg headerColor" >
+
+	<div class="row">
+		<div class="col-sm-2">
+			<div class="ibox-title">
+				<h5>标签库</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="span2" style="background-color: #fff;">
+					<div class="laber_group">
+						<div class="label_Header"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><h4>系统标签</h4></a></div>
+						<ul class="nav nav-list panel-collapse collapse in" id="collapseOne">
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('text');" class="iBox" id="textBox" onmousedown="textMD()" ondragstart="textDS()" onmouseup="textMS()">
+							<i class='glyphicon glyphicon-list-alt'></i>文本框</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('textarea');" class="iBox" id="textareaBox" onmousedown="textareaMD()" ondragstart="textareaDS()" onmouseup="textareaMS()"> 
+							<i class="glyphicon glyphicon-menu-hamburger"></i>文本域</a></li>
+							
+							<li><a href="javascript:void(0);"onclick="leipiFormDesign.exec('select');" class="iBox" id="selectBox" onmousedown="selectMD()" ondragstart="selectDS()" onmouseup="selectMS()"> 
+							<i class="glyphicon glyphicon-hand-down"></i>下拉菜单</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('date');" class="iBox" id="dateBox" onmousedown="dateMD()" ondragstart="dateDS()" onmouseup="dateMS()"> 
+							<i class="glyphicon glyphicon-calendar"></i>时间控件</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('radios');" class="iBox" id="radiosBox" onmousedown="radiosMD()" ondragstart="radiosDS()" onmouseup="radiosMS()"> 
+							<i class="glyphicon glyphicon-record"></i>单选框 </a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('checkboxs');" class="iBox" id="checkboxsBox" onmousedown="checkboxsMD()" ondragstart="checkboxsDS()" onmouseup="checkboxsMS()"> 
+							<i class="glyphicon glyphicon-unchecked"></i>复选框</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('button');" class="iBox" id="buttonBox" onmousedown="buttonMD()" ondragstart="buttonDS()" onmouseup="buttonMS()">
+							<i class="glyphicon glyphicon-sound-dolby"></i>按钮</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('hidden');" class="iBox" id="hiddenBox" onmousedown="hiddenMD()" ondragstart="hiddenDS()" onmouseup="hiddenMS()"> 
+							<i class="glyphicon glyphicon-hd-video"></i>隐藏域框</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('fileUpload');" class="iBox" id="fileUploadBox" onmousedown="fileUploadMD()" ondragstart="fileUploadDS()" onmouseup="fileUploadMS()"> 
+							<i class="glyphicon glyphicon-eject"></i>文件上传</a></li>
+						</ul>
+					</div>
+				<div class="laber_group">
+					<div class="label_Header"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><h4>自定义标签</h4></a></div>
+					<ul class="nav nav-list panel-collapse collapse in" id="collapseTwo"">
+						<li><a href="javascript:void(0);"
+							onclick="leipiFormDesign.exec('more');" class="iBox"> 
+						<i class="glyphicon glyphicon-road"></i>组合列表</a></li>
+					</ul>
+				</div>
+				</div>
+				<div style="display:none"> ${script}fdsafdsafdsa ${script_end} </div>
+			</div>
+		</div>
+		<div class="col-sm-10 Interval">
+			<div class="ibox-title">
+				<h5>表单设计器</h5>
+			</div>
+			<div class="span10">
+				
+				<script id="myFormDesign" type="text/plain" style="width: 100%;" class="ibox-content">
+<p style="text-align: justify;">
+    <br/>
+</p>
+<table align="center" data-sort="sortDisabled" class="form-inlineRemould">
+    <tbody>
+        <tr class="firstRow">
+            <td valign="middle" align="left" colspan="4" rowspan="1" style="word-break: break-all;" width="1000.3333333333334">
+                <strong><span style="font-size: 20px;">产品基本信息</span></strong>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                产品全称
+            </td>
+            <td valign="middle" colspan="3" align="left" style="word-break: break-all;" width="820.3333333333334">
+                <input class="form-control form-control-inline classPadding" name="c_PORT_NAME" style="width: 811px; height: 32px; text-align: left;" title="产品全称" value="" orgheight="32" orgwidth="830" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text" required=""/><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="158.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                资产代码
+            </td>
+            <td width="323.3333333333333" valign="middle" align="left">
+                <input class="form-control form-control-inline classPadding" name="c_PORT_CODE" style="width: 250px; height: 32px; text-align: left;" title="资产代码" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text" required=""/><br/>
+            </td>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                产品简称<br/>
+            </td>
+            <td width="237.33333333333331" valign="middle" align="left" style="word-break: break-all;">
+                <input class="form-control form-control-inline classPadding" name="c_PORT_NAME_ST" style="width: 250px; height: 32px; text-align: left;" title="产品简称" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text" required=""/><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                FIRST代码
+            </td>
+            <td width="346.3333333333333" valign="middle" align="left">
+                <input class="form-control form-control-inline classPadding" name="FIRST_CODE" style="width: 250px; height: 32px; text-align: left;" title="FIRST代码" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/><br/>
+            </td>
+            <td width="162.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                产品类型
+            </td>
+            <td width="265.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="c_DAT_CODE" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="产品类型" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; " orghide="0" required=""><option value="DAS_GMJJ" selected="selected">
+                    公募基金
+                </option>
+                <option value="DAS_ZH">
+                    专户
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                管理类型<br/>
+            </td>
+            <td width="360.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="MG_TYPE" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="管理类型" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; " orghide="0"><option value="COL_OBJ_ZD">
+                    主动
+                </option>
+                <option value="COL_OBJ_BD">
+                    被动
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable><br/>
+            </td>
+            <td width="163.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                托管人<br/>
+            </td>
+            <td width="239.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="TRUSTEESHIP" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="托管人" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; " orghide="0" required=""><option value="1" selected="selected">
+                    交易所
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                初始规模<br/>
+            </td>
+            <td width="368.3333333333333" valign="middle" style="word-break: break-all;" align="left">
+                <input class="form-control form-control-inline classPadding" name="INITIAL_SCALE" style="width: 250px; height: 32px; text-align: left;" title="初始规模" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/>元<br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                成立日期<br/>
+            </td>
+            <td width="240.3333333333333" valign="middle" align="left">
+                <input id="" name="d_BUILD" title="成立日期" value="" style="width: 250px; height: 32px; " orgwidth="250" orgheight="32" class="laydate-icon form-control layer-date form-control-inline classPadding" leipiplugins="date" orgtype="date" orghide="0"/><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                募集期限<br/>
+            </td>
+            <td width="372.3333333333333" valign="middle" style="word-break: break-all;" align="left">
+                <input class="form-control form-control-inline classPadding" name="TERM_COLLECTION" style="width: 130px; height: 32px; text-align: left;" title="募集期限" value="" orgheight="32" orgwidth="130" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/>单位<span leipiplugins="select"><select name="COMPANY" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="单位" leipiplugins="select" orgwidth="80" orgheight="36" style="width: 80px; height: 36px; " orghide="0"><option value="DA">
+                    天
+                </option>
+                <option value="WK">
+                    周
+                </option>
+                <option value="MO">
+                    月
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                提前结束募集日
+            </td>
+            <td width="241.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <input id="" name="PREMATURE_TERMINATION" title="提前结束募集日" value="" style="width: 250px; height: 32px; " orgwidth="250" orgheight="32" class="laydate-icon form-control layer-date form-control-inline classPadding" leipiplugins="date" orgtype="date" orghide="0"/><br/>
+            </td>
+        </tr>
+        <tr>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                净值精度
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                保留<input class="form-control form-control-inline classPadding" name="ACCURACY" style="width: 100px; height: 32px; text-align: left;" title="净值精度" value="" orgheight="32" orgwidth="100" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/>小数<br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                销售方式<br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;" width="242.3333333333333">
+                <span leipiplugins="checkboxs" required="0" title="销售方式" class="form-control-inline classPadding" name="SALES_MODE" orgchecked="orgchecked0"><label><input name="SALES_MODE" value="直销" type="checkbox"/>直销&nbsp;</label><label><input name="SALES_MODE" value="代销" type="checkbox"/>代销&nbsp;</label></span><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否开放
+            </td>
+            <td width="374.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="IS_OPEN" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="是否开放" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;"><option value="1" selected="selected">
+                    是
+                </option>
+                <option value="0">
+                    否
+                </option></select></span><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否分级<br/>
+            </td>
+            <td width="243.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="IS_CLASSIFICATION" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="是否分级" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;"><option value="1">
+                    是
+                </option>
+                <option value="0">
+                    否
+                </option></select></span><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否有网下打新资格
+            </td>
+            <td width="376.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="IS_NET" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="是否有网下打新资格" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; " orghide="0"><option value="1" selected="selected">
+                    是
+                </option>
+                <option value="0">
+                    否
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否开立银行间账户
+            </td>
+            <td width="244.3333333333333" valign="middle" style="word-break: break-all;" align="left">
+                <span leipiplugins="select"><select name="IS_BANK" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="是否开立银行间账户" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;"><option value="1" selected="selected">
+                    是
+                </option>
+                <option value="0">
+                    否
+                </option></select></span><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                交易资格信息
+            </td>
+            <td valign="middle" align="left" style="word-break: break-all;" colspan="3" width="828.3333333333334">
+                <p>
+                    <span leipiplugins="checkboxs" required="0" title="交易资格信息" class=" form-control-inline classPadding" name="TQI" orgchecked="orgchecked0"><label><input name="TQI" value="交易所市场交易资格" type="checkbox"/>交易所市场交易资格&nbsp;</label><label><input name="TQI" value="上海清算所短期融资券业务平台资格申请" type="checkbox"/>上海清算所短期融资券业务平台资格申请&nbsp;</label><label><input name="TQI" value="深交所综合协议交易平台" type="checkbox"/>深交所综合协议交易平台&nbsp;</label><label><input name="TQI" value="网下新股询价申购资格" type="checkbox"/>网下新股询价申购资格&nbsp;</label><label><input name="TQI" value="银行间债券交易资格" type="checkbox"/>银行间债券交易资格&nbsp;</label><label><input name="TQI" value="大宗交易平台—上交所" type="checkbox"/>大宗交易平台—上交所&nbsp;</label><label><input name="TQI" value="固定收益平台" type="checkbox"/>固定收益平台&nbsp;</label><label><input name="TQI" value="其他业务资格说明" type="checkbox"/>其他业务资格说明</label></span>
+                </p>
+                <p>
+                    （如有以上未列事项说明）<input class="form-control form-control-inline classPadding" name="c_DESC" style="width: 250px; height: 32px;" title="说明" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/><br/>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                <span style="font-size: 20px;"><strong>产品估值参数</strong></span>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;"></td>
+            <td valign="middle" align="left" colspan="1" rowspan="1"></td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" width="245.3333333333333"></td>
+        </tr>
+        <tr>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                组合代码<br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                <input class="form-control form-control-inline classPadding" name="c_PORT_CODE" style="width: 250px; height: 32px; text-align: left;" title="组合币种" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text" required=""/><br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                组合币种<br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" width="246.3333333333333" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="c_DC_CODE" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="组合币种" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;" required=""><option value="" selected="selected">
+                    人民币
+                </option>
+                <option value="">
+                    美元
+                </option>
+                <option value="">
+                    港币
+                </option>
+                <option value="">
+                    英镑
+                </option>
+                <option value="">
+                    澳元
+                </option>
+                <option value="">
+                    日元
+                </option>
+                <option value="">
+                    欧元
+                </option>
+                <option value="">
+                    新西兰元
+                </option>
+                <option value="">
+                    新加坡元
+                </option></select></span><br/>
+            </td>
+        </tr>
+        <tr>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                组合级别<br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="c_DV_PORT_CODE" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="组合级别" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;" required=""><option value="PORT_LAYER" selected="selected">
+                    组合层
+                </option>
+                <option value="UNIT_LAYER">
+                    单元层
+                </option>
+                <option value="PLAN_LAYER">
+                    计划层
+                </option></select></span><br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                节假日群<br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" width="247.3333333333333" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="c_HDAY_CODE" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="节假日群" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;"><option value="">
+                    中国节假日群
+                </option>
+                <option value="">
+                    香港节假日群
+                </option>
+                <option value="">
+                    港股通节假日群
+                </option></select></span><br/>
+            </td>
+        </tr>
+        <tr>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                资产类别
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="c_DAT_CODE" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="资产类别" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px;"><option value="INV_PTX" selected="selected">
+                    普通型
+                </option>
+                <option value="INV_HBX">
+                    货币型
+                </option>
+                <option value="INV_ETFX">
+                    ETF群
+                </option>
+                <option value="INV_LJX">
+                    连接型
+                </option></select></span><br/>
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" style="word-break: break-all;">
+                产品状态
+            </td>
+            <td valign="middle" align="left" colspan="1" rowspan="1" width="248.3333333333333" style="word-break: break-all;">
+                <span leipiplugins="select"><select name="c_DV_PROD_STATE" orghide="0" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="产品状态" leipiplugins="select" orgwidth="250" orgheight="32" style="width: 250px; height: 32px;"><option value="PS1" selected="selected">
+                    草稿
+                </option>
+                <option value="PS2">
+                    待发行
+                </option>
+                <option value="PS3">
+                    募集期
+                </option>
+                <option value="PS4">
+                    存续期
+                </option></select></span><br/>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    <br/>
+</p>
+</script>
+			</div>
+		</div>
+	<script src="../resource/plugins/jquery/jquery.min.js"></script>
+	<!-- <script type="text/javascript" charset="utf-8" src="../resource/js/formBuild/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../resource/js/formBuild/ueditor/ueditor.all.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="../resource/js/formBuild/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../resource/js/formBuild/ueditor/formdesign/leipi.formdesign.v4.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../resource/js/formBuild/ueditor/formdesign/leipi.form.build.core.js"></script> -->
+	<script type="text/javascript" charset="utf-8" src="../resource/plugins/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../resource/plugins/ueditor/ueditor.all.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="../resource/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../resource/plugins/ueditor/formdesign/leipi.formdesign.v4.js"></script>
+	<script type="text/javascript" charset="utf-8" src="../resource/plugins/ueditor/formdesign/leipi.form.build.core.js"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="../resource/js/formBuild/formBuild.js"></script>
+	<script type="text/javascript" src="../resource/plugins/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="../resource/plugins/bootstrap/bootstrap-select.js"></script>
+	</div>
+</body>
+</html>

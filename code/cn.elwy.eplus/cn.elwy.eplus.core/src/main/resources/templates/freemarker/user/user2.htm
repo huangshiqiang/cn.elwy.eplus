@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+<#include "/include/themes.htm">
+
+<link href="${request.contextPath}/resource/js/module/user/user_form.css" rel="stylesheet">
+<!-- 
+<link rel="stylesheet" href="${request.contextPath}/resource/themes/css/bootstrap.min.css" media="print"/>
+<link rel="stylesheet" href="${bundlePath}/resource/js/module/user/print.css" media="print"/>
+<link rel="stylesheet" href="${request.contextPath}/resource/themes/default/css/animate.min.css" media="print"/>
+<link rel="stylesheet" href="${request.contextPath}/resource/themes/default/css/style.min.css" media="print"/> 
+-->
+<link rel="stylesheet" href="${request.contextPath}/resource/themes/css/font-awesome.min.css" media="print"/>
+<link rel="stylesheet" href="${request.contextPath}/resource/themes/default/css/plugins/jqgrid/ui.jqgrid.css" media="print"/>
+<link rel="stylesheet" href="${request.contextPath}/resource/js/module/user/print.css" media="print"/>
+</head>
+
+<body class="iframeNoScrollBar">
+<#assign auth="com.yss.fast.webplus.shiro.AuthTag"?new()>
+<div class="ibox float-e-margins">
+     <div id="header" class="ibox-title gray-bg paddingTB">
+        <div id="tab-1" class="tab-pane active">
+		<div class="panel-body">
+			<div class="col-sm-12 head-table" role="group">
+				<div id="_basicSearch" class="basicSearch">
+					<ul>
+						<li class="basicSearchAdv">
+							<#if auth('user:insert')>
+								<a href="#" id="btnAdd" title="添加"><i class="fa fa-plus"></i>添加</a>
+							</#if>
+							<#if auth('user:update')>
+								<a href="#" id="btnEdit" title="修改"><i class="fa fa-file-text-o"></i>修改</a>
+							</#if>
+							<#if auth('user:copy')>
+								<a href="#" id="btnCopy" title="复制"><i class="glyphicon glyphicon-duplicate"></i>复制</a>
+							</#if>
+							<#if auth('user:delete')>
+								<a href="#" id="btnDelete" title="删除"><i class="glyphicon glyphicon-trash"></i>删除</a>
+							</#if>
+							<#if auth('user:check')>
+								<a href="#" id="btnCheck" title="审核"><i class="glyphicon glyphicon-check"></i>审核</a>
+							</#if>
+							<#if auth('user:uncheck')>
+								<a href="#" id="btnUncheck" title="反审核"><i class="glyphicon glyphicon-compressed"></i>反审核</a>
+							</#if>
+							<#if auth('user:export')>
+								<a href="#" id="btnExport" title="导出"><i class="glyphicon glyphicon-open-file"></i>导出</a>
+							</#if>
+							<#if auth('user:print')>
+								<a href="#" id="btnPrint" title="打印" onclick="print()"><i class="glyphicon glyphicon-print"></i>打印</a>
+							</#if>
+							<a href="#" id="btnHelp" title="帮助" ><i class="glyphicon glyphicon-question-sign"></i>帮助</a>
+			    		</li>
+			    		<!-- basicSearch form start -->
+			    		<div class="basicSearchRight">
+			    		<div class="inline-left" >
+			    		<form id="searchForm" modelAttribute="role" action="${ctx}/user" method="post" class="form-inline" onsubmit="return false;">
+				    		<div class="input-group input-group-sm">
+								<input type="text" class="form-control " id="username" name="username" placeholder="请输入用户名" />
+							</div>
+							<div class="input-group input-group-sm">
+								<input type="text" class="form-control " id="userCode" name="userCode" placeholder="请输入用户代码" />
+							</div>
+							<div class="input-group input-group-sm">
+								<select class="form-control" id="userType" name="userType">
+									<option value="1">全部数据</option>
+									<option value="2">已审核</option>
+									<option value="3">未审核</option>
+								</select>
+							</div>
+								<div class="input-group input-group-sm">
+									<button id="btnSearch" title="查询">
+										<i class="fa fa-search"></i>查询
+									</button>
+								</div>
+						</form>
+						</div>
+						<div class="inline-left">
+						<form>
+						<button id="_advSearchBtn" style="float:right;" class="dropdown-toggle" data-toggle="dropdown" title="更多">
+							<i class="fa fa-th-large"></i>更多
+						</button>
+			    		<!-- basicSearch form end -->
+   						<ul class="dropdown-menu" style="width:500px;">
+	                       	<li><div class="gap" style="height:15px;"><h5><i class="fa fa-caret-square-o-down"></i>高级查询</h5></div></li>
+	                       	<li>
+	                       		<div class="input-group input-group-sm gap" data-stopPropagation="true">
+		                       		<button id="btnAddRow" title="添加" type="button">
+										<i class="fa fa-plus"></i>添加
+									</button>
+		                       		<button id="btnSearch2" title="查询" type="button">
+										<i class="fa fa-search"></i>查询
+									</button>
+									<button id="btnReset" title="重置" data-stopPropagation="true" type="button">
+										<i class="glyphicon glyphicon-share-alt"></i>重置
+									</button>
+								</div>
+	                       	</li>
+	                        <li style="margin-top: 5px;" data-stopPropagation="true">
+	                        	<div class="input-group input-group-sm gap">
+									<select class="form-control" name="userType" style="width:80px;">
+										<option value="and">并</option>
+										<option value="or">或</option>
+									</select>
+									<input type="text" class="form-control" style="width:100px;" id="username" name="username" placeholder="条件1" />
+									<select class="form-control" name="userType" style="width:80px;">
+										<option value="eq">等于</option>
+										<option value="ne">不等</option>
+										<option value="lt">小于</option>
+										<option value="le">小于等于</option>
+										<option value="gt">大于</option>
+										<option value="ge">大于等于</option>
+									</select>
+									<input type="text" class="form-control" style="width:100px;" id="userCode" name="userCode" placeholder="条件2" />
+									<a href="#" onclick="delrow(this)"><i class="fa fa-times-circle" style="margin:10px 10px 10px 10px;"></i></a>
+								</div>
+	                        </li>
+                    	</ul>
+                    	</form>
+                    	</div>
+                    	</div>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+	<div id="table_div" class="jqGrid_wrapper">
+		<table id="dataGrid"></table>
+		<div id="dataGridPage"></div>
+	</div>
+</div>
+    
+<!-- toolbar start 注意class名称要准确！！！ -->
+	<div id="toolbar" style="display:none;">
+		<a class="layui-layer-add" href="javascript:;" title="添加"><i class="fa fa-plus" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-edit" href="javascript:;" title="修改"><i class="fa fa-edit" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-copy" href="javascript:;" title="复制"><i class="fa fa-copy" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-delete" href="javascript:;" title="删除"><i class="fa fa-trash-o" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-save" href="javascript:;" title="保存"><i class="fa fa-save" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-undo" href="javascript:;" title="撤销"><i class="fa fa-undo" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-up" href="javascript:;" title="上移"><i class="fa fa-arrow-up" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-down" href="javascript:;" title="下移"><i class="fa fa-arrow-down" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+		<a class="layui-layer-close layui-layer-close1" href="javascript:;" title="关闭"><i class="fa fa-close" aria-hidden="true" style="color:#FFFFFF;font-size:15px;"></i></a>
+	</div>
+<!-- toolbar end -->
+
+	<div id="form_id" style="display: none;">
+		<div >
+			<div>
+				<div class="col-sm-12">
+					<!-- <div class="ibox float-e-margins"> -->
+					<div class="ibox-content table-form">
+						<form class="form-horizontal m-t" id="signupForm" onsubmit="return false;">
+							<div class="form-group">
+								<label class="col-sm-2 control-label messagee">基本信息</label>
+							</div>
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<input type="hidden" value="" name="id" id="id"> <label class="col-sm-2 control-label">用户ID：</label>
+									<div class="col-sm-4">
+										<input id="c_USER_CODE" name="c_USER_CODE" class="form-control" type="text" value="">
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">用户名：</label>
+									<div class="col-sm-4">
+										<input id="c_USER_NAME" name="c_USER_NAME" class="form-control" type="text" value="">
+									</div>
+								</div>
+							</div>
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">初始密码：</label>
+									<div class="col-sm-4">
+										<input id="c_USER_PWD" name="c_USER_PWD" class="form-control" type="password" value="">
+									</div>
+								</div>
+
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">重复密码：</label>
+									<div class="col-sm-4">
+										<input id="re_c_USER_PWD" name="re_c_USER_PWD" class="form-control" type="password" value="">
+									</div>
+								</div>
+
+							</div>
+
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">职务：</label>
+									<div class="col-sm-4">
+										<select class="form-control m-b" name="c_DV_JOB_TITLE" id="c_DV_JOB_TITLE">
+											<option>1</option>
+											<option>2</option>
+										</select>
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">所属部门：</label>
+									<div class="col-sm-4">
+										<select class="form-control m-b" name="c_CORP_ORG_CODE" id="c_CORP_ORG_CODE">
+											<option>1</option>
+											<option>2</option>
+										</select>
+									</div>
+								</div>
+
+							</div>
+
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">登录IP地址：</label>
+									<div class="col-sm-4">
+										<input id="c_IP" name="c_IP" class="form-control" type="text" value="">
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">MAC地址：</label>
+									<div class="col-sm-4">
+										<input id="c_MAC" name="c_MAC" class="form-control" type="text" value="">
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="col-sm-2 control-label messagee">个人信息</label>
+							</div>
+
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">证件类型：</label>
+									<div class="col-sm-4">
+										<select class="form-control m-b" name="c_DV_CARD_TYPE" id="c_DV_CARD_TYPE">
+											<option>sfz</option>
+											<option>hz</option>
+										</select>
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">证件号码：</label>
+									<div class="col-sm-4">
+										<input id="c_CARD_NO" name="c_CARD_NO" class="form-control input-mask-card" type="text"
+											value="" aria-required="true" number="true" aria-invalid="true" class="error">
+									</div>
+								</div>
+							</div>
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">出生日期：</label>
+									<div class="col-sm-4">
+										<input id="d_BIRTH" name="d_BIRTH" value="" class="laydate-icon form-control layer-date">
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">入职日期：</label>
+									<div class="col-sm-4">
+										<input id="d_ON_JOB" name="d_ON_JOB" value="" class="laydate-icon form-control layer-date">
+									</div>
+
+								</div>
+							</div>
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">办公电话：</label>
+									<div class="col-sm-4">
+										<input id="c_OFFIC_TEL" name="c_OFFIC_TEL" value="" class="form-control" type="text"
+											aria-required="true" aria-invalid="true" class="error">
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">移动电话：</label>
+									<div class="col-sm-4">
+										<input id="c_MO_TEL" name="c_MO_TEL" value="" class="form-control" type="text"
+											aria-required="true" aria-invalid="true" class="error">
+									</div>
+								</div>
+
+							</div>
+
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">E-mail：</label>
+									<div class="col-sm-4">
+										<input id="c_EMAIL" name="c_EMAIL" class="form-control" type="email">
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">传真号码：</label>
+									<div class="col-sm-4">
+										<input id="c_FAX_NO" name="c_FAX_NO" class="form-control" value="" type="text"
+											aria-required="true" number="true" aria-invalid="true" class="error">
+									</div>
+								</div>
+							</div>
+
+							<div class="row branchDiv">
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">办公地址：</label>
+									<div class="col-sm-4">
+										<input id="c_OFFIC_ADDR" name="c_OFFIC_ADDR" value="" class="form-control" type="text">
+									</div>
+								</div>
+								<div class="toExamine">
+									<label class="col-sm-2 control-label">邮政编码：</label>
+									<div class="col-sm-4">
+										<input id="c_ZIP_CODE" name="c_ZIP_CODE" value="" class="form-control" type="text"
+											aria-required="true" aria-invalid="true" class="error">
+									</div>
+								</div>
+							</div>
+
+							<input type="hidden" id="operate2" name="operate2" value="" class="form-control" type="text"> <input
+								type="hidden" id="c_PASS_MARK" name="c_PASS_MARK" value="E" class="form-control" type="text"> <input
+								type="hidden" id="c_DV_STATE" name="c_DV_STATE" value="ENAB" class="form-control" type="text"> <input
+								type="hidden" id="modifier" name="modifier" value="" class="form-control" type="text"> <input
+								type="hidden" id="modifyDate" name="modifyDate" value="" class="form-control" type="text">
+							<div class="row">&nbsp;&nbsp;</div>
+						</form>
+					</div>
+					<!-- </div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<#include "/include/js.htm">
+	<script src="${request.contextPath}/resource/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="${request.contextPath}/resource/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="${request.contextPath}/resource/js/plugins/mask/jquery.maskedinput.min.js"></script>
+	<script src="${request.contextPath}/resource/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="${request.contextPath}/resource/js/plugins/jquery/jQuery.print.js"></script>
+	<script type="text/javascript" src="${request.contextPath}/resource/js/module/user/user.js?v=${_v}"></script>
+	<script type="text/javascript" src="${request.contextPath}/resource/js/module/user/user_form.js"></script>
+	
+	<script type="text/javascript">
+	 
+		
+		function print(){
+			$(".jqGrid_wrapper").print({
+			    globalStyles : false,			//是否包含父文档的样式，默认为true
+			    mediaPrint : true,				//是否包含media='print'的链接标签。会被globalStyles选项覆盖，默认为false
+			    stylesheet : null,				//外部样式表的URL地址，默认为null
+			    noPrintSelector : ".no-print",  //不想打印的元素的jQuery选择器，默认为".no-print"
+			    iframe : true,					//是否使用一个iframe来替代打印表单的弹出窗口，true为在本页面进行打印，false就是说新开一个页面打印，默认为true
+			    append : null,					//将内容添加到打印内容的后面
+			    prepend : null,					//将内容添加到打印内容的前面，可以用来作为要打印内容
+			    deferred : $.Deferred()			//回调函数
+			}); 
+		}
+	</script>
+</body>
+</html>

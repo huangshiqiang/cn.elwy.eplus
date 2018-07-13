@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<#include "/include/themes.htm">
+<link rel="stylesheet" href="${resourcePath}/resource/themes/default/css/plugins/jqwidgets/jqx.base.css?v=${_v}">
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
+    <div id="jqxWidget" style="height: 100%;width: 100%">
+        <div id="mainSplitter" >
+            <div style="overflow: hidden;">
+                <div style="border:none; box-sizing: border-box;height:100%;">
+                 <div class="jqx-hideborder input-group">
+                        <form id="searchForm" modelAttribute="role" action="${bundlePath}/webPost" method="post" class="form-inline">
+                            <div class="input-group">
+                                <input id="txt_search" type="text" class="form-control">
+                                <div class="input-group-btn">
+                                    <button id="btn_search" type="button" class="btn btn-success">搜索</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="jqx-hideborder" style="height: 30px;background: WhiteSmoke;">
+                        <span style="line-height:30px;text-align:left; margin-left: 10px;">岗位管理</span>
+                    </div>
+                    <div id="table_div" class="jqx-hideborder jqx-hidescrollbars" style="height:550px;">
+                        <table id="dataGrid"></table>
+                    </div>
+                    <!--<div style="position:absolute; bottom:0;height: 40px; ">
+                        <span class="input-group-btn">
+                            <button id="btn_setup" type="button" class="btn btn-success">
+                                <i class="fa fa-cog"></i>设置
+                            </button>
+                        </span>
+                    </div>-->
+                </div>
+            </div>
+            <div style="overflow: hidden;">
+                <div class="feed-item-list-container">
+                    <div id="post_right_div" class="jqx-hideborder">
+                        	岗位功能权限管理
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<#include "/include/js.htm">
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/jqwidgets/jqxcore.js?v=${_v}"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/jqwidgets/jqxsplitter.js?v=${_v}"></script>
+	<script type="text/javascript" src="${bundlePath}/resource/js/module/post/post.js"></script>
+</body>
+</html>

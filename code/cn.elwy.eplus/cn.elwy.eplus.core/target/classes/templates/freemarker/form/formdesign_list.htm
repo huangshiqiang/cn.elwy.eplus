@@ -1,0 +1,447 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<!-- ${include_themes}
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
+<link href="${resourcePath}/resource/themes/default/css/pub_form.css" rel="stylesheet">
+<link rel="stylesheet" href="${resourcePath}/resource/themes/css/font-awesome.min.css" media="print"/>
+<link rel="stylesheet" href="${resourcePath}/resource/themes/default/css/plugins/jqgrid/ui.jqgrid.css" media="print"/>
+<link rel="stylesheet" href="${resourcePath}/resource/themes/default/css/pub_print.css" media="print"/>
+<link rel="stylesheet" href="${resourcePath}/resource/themes/css/bootstrap.min.css">
+<link rel="stylesheet" href="${resourcePath}/resource/themes/css/bootstrap-select.css">
+<link href="${resourcePath}/resource/themes/default/css/style.min.css" rel="stylesheet"> -->
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="author" content="leipi.org">
+<link rel="stylesheet" href="${resourcePath}/resource/themes/css/bootstrap.min.css">
+<link rel="stylesheet" href="${resourcePath}/resource/themes/css/bootstrap-select.css">
+<link href="${resourcePath}/resource/themes/default/css/style.min.css" rel="stylesheet">
+
+<style type="text/css">
+.iBox {
+	padding: 8px !important;
+	color: black !important;
+	font-weight: 300 !important;
+}
+.Interval{
+	padding-left: 0px !important;
+}
+.headerColor{
+	background-color: #f3f3f4 !important;
+}
+.label_Header{
+	background-color : #EDEDED !important;
+	color : blue !important;
+	margin-top: 0px;
+	padding: 5px;
+} 
+.ibox-content{
+	padding: 0px;
+}
+.laber_group{
+	padding-left: 0px;
+}
+a {
+text-decoration:none !important;
+}
+.character{
+	float: left
+}
+.form-control-inline {
+    width:30%;
+    display:inline;
+}
+</style>
+<!-- 
+<style type="text/css">
+.iBox {
+	padding: 8px !important;
+	color: black !important;
+	font-weight: 300 !important;
+}
+.Interval{
+	padding-left: 0px !important;
+}
+.headerColor{
+	background-color: #f3f3f4 !important;
+}
+.label_Header{
+	background-color : #EDEDED !important;
+	color : blue !important;
+	margin-top: 0px;
+	padding: 5px;
+} 
+.ibox-content{
+	padding: 0px;
+}
+.laber_group{
+	padding-left: 0px;
+}
+a {
+text-decoration:none !important;
+}
+.character{
+	float: left
+}
+.form-control-inline {
+    width:30%;
+    display:inline;
+}
+</style> -->
+</head>
+
+<body class="gray-bg headerColor" >
+	<div class="row">
+		<div class="col-sm-2">
+			<div class="ibox-title">
+				<h5>标签库</h5>
+			</div>
+			<div class="ibox-content">
+				<div class="span2" style="background-color: #fff;">
+					<div class="laber_group">
+						<div class="label_Header"> <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><h4>系统标签</h4></a></div>
+						<ul class="nav nav-list panel-collapse collapse in" id="collapseOne">
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('text');" class="iBox" id="textBox" onmousedown="textMD()" ondragstart="textDS()" onmouseup="textMS()">
+							<i class='glyphicon glyphicon-list-alt'></i>文本框</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('textarea');" class="iBox" id="textareaBox" onmousedown="textareaMD()" ondragstart="textareaDS()" onmouseup="textareaMS()"> 
+							<i class="glyphicon glyphicon-menu-hamburger"></i>文本域</a></li>
+							
+							<li><a href="javascript:void(0);"onclick="leipiFormDesign.exec('select');" class="iBox" id="selectBox" onmousedown="selectMD()" ondragstart="selectDS()" onmouseup="selectMS()"> 
+							<i class="glyphicon glyphicon-hand-down"></i>下拉菜单</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('date');" class="iBox" id="dateBox" onmousedown="dateMD()" ondragstart="dateDS()" onmouseup="dateMS()"> 
+							<i class="glyphicon glyphicon-calendar"></i>时间控件</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('radios');" class="iBox" id="radiosBox" onmousedown="radiosMD()" ondragstart="radiosDS()" onmouseup="radiosMS()"> 
+							<i class="glyphicon glyphicon-record"></i>单选框 </a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('checkboxs');" class="iBox" id="checkboxsBox" onmousedown="checkboxsMD()" ondragstart="checkboxsDS()" onmouseup="checkboxsMS()"> 
+							<i class="glyphicon glyphicon-unchecked"></i>复选框</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('button');" class="iBox" id="buttonBox" onmousedown="buttonMD()" ondragstart="buttonDS()" onmouseup="buttonMS()">
+							<i class="glyphicon glyphicon-sound-dolby"></i>按钮</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('hidden');" class="iBox" id="hiddenBox" onmousedown="hiddenMD()" ondragstart="hiddenDS()" onmouseup="hiddenMS()"> 
+							<i class="glyphicon glyphicon-hd-video"></i>隐藏域框</a></li>
+							
+							<li><a href="javascript:void(0);" onclick="leipiFormDesign.exec('fileUpload');" class="iBox" id="fileUploadBox" onmousedown="fileUploadMD()" ondragstart="fileUploadDS()" onmouseup="fileUploadMS()"> 
+							<i class="glyphicon glyphicon-eject"></i>文件上传</a></li>
+						</ul>
+					</div>
+				<div class="laber_group">
+					<div class="label_Header"><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><h4>自定义标签</h4></a></div>
+					<ul class="nav nav-list panel-collapse collapse in" id="collapseTwo"">
+						<li><a href="javascript:void(0);"
+							onclick="leipiFormDesign.exec('more');" class="iBox"> 
+						<i class="glyphicon glyphicon-road"></i>组合列表</a></li>
+					</ul>
+				</div>
+				</div>
+				<div style="display:none"> ${script}fdsafdsafdsa ${script_end} </div>
+			</div>
+		</div>
+		<div class="col-sm-10 Interval">
+			<div class="ibox-title">
+				<h5>表单设计器</h5>
+				
+				<div>
+					<div class="ibox-content table-form">
+						<form class="form-horizontal m-t" id="signupForm" onsubmit="return false;">
+						
+							<input type="hidden" value="" name="id" id="id">
+							<input type="hidden" id="operate" name="operate" value="" class="form-control" type="text">
+							<input type="hidden" id="n_CHECK_STATE" name="n_CHECK_STATE" value="" class="form-control" type="text">
+							<input type="hidden" id="c_TYPE" name="c_TYPE" value="custom" class="form-control" type="text">
+							<input type="hidden" id="c_PARENT_CODE" name="c_PARENT_CODE" value="" class="form-control" type="text">
+							<div class="content">
+								<div class="row branchDiv">
+									<div class="toExamine"> 
+										<label class="col-sm-1 control-label">表单编码:</label>
+										<div class="col-sm-3">
+											<input id="c_CODE" name="c_CODE" class="form-control" type="text" value="" placeholder="必填项">
+										</div>
+									</div>
+									<div class="toExamine">
+										<label class="col-sm-1 control-label">表单名称:</label>
+										<div class="col-sm-3">
+											<input id="c_NAME" name="c_NAME" class="form-control" type="text" value="" placeholder="必填项">
+										</div>
+									</div>
+									<div class="toExamine">
+										<label class="col-sm-1 control-label">版本号:</label>
+										<div class="col-sm-3">
+											<input id="c_VERSION" name="c_VERSION" class="form-control" type="text" value="">
+										</div>
+									</div>
+									<!-- <div class="toExamine">
+										<label class="col-sm-1 control-label">表单类型:</label>
+										<div class="col-sm-3">
+											<select id="c_TYPE" name="c_TYPE" class="form-control m-b">
+								               <option value="system">系统表单</option>
+								               <option value="mixture">混合型表单</option>
+								               <option value="custom">自定义表单</option>
+								           </select>
+										</div>
+									</div> -->
+								</div>
+								<div class="row branchDiv">
+									<div class="toExamine"> 
+										<label class="col-sm-1 control-label">请求路径:</label>
+										<div class="col-sm-7">
+											   <select id="c_URL" name="c_URL" class="form-control m-b">
+									               <option value="system">默认路径</option>
+									           </select>
+										</div>
+									</div>
+									<!-- <div class="toExamine">
+										<label class="col-sm-1 control-label">图标:</label>
+										<div class="col-sm-3">
+											<input id="c_ICON" name="c_ICON" class="form-control" type="text" value="" >
+										</div>
+									</div> -->
+								</div>
+								<!-- <div class="row branchDiv">
+									<div class="toExamine"> 
+										<label class="col-sm-1 control-label">父表单编码:</label>
+										<div class="col-sm-3">
+											<input id="c_PARENT_CODE" name="c_PARENT_CODE" class="form-control" type="text" value="">
+										</div>
+									</div>
+									<div class="toExamine">
+										<label class="col-sm-1 control-label">版本号:</label>
+										<div class="col-sm-3">
+											<input id="c_VERSION" name="c_VERSION" class="form-control" type="text" value="">
+										</div>
+									</div>
+									<div class="toExamine">
+										<label class="col-sm-1 control-label">是否为模板:</label>
+										<div class="col-sm-3">
+											<select id="n_IS_TEMPLATE" name="n_IS_TEMPLATE" class="form-control m-b">
+								               <option value="0">否</option>
+								               <option value="1">是</option>
+								           </select>
+										</div>
+									</div>
+								</div> -->
+								
+							</div>
+							<div class="row">&nbsp;&nbsp;</div>
+						</form>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="span10">
+				
+				<script id="myFormDesign" type="text/plain" style="width: 100%;" class="ibox-content">
+					<table align="center" data-sort="sortDisabled" class="form-inlineRemould">
+    <tbody>
+        <tr class="firstRow">
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                产品全称
+            </td>
+            <td valign="top" colspan="3" align="left" style="word-break: break-all;" width="870.3333333333334">
+                <a class="iBox" id="textBox"><input class="form-control form-control-inline classPadding" name="1" style="width: 830px; height: 32px; text-align: left;" title="文本框" value="" orgheight="32" orgwidth="830" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="158.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                资产代码
+            </td>
+            <td width="323.3333333333333" valign="middle" align="left">
+                <a class="iBox" id="textBox"><input class="form-control form-control-inline classPadding" name="" style="width: 250px; height: 32px; " title="文本框" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/></a><br/>
+            </td>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                产品简称<br/>
+            </td>
+            <td width="294" valign="middle" align="left">
+                <a class="iBox" id="textBox"><input class="form-control form-control-inline classPadding" name="" style="width: 250px; height: 32px; " title="文本框" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                FIRST代码
+            </td>
+            <td width="346.3333333333333" valign="middle" align="left">
+                <a class="iBox" id="textBox"><input class="form-control form-control-inline classPadding" name="" style="width: 250px; height: 32px; " title="文本框" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/></a><br/>
+            </td>
+            <td width="162.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                产品类型
+            </td>
+            <td width="294" valign="middle" align="left">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                管理类型<br/>
+            </td>
+            <td width="360.3333333333333" valign="middle" align="left">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+            <td width="163.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                托管人<br/>
+            </td>
+            <td width="294" valign="middle" align="left">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                初始规模<br/>
+            </td>
+            <td width="368.3333333333333" valign="middle" style="word-break: break-all;" align="left">
+                <a class="iBox" id="textBox"><input class="form-control form-control-inline classPadding" name="" style="width: 250px; height: 32px; " title="文本框" value="" orgheight="32" orgwidth="250" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/>元</a><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                成立日期<br/>
+            </td>
+            <td width="294" valign="middle" align="left">
+                <a class="iBox" id="dateBox"><input id="" name="" title="时间控件" value="" style="width: 250px; height: 32px; " orgwidth="250" orgheight="32" class="laydate-icon form-control layer-date form-control-inline classPadding" leipiplugins="date" orgtype="date"/></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                募集期限<br/>
+            </td>
+            <td width="372.3333333333333" valign="middle" style="word-break: break-all;" align="left">
+                <a class="iBox" id="textBox"><input class="form-control form-control-inline classPadding" name="w" style="width: 130px; height: 32px; text-align: left;" title="文本框" value="" orgheight="32" orgwidth="130" orgalign="left" orgfontsize="" orghide="0" leipiplugins="text" orgtype="text"/>单位</a><a class="iBox" id="selectBox"><span leipiplugins="select"><select name="s" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="80" orgheight="36" style="width: 80px; height: 36px; "><option value="下拉1" selected="selected">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                提前结束募集日
+            </td>
+            <td width="294" valign="middle" align="left">
+                <a class="iBox" id="dateBox"><input id="" name="" title="时间控件" value="" style="width: 250px; height: 32px; " orgwidth="250" orgheight="32" class="laydate-icon form-control layer-date form-control-inline classPadding" leipiplugins="date" orgtype="date"/></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                销售方式<br/>
+            </td>
+            <td width="374.3333333333333" valign="middle" align="left">
+                <a class="classPadding" id="radiosBox"><span leipiplugins="radios" required="" title="单选" name="123"><input value="单选1" name="1" type="radio" checked="checked"/>单选1&nbsp;<input value="单选2" name="2" type="radio"/>单选2&nbsp; </span></a><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否开放
+            </td>
+            <td width="294" valign="middle" align="left">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否分级<br/>
+            </td>
+            <td width="376.3333333333333" valign="middle" align="left">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+            <td width="164.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否有网下打新资格
+            </td>
+            <td width="294" valign="middle" style="word-break: break-all;" align="left">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+        </tr>
+        <tr>
+            <td width="160.33333333333334" valign="middle" style="word-break: break-all;" align="left">
+                是否开立银行间账户
+            </td>
+            <td width="376.3333333333333" valign="middle" align="left" style="word-break: break-all;">
+                <a class="iBox" id="selectBox"><span leipiplugins="select"><select name="" url="" class="form-control form-control-inline classPadding selectpicker m-b" title="下拉框" leipiplugins="select" orgwidth="250" orgheight="36" style="width: 250px; height: 36px; "><option value="下拉">
+                    下拉
+                </option>
+                <option value="菜单">
+                    菜单
+                </option></select>&nbsp;&nbsp;</span>
+                <lable style="display:none;" name="spanSelect"></lable></a><br/>
+            </td>
+            <td width="164.33333333333334" valign="top" align="left"></td>
+            <td width="294" valign="top" align="left"></td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    <br/>
+</p>
+				</script>
+			</div>
+		</div>
+	<!-- ${include_js}
+	<script src="${resourcePath}/resource/js/plugins/validate/jquery.validate.min.js"></script>
+	<script src="${resourcePath}/resource/js/plugins/validate/messages_zh.min.js"></script>
+	<script src="${resourcePath}/resource/js/plugins/mask/jquery.maskedinput.min.js"></script>
+	<script src="${resourcePath}/resource/js/plugins/layer/laydate/laydate.js"></script>
+	<script src="${resourcePath}/resource/js/plugins/jquery/jQuery.print.js"></script>
+	<script src="${resourcePath}/resource/js/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/ueditor/ueditor.all.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/ueditor/formdesign/leipi.formdesign.v4.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/ueditor/formdesign/leipi.form.build.core.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/formBuild.js"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/bootstrap/bootstrap-select.js"></script>
+	<script type="text/javascript" src="${bundlePath}/resource/js/module/form/form.js?v=${_v}"></script> -->
+	
+	<script src="${resourcePath}/resource/js/jquery.min.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/plugins/ueditor/ueditor.config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/plugins/ueditor/ueditor.all.js"> </script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/plugins/ueditor/formdesign/leipi.formdesign.v4.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/plugins/ueditor/formdesign/leipi.form.build.core.js"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="${resourcePath}/resource/js/formBuild/formBuild.js"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/bootstrap/bootstrap.min.js"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/bootstrap/bootstrap-select.js"></script>
+	</div>
+</body>
+</html>

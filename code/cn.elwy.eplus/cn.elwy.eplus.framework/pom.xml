@@ -3,37 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cn.elwy</groupId>
-	<artifactId>cn.elwy.eplus.framework</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>cn.elwy.eplus.framework</name>
-	<description>eplus framework</description>
-
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.6.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<groupId>cn.elwy</groupId>
+		<artifactId>cn.elwy.eplus.parent</artifactId>
+		<version>2.0.0</version>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<encoding>UTF-8</encoding>
-		<java.version>1.8</java.version>
-		<source.jdk.version>1.8</source.jdk.version>
-		<target.jdk.version>1.8</target.jdk.version>
-		<compiler.jdk.version>1.8</compiler.jdk.version>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<maven.test.skip>true</maven.test.skip>
-
-		<druid.version>1.0.28</druid.version>
-		<shiro.version>1.4.0</shiro.version>
-		<mybatisplus-spring-boot-starter.version>1.0.1</mybatisplus-spring-boot-starter.version>
-		<fastjson.version>1.2.31</fastjson.version>
-		<!-- <ehcache.version>3.2.2</ehcache.version> -->
-		<swagger.version>2.2.2</swagger.version>
-	</properties>
+	<artifactId>cn.elwy.eplus.framework</artifactId>
+	<packaging>jar</packaging>
+	<name>cn.elwy.eplus.framework</name>
+	<description>eplus framework</description>
 
 	<dependencies>
 		<dependency>
@@ -229,11 +208,6 @@
 			<version>1.17</version>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<optional>true</optional>
-		</dependency> -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

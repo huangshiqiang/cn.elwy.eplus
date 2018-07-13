@@ -1,0 +1,294 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>复选框</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" >
+    <meta name="generator" content="www.leipi.org" />
+    <link href="../../../../../resource/themes/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="leipi.style.css">
+    <link rel="stylesheet" href="../../../../../resource/js/formBuild/ueditor/formdesign/formBuild.css">
+    <script type="text/javascript" src="../dialogs/internal.js"></script>
+    <script type="text/javascript">
+function createElement(type, name)
+{     
+    var element = null;     
+    try {        
+        element = document.createElement('<'+type+' name="'+name+'">');     
+    } catch (e) {}   
+    if(element==null) {     
+        element = document.createElement(type);     
+        element.name = name;     
+    } 
+    return element;     
+}
+
+
+//checkboxs
+function isIE()
+{
+    if(window.attachEvent){   
+        return true;
+    }
+    return false;
+}
+//moveRow在IE支持而在火狐里不支持！以下是扩展火狐下的moveRow
+if (!isIE()) {
+    function getTRNode(nowTR, sibling) {
+        while (nowTR = nowTR[sibling]) if (nowTR.tagName == 'TR') break;
+        return nowTR;
+    }
+    if (typeof Element != 'undefined') {
+        Element.prototype.moveRow = function(sourceRowIndex, targetRowIndex) //执行扩展操作
+        {
+            if (!/^(table|tbody|tfoot|thead)$/i.test(this.tagName) || sourceRowIndex === targetRowIndex) return false;
+            var pNode = this;
+            if (this.tagName == 'TABLE') pNode = this.getElementsByTagName('tbody')[0]; //firefox会自动加上tbody标签，所以需要取tbody，直接table.insertBefore会error
+            var sourceRow = pNode.rows[sourceRowIndex],
+            targetRow = pNode.rows[targetRowIndex];
+            if (sourceRow == null || targetRow == null) return false;
+            var targetRowNextRow = sourceRowIndex > targetRowIndex ? false: getTRNode(targetRow, 'nextSibling');
+            if (targetRowNextRow === false) pNode.insertBefore(sourceRow, targetRow); //后面行移动到前面，直接insertBefore即可
+            else { //移动到当前行的后面位置，则需要判断要移动到的行的后面是否还有行，有则insertBefore，否则appendChild
+                if (targetRowNextRow == null) pNode.appendChild(sourceRow);
+                else pNode.insertBefore(sourceRow, targetRowNextRow);
+            }
+        }
+    }
+}
+
+/*删除tr*/
+function fnDeleteRow(obj)
+{
+    var oTable = document.getElementById("options_table");
+    while(obj.tagName !='TR')
+    {
+        obj = obj.parentNode;
+    }
+    oTable.deleteRow(obj.rowIndex);
+}
+/*上移*/
+function fnMoveUp(obj)
+{
+    var oTable = document.getElementById("options_table");
+    while(obj.tagName !='TR')
+    {
+        obj = obj.parentNode;
+    }
+    var minRowIndex = 1;
+    var curRowIndex = obj.rowIndex;
+    if(curRowIndex-1>=minRowIndex)
+    {
+        oTable.moveRow(curRowIndex,curRowIndex-1); 
+    }
+    
+}
+/*下移*/
+function fnMoveDown(obj)
+{
+    var oTable = document.getElementById("options_table");
+    while(obj.tagName !='TR')
+    {
+        obj = obj.parentNode;
+    }
+    var maxRowIndex = oTable.rows.length;
+    var curRowIndex = obj.rowIndex;
+    if(curRowIndex+1<maxRowIndex)
+    {
+        oTable.moveRow(curRowIndex,curRowIndex+1); 
+    }
+}
+
+/*生成tr*/
+function fnAddComboTr(obj)
+{
+    var oTable = document.getElementById('options_table');
+    var new_tr_node= oTable.insertRow(oTable.rows.length);
+    var new_td_node0 = new_tr_node.insertCell(0),new_td_node1 = new_tr_node.insertCell(1),new_td_node2 = new_tr_node.insertCell(2);
+
+    var sChecked = '';
+    if(obj.checked) sChecked = 'checked="checked"';
+    if(!obj.name) obj.name = '';
+    if(!obj.value) obj.value = '';
+    new_td_node0.innerHTML = '<td><input type="checkbox" '+sChecked+'></td>';
+    new_td_node1.innerHTML = '<td><input type="text" value="'+obj.value+'" name="'+obj.name+'" class="form-control form-control-inline inputMargin" placeholder="选项值"></td>';
+    new_td_node2.innerHTML ='<td><div><a title="上移" class="btn btn-primary" href="javascript:void(0);" onclick="fnMoveUp(this)"><i class="glyphicon glyphicon-arrow-up"></i></a><a title="下移" class="btn btn-primary" href="javascript:void(0);" onclick="fnMoveDown(this)"><i class="glyphicon glyphicon-arrow-down"></i></a><a title="删除" class="btn btn-default " href="javascript:void(0);" onclick="fnDeleteRow(this)"><i class="glyphicon glyphicon-trash"></i></a></div></td>';
+    return true;
+}
+function fnAdd() {
+	var dName = $G('orgCode').value;
+    if(!dName) dName = 'leipiNewField';
+    fnAddComboTr({
+    	        "checked":false,
+    	        "name":dName,
+    	        "value":''
+    });
+}
+/*组合checkbox*/
+function fnParseOptions(gCode,gChecked)
+{
+    var oTable = document.getElementById('options_table');
+    var nTr = oTable.getElementsByTagName('tr'),trLength = nTr.length,html="";
+    for(var i=0;i<trLength;i++)
+    {
+        var inputs = nTr[i].getElementsByTagName('input');
+        if(inputs.length>0)
+        {
+            if(!inputs[1].value) continue;
+            var sChecked = '';
+            if(inputs[0].checked) sChecked = 'checked="checked"';
+            html += '<input name="'+gCode+'" value="'+inputs[1].value+'" '+sChecked+' type="checkbox"/>'+inputs[1].value+'&nbsp;';
+            if(gChecked=='orgchecked1')//竖排
+                html+='<br/>';
+        }
+    }
+    //alert(html);
+    return html;
+
+}
+    </script>
+</head>
+<body>
+<div class="content">
+    <table class="table table-bordered table-striped">
+     <tr>
+        <th class="thNeed"><span>显示名称</span><span class="label label-important">*</span>
+        	<span class="inputMargin"><input class="form-control form-control-inline inputMargin"  type="text" id="orgname"  placeholder="必填项"></span>
+        </th>
+        <th>
+        	<span class="control-label">控件编码</span><span class="label label-important">*</span>
+        	<span class="inputMargin"><input class="form-control form-control-inline inputMargin"  type="text" id="orgCode" placeholder="必填项"></span>
+        </th>
+    </tr>
+    <tr>
+    	<th><span>排列方式</span>
+    		<span class="doubleRadio"><label  title="选项一 选项二"><input id="orgchecked0" checked="checked" name="checked" type="radio"> 横排 </label>
+            <label title="选项一&#10;选项二"><input id="orgchecked1" name="checked" type="radio" > 竖排 </label></span>
+    	</th>
+    	<th>
+			<span>是否必填</span>
+			<span class="spanNeed"><label ><input id="orgRequired" type="checkbox"/> 必填 </label></span>
+		</th>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <table class="table table-hover table-condensed" id="options_table">
+                <tr>
+                    <th>选中</th>
+                    <th>选项值</th>
+                    <th>操作</th>
+                </tr>
+            </table>
+            <a title="添加选项" class="btn btn-primary" onclick="fnAdd();">添加选项</a>
+        </td>
+    </tr>
+
+
+    </table>
+</div>
+<script type="text/javascript">
+var oNode = null,thePlugins = 'checkboxs';
+window.onload = function() {
+    if( UE.plugins[thePlugins].editdom ){
+        oNode = UE.plugins[thePlugins].editdom;
+        var gCode = '';
+        if(oNode.getAttribute('name'))
+		gCode = oNode.getAttribute('name').replace(/&quot;/g,"\"");
+        var gRequired=oNode.getAttribute('required');
+        if(gRequired=='1'){
+        	$G('orgRequired').checked = true;
+        }
+        var gTitle=oNode.getAttribute('title').replace(/&quot;/g,"\"");
+        $G('orgname').value = gTitle;
+        $G('orgCode').value = gCode;
+        var checked = oNode.getAttribute('orgchecked');
+        checked=='orgchecked1' ? $G('orgchecked1').checked = true : $G('orgchecked0').checked = true;
+
+        var inputTags = oNode.getElementsByTagName('input');
+        var length = inputTags.length;
+        var aInputs = [];
+        for(var i=0;i<length;i++)
+        {
+            //testEle.setAttribute("test","aaa"); // 自定义属性 设置  
+            //testEle.attributes["test"].nodeValue; // 获得 
+            if(inputTags[i].type =='checkbox')
+                fnAddComboTr(inputTags[i]);
+        }
+        
+
+    }
+}
+dialog.oncancel = function () {
+    if( UE.plugins[thePlugins].editdom ) {
+        delete UE.plugins[thePlugins].editdom;
+    }
+};
+dialog.onok = function (){
+    if( $G('orgname').value == '') {
+        alert('显示名称不能为空');
+        return false;
+    }
+    if( $G('orgCode').value == '') {
+        alert('控件编码不能为空');
+        return false;
+    }
+    var gTitle=$G('orgname').value.replace(/\"/g,"&quot;");
+    var gCode=$G('orgCode').value.replace(/\"/g,"&quot;");
+    var gChecked = 'orgchecked0';
+    if ($G('orgchecked1').checked) gChecked = 'orgchecked1';
+        
+
+    if( !oNode ) {
+        try {
+            var gTimestamp = new Date().getTime();//相同的gTimestamp为同一组checkbox
+            var options = fnParseOptions(gTitle,gChecked,gTimestamp);
+            if($G('orgRequired').checked){
+            	oNode.setAttribute('required','1');
+            }else{
+            	oNode.setAttribute('required','0');
+            }
+            if(!options)
+            {
+                alert('请添加选项');
+                return false;
+            }
+            //{|- 使用边界，防止用户删除了span标签，程序处理要把边界替换为空
+            var html = '{|-<span leipiplugins="checkboxs" title="'+gTitle+'">';
+                html +=options;
+                html +='</span>-|}';
+              	/* //lable标签内容
+                oNode.previousElementSibling.innerText = gTitle;
+                //lable标签name
+                oNode.previousElementSibling.setAttribute('name','lable'+gCode); */
+            editor.execCommand('insertHtml',html);
+            return true ;
+        } catch ( e ) {
+            try {
+                editor.execCommand('error');
+            } catch ( e ) {
+                alert('控件异常，请向管理员反馈或寻求帮助！');
+            }
+            return false;
+        }
+    } else {
+        oNode.setAttribute('title',gTitle);
+        oNode.setAttribute('name',gCode);
+        if($G('orgRequired').checked){
+        	oNode.setAttribute('required','1');
+        }else{
+        	oNode.setAttribute('required','0');
+        }
+      	/* //lable标签内容
+        oNode.previousElementSibling.innerText = gTitle;
+        //lable标签name
+        oNode.previousElementSibling.setAttribute('name','lable'+gCode); */
+        oNode.setAttribute('orgchecked',gChecked);
+        /* oNode.innerHTML = fnParseOptions(gChecked); */
+        oNode.innerHTML = fnParseOptions(gCode,gChecked);
+        delete UE.plugins[thePlugins].editdom; 
+        return true;
+    }
+};
+</script>
+</body>
+</html>

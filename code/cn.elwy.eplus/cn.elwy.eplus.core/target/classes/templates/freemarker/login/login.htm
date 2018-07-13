@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>产品生命周期管理系统 - 登录</title>
+<#include "/include/themes.htm">
+</head>
+
+<body class="gray-bg">
+
+	<div class="middle-box text-center loginscreen  animated fadeInDown">
+		<div>
+			<div>
+
+				<h1 class="logo-name">H+</h1>
+
+			</div>
+			<h3>欢迎使用 H+</h3>
+
+			<form class="m-t" role="form" id="loginForm" onsubmit="return false;">
+				<div class="form-group">
+					<input id = "userName" type="" class="form-control" placeholder="用户名" value="${data.USER_NAME}" required="">
+				</div>
+				<div class="form-group">
+					<input id = "passWord" type="password" class="form-control" placeholder="密码" value="${data.PASS_WORD}"  required="">
+				</div>
+				<div class="form-group">
+					<select
+						class="selectpicker form-control " data-style="btn-white" id="combo_post" 
+						multiple style="width: 300px">
+						<option value="" selected="true">请选择</option>
+					</select>
+				</div>
+				<button type="submit" class="btn btn-primary block full-width m-b">登 录</button>
+
+
+				<p class="text-muted text-center">
+					<a href="#"><small>忘记密码了？</small></a> | <a href="register.html">注册一个新账号</a>
+				</p>
+
+			</form>
+		</div>
+	</div>
+	<#include "/include/js.htm">
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/bootstrap/bootstrap-select.js?v=${_v}"></script>
+	<script type="text/javascript" src="${bundlePath}/resource/js/module/login/login.js?v=${_v}"></script>
+	
+</body>
+</html>

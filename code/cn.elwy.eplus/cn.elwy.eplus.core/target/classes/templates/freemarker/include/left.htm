@@ -1,0 +1,70 @@
+		<!--左侧导航开始-->
+		<nav class="navbar-default navbar-static-side" role="navigation">
+			<div class="nav-close">
+				<i class="fa fa-times-circle"></i>
+			</div>
+			<div class="sidebar-collapse">
+				<ul class="nav" id="side-menu">
+					<li class="nav-header">
+						<div class="dropdown profile-element">
+							<!-- <span><img alt="image" class="img-circle" src="../../resource/dist/images/profile_small.jpg" /></span>  
+							<span><img alt="image" class="img-circle" src="${resourcePath}/resource/themes/default/img/profile_small.jpg" /></span>--> 
+							<a data-toggle="dropdown" class="dropdown-toggle" href="#"> <span class="clear"><span
+									class="text-muted text-xs block"><strong class="font-bold">${loginUserName}</strong>，您好！<b class="caret"></b></span>
+							</span>
+							</a>
+							<ul class="dropdown-menu animated fadeInRight m-t-xs">
+								<#list postList as post>
+								<li><a href="javascript:;">${post}</a></li>
+								</#list>
+								<li class="divider"></li>
+								<li><a id="logout" href="javascript:;">安全退出</a></li>
+							</ul>
+						</div>
+						<div class="logo-element">PLM</div>
+					</li>
+					<li class="hidden">
+						<a href="#"> <i class="fa fa-home"></i> <span class="nav-label">示例</span> <span class="fa arrow"></span>
+						</a>
+						<ul class="nav nav-second-level">
+							<li><a class="J_menuItem" href="${ctx}/fast-plm/user?operate=list">用户管理</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/multi_demo.html">多表框架</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/YssLayer.html">Web弹层组件layer封装demo</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/checkbox.html">Select实例</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/calendar.htm">日历示例</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/SpiltterDemo.html">Spillter布局</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/indexForm.html">表单设计器</a></li>
+							<li><a class="J_menuItem" href="${resourcePath}/pages/editableGridDemo.html">可编辑表格Demo</a></li>
+						</ul>
+					</li>
+					<!-- 递归  宏定义 -->
+					<#macro navTree children>
+						<#if children?? && children?size gt 0>
+							<#list children as item>
+								<#if item.children?? && item.children?size gt 0>
+									<#if item.level == 1>
+					<li><a href="#"> <i class="fa ${item.icon}"></i> <span class="nav-label">${item.name}</span> <span
+							class="fa arrow"></span></a>
+						<ul class="nav nav-second-level">
+									<#elseif item.level = 2>
+					<li><a href="#"> <i class="fa ${item.icon}"></i> <span class="nav-label">${item.name}</span> <span class="fa arrow"></span></a>
+						<ul class="nav nav-third-level">
+									<#else>
+					<li><a href="#"> <i class="fa ${item.icon}"></i> <span class="nav-label">${item.name}</span> <span
+							class="fa arrow"></span></a>
+						<ul class="nav nav-third-level">
+									</#if>
+							<@navTree children=item.children />
+						</ul>
+					</li>
+								<#else>
+					<li><a class="J_menuItem" href="${item.url}" data-index="${item.id}"> <i class="fa ${item.icon}"></i> ${item.name}</a></li>
+								</#if>
+							</#list>
+						</#if>
+					</#macro>
+					<!-- 调用宏 生成递归树 -->
+					<@navTree children=datas />
+				</ul>
+			</div>
+		</nav>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+${include_themes}R
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>表单权限管理</title>
+<link rel="stylesheet" href="${resourcePath}/resource/themes/css/font-awesome.min.css" media="print" />
+<link rel="stylesheet" href="${resourcePath}/resource/themes/default/css/plugins/jqgrid/ui.jqgrid.css" media="print" />
+<link rel="stylesheet" href="${resourcePath}/resource/themes/default/css/plugins/jqwidgets/jqx.base.css">
+<style type="text/css">
+.full {
+	height: 100%;
+	width: 100%
+}
+
+.noScrollBar {
+	overflow: hidden
+}
+
+.fullWidth {
+	width: 100%;
+}
+</style>
+</head>
+
+<body class="gray-bg noScrollBar">
+	<div id="jqxWidget" class="full">
+		<div id="mainSplitter">
+			<div id="," class="noScrollBar">
+				<div class="ibox-title">
+					<h3>岗位信息</h3>
+				</div>
+				<div class="jqGrid_wrapper">
+					<table id="postGrid"></table>
+					<div id="postGridPage"></div>
+				</div>
+			</div>
+			<div id="rightSplitter" class="noScrollBar">
+				<div class="ibox-title">
+					<h3>表单信息</h3>
+				</div>
+				<div class="jqGrid_wrapper">
+					<table id="formRightsGrid"></table>
+					<div id="formRightsGridPage"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	${include_js}
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/jqwidgets/jqxcore.js"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/plugins/jqwidgets/jqxsplitter.js"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/module/form/formRights.js?v=${_v}"></script>
+	<script type="text/javascript" src="${resourcePath}/resource/js/common/tablePanels.js"></script>
+	<script type="text/javascript">
+	
+	var postListHead = loadListHead(${postListHead});
+	var formListHead = loadListHead(${formRightsList});
+
+	function getPostGridConfig() {
+		return {
+			url : bundlePath + "/position?operate=query",
+			jsonReader : { // 自定义表格的JSON读取参数
+				id : "c_POST_CODE"
+			},
+			rownumbers : true,
+			multiselect : true,
+			shrinkToFit : false,
+			/* onSelectRow : gridOnSelectRow,
+			ondblClickRow : gridOndblClickRow, */
+			altRows : true,
+			altclass : 'someClass',
+			colModel : postListHead
+		}
+	}
+	function getFormGridConfig() {
+		return {
+			// url : bundlePath + "/formRights?operate=query",
+			url : bundlePath + "/resource/js/module/user/applfunc.json",
+			height: '600px',
+			treeGrid : true,
+			checkboxColumn : false,
+			repeatitems : true,
+			treeGridModel : 'adjacency',// nested
+			ExpandColumn : 'c_NAME',
+			ExpandColClick : true,
+			rownumbers : false,
+			multiselect : false,
+			colModel : formListHead
+		}
+	}
+	function loadListHead(myListHead) {
+		var listHead = new Array();
+		var element = {
+			header : 'ID',
+			name : 'id',
+			hidden : true
+		};
+		listHead.push(element);
+		$.each(myListHead, function(index, value) {
+			var key = value.key;
+			var text = value.text;
+			var isShow = value.isShow;
+			if (isShow == '1') {
+				element = {
+					header : text,
+					name : key,
+					width : 150
+				};
+			} else {
+				element = {
+					header : text,
+					name : key,
+					hidden : true
+				};
+			}
+			listHead.push(element);
+		});
+		return listHead;
+	}
+	
+	$(function() {
+		var tablePanels = [];
+
+		var postGrid = new TablePanel("post", getPostGridConfig());
+		tablePanels.push(postGrid);
+		var formGrid = new TablePanel("formRights", getFormGridConfig());
+		tablePanels.push(formGrid);
+		
+		Common.getContext().defaultTablePanel = 'formRights';
+		initTablePanel(tablePanels);
+	});
+	
+	</script>
+</body>
+</html>

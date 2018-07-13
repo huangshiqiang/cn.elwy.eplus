@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>AdminLTE 2 | Widgets</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../resource/themes/default/css/plugins/jqgrid/ui.jqgrid.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="../dist/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="../dist/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="../dist/css/skins/all-skins.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Direct Chat -->
+<div class="panels panels-primary direct-chat">
+    <!-- DIRECT CHAT PRIMARY -->
+    <div class="panels-header with-border1">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab_1" data-toggle="tab">用户管理</a></li>
+            <li><a href="#tab_2" data-toggle="tab">Tab 2</a></li>
+            <!--<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> Dropdown <span
+                    class="caret"></span>
+            </a>
+                <ul class="dropdown-menu">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                </ul></li> -->
+            <li class="btn-group pull-right">
+                <button type="button" class="btn btn-primary" data-toggle="tooltip" data-widget=".panels-detail-toggle"
+                        data-btn-type="add">新增
+                </button>
+                <button type="button" class="btn btn-default" data-btn-type="edit">编辑</button>
+                <button type="button" class="btn btn-default" data-btn-type="copy">复制</button>
+                <button type="button" class="btn btn-default" data-btn-type="delete">删除</button>
+                <button type="button" class="btn btn-default" data-btn-type="audit">审核</button>
+                <button type="button" class="btn btn-default" data-btn-type="unaudit">反审核</button>
+                <button type="button" class="btn btn-default" data-btn-type="import">导入</button>
+                <button type="button" class="btn btn-default" data-btn-type="export">导出</button>
+                <button type="button" class="btn btn-default" data-btn-type="print">打印</button>
+                <button type="button" class="btn btn-default" data-btn-type="print">设置</button>
+            </li>
+        </ul>
+    </div>
+    <div class="tab-pane active" id="tab_1">
+        <form id="searchForm" modelAttribute="role" action="../user/query.json" method="post"
+              class="panels-search form-inline border-bottom"
+              onsubmit="return false;">
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control " id="username" name="username" placeholder="请输入用户名"/>
+            </div>
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control " id="userCode" name="userCode" placeholder="请输入用户代码"/>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+                <button type="reset" class="btn btn-default" data-btn-type="reset">重置</button>
+            </div>
+        </form>
+        <!-- /.panels-header -->
+        <div class="panels-body">
+            <!-- Conversations are loaded here -->
+            <section id="new">
+              <div id="table_div" class="jqGrid_wrapper">
+									<table id="dataGrid"></table>
+									<div id="dataGridPage"></div>
+								</div>
+            </section>
+            <!--/.direct-chat-messages-->
+            <div class="panels-side">
+                <div class="nav-tabs-custom">
+                    <!-- Tabs within a box -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#revenue-chart" data-toggle="tab"><i class="fa fa-edit"></i> 编辑</a>
+                        </li>
+                        <li><a href="#sales-chart" data-toggle="tab"><i class="fa fa-gear"></i> 设置</a></li>
+                        <li class="btn-group pull-right">
+                            <button type="button" class="btn btn-default fa fa-plus" data-btn-type="add"
+                                    title="添加"></button>
+                            <button type="button" class="btn btn-default fa fa-save" data-btn-type="save"
+                                    title="保存"></button>
+                            <button type="button" class="btn btn-default fa fa-edit" data-btn-type="edit"
+                                    title="修改"></button>
+                            <button type="button" class="btn btn-default fa fa-copy" data-btn-type="copy"
+                                    title="修改"></button>
+                            <button type="button" class="btn btn-default fa fa-close" data-btn-type="close"
+                                    title="关闭"></button>
+                        </li>
+                    </ul>
+                    <div class="tab-content no-padding ">
+                        <!-- Morris chart - Sales -->
+                        <div class="chart tab-pane active" id="revenue-chart"
+                             style="position: relative; height: 300px;"></div>
+                        <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.direct-chat-pane -->
+        </div>
+        <!-- /.panels-body -->
+    </div>
+    <!-- /.tab-pane -->
+    <div class="tab-pane" id="tab_2"></div>
+    <!-- /.tab-pane -->
+    <div class="panels-footer">
+        <form action="#" method="post">
+            <div class="input-group">
+                <input type="text" name="message" placeholder="Type Message ..." class="form-control">
+                <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary btn-flat">Send</button>
+                      </span>
+            </div>
+        </form>
+    </div>
+    <!-- /.panels-footer-->
+</div>
+<!-- /.panels -->
+
+<!-- jQuery 2.2.3 -->
+<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../dist/js/app.min.js"></script>
+
+
+	<!-- AdminLTE for demo purposes -->
+	<script src="../dist/js/demo.js"></script>
+	<script type="text/javascript" src="../resource/js/plugins/layer/layer.js"></script>
+	<script type="text/javascript" src="../resource/js/plugins/pace/pace.min.js"></script>
+
+	<script type="text/javascript" src="../resource/js/common/base.js"></script>
+	<script type="text/javascript" src="../resource/js/common/common.js"></script>
+	<script type="text/javascript" src="../resource/js/common/contabs.js"></script>
+	<script type="text/javascript" src="../resource/js/common/layer.js"></script>
+	<script type="text/javascript" src="../resource/js/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+	<script type="text/javascript" src="../resource/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+
+	<script type="text/javascript" src="../resource/js/common/jquery.YssDataGrid.js"></script>
+	<!-- <script type="text/javascript" src="../resource/js/module/user/jqgrid_demo.js"></script> -->
+
+<!-- AdminLTE for demo purposes -->
+<script type="application/javascript">
+    // 重置GridWrapper的高度
+    // id 为最接近table的div的id
+    $(function () {
+
+        $('button[data-btn-type="add"]').on("click", function () {
+            $('.direct-chat').toggleClass('panels-side-open');
+//            $('.right-side').addClass('panels-detail-open');
+        });
+        $('button[data-btn-type="delete"]').on("click", function () {
+            $('.right-side1').removeClass('panels-detail-open');
+            $('.right-side1').addClass('panels-detail');
+        });
+        $('.btn-close-side1').on("click", function () {
+            $('.right-side1').addClass('panels-detail-open');
+        });
+    });
+
+
+</script>
+	<script type="text/javascript" src="../resource/js/module/user/user.js"></script>
+
+</body>
+</html>

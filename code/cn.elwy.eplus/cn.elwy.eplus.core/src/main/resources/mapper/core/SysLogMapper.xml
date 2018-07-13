@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.elwy.eplus.core.entity.SysLogMapper">
+	<resultMap id="BaseResultMap" type="cn.elwy.eplus.core.entity.SysLog">
+		<id column="FID" property="id" jdbcType="VARCHAR" />
+		<result column="FLOG_TYPE" property="logType" jdbcType="VARCHAR" />
+		<result column="FUSER_ID" property="userId" jdbcType="VARCHAR" />
+		<result column="FOPERATOR" property="operator" jdbcType="VARCHAR" />
+		<result column="FLEVEL" property="level" jdbcType="VARCHAR" />
+		<result column="FCLIENT_IP" property="clientIp" jdbcType="VARCHAR" />
+		<result column="FSERVER_IP" property="serverIp" jdbcType="VARCHAR" />
+		<result column="FVISIT_PATH" property="visitPath" jdbcType="VARCHAR" />
+		<result column="FMSG" property="msg" jdbcType="VARCHAR" />
+		<result column="FUPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+		<result column="FCONTENT" property="content" jdbcType="CLOB" />
+	</resultMap>
+	<sql id="Condition_Where_Clause">
+		<where>
+			<choose>
+				<when test="criterias != null and criterias.size() &gt; 0">
+					<foreach collection="criterias" item="criteria" separator="AND">
+						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.rules" item="item">
+									<choose>
+										<when test="item.isNoValue()">
+											${criteria.op} ${item.field} ${item.op}
+										</when>
+										<when test="item.isSingleValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value}
+										</when>
+										<when test="item.isBetweenValue()">
+											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+										</when>
+										<when test="item.isListValue()">
+											${criteria.op} ${item.field} ${item.op}
+											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
+												#{listItem}
+											</foreach>
+										</when>
+									</choose>
+								</foreach>
+							</trim>
+						</if>
+						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
+							${criteria.gop}
+							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+								<foreach collection="criteria.groups" item="groupItem">
+									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
+										${criteria.rgop}
+										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
+											<foreach collection="groupItem.rules" item="ruleItem">
+												<choose>
+													<when test="ruleItem.isNoValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													</when>
+													<when test="ruleItem.isSingleValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													</when>
+													<when test="ruleItem.isBetweenValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													</when>
+													<when test="ruleItem.isListValue()">
+														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+															#{listItem}
+														</foreach>
+													</when>
+												</choose>
+											</foreach>
+										</trim>
+									</if>
+								</foreach>
+							</trim>
+						</if>
+					</foreach>
+				</when>
+				<when test="param != null">
+					<foreach item="value" index="key" collection="param.entrySet()" separator="AND">  
+						${key} = #{value}
+					</foreach>
+				</when>
+			</choose>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<choose>
+			<when test="filterColumns == null || filterColumns.isEmpty()">
+		FID, FLOG_TYPE, FUSER_ID, FOPERATOR, FLEVEL, FCLIENT_IP, FSERVER_IP, FVISIT_PATH, FMSG, FUPDATE_TIME, FCONTENT 
+			</when>
+			<otherwise>
+				<trim prefixOverrides=",">
+					<if test="!filterColumns.contains(&quot;FID&quot;)">
+						FID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FLOG_TYPE&quot;)">
+						FLOG_TYPE, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FUSER_ID&quot;)">
+						FUSER_ID, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FOPERATOR&quot;)">
+						FOPERATOR, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FLEVEL&quot;)">
+						FLEVEL, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FCLIENT_IP&quot;)">
+						FCLIENT_IP, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FSERVER_IP&quot;)">
+						FSERVER_IP, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FVISIT_PATH&quot;)">
+						FVISIT_PATH, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FMSG&quot;)">
+						FMSG, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FUPDATE_TIME&quot;)">
+						FUPDATE_TIME, 
+					</if>
+					<if test="!filterColumns.contains(&quot;FCONTENT&quot;)">
+						FCONTENT 
+					</if>
+				</trim>
+			</otherwise>
+		</choose>
+	</sql>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select
+		<include refid="Base_Column_List" />
+		from ect_sys_log
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+		<if test="orderRules != null">
+			order by 
+			<foreach collection="orderRules" item="item" separator=",">
+				${item.field}
+				<if test="item.desc">
+					desc
+				</if>
+			</foreach>
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+		select 
+		<include refid="Base_Column_List" />
+		from ect_sys_log
+		where FID = #{_parameter.id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from ect_sys_log
+		where FID = #{id,jdbcType=BIGINT}
+	</delete>
+	<delete id="deleteByPrimaryKeys">
+		delete from ect_sys_log
+		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+	</delete>
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
+		delete from ect_sys_log
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</delete>
+	<insert id="insert" parameterType="cn.elwy.eplus.core.entity.SysLog">
+		insert into ect_sys_log (FID, FLOG_TYPE, FUSER_ID, FOPERATOR, FLEVEL, FCLIENT_IP, FSERVER_IP, FVISIT_PATH, FMSG, FUPDATE_TIME, FCONTENT )
+		values (
+			#{id, jdbcType=VARCHAR}, 
+			#{logType, jdbcType=VARCHAR}, 
+			#{userId, jdbcType=VARCHAR}, 
+			#{operator, jdbcType=VARCHAR}, 
+			#{level, jdbcType=VARCHAR}, 
+			#{clientIp, jdbcType=VARCHAR}, 
+			#{serverIp, jdbcType=VARCHAR}, 
+			#{visitPath, jdbcType=VARCHAR}, 
+			#{msg, jdbcType=VARCHAR}, 
+			#{updateTime, jdbcType=TIMESTAMP}, 
+			#{content, jdbcType=CLOB} 
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="cn.elwy.eplus.core.entity.SysLog">
+		insert into ect_sys_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				FID,
+			</if>
+			<if test="logType != null">
+				FLOG_TYPE,
+			</if>
+			<if test="userId != null">
+				FUSER_ID,
+			</if>
+			<if test="operator != null">
+				FOPERATOR,
+			</if>
+			<if test="level != null">
+				FLEVEL,
+			</if>
+			<if test="clientIp != null">
+				FCLIENT_IP,
+			</if>
+			<if test="serverIp != null">
+				FSERVER_IP,
+			</if>
+			<if test="visitPath != null">
+				FVISIT_PATH,
+			</if>
+			<if test="msg != null">
+				FMSG,
+			</if>
+			<if test="updateTime != null">
+				FUPDATE_TIME,
+			</if>
+			<if test="content != null">
+				FCONTENT
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id, jdbcType=VARCHAR},
+			</if>
+			<if test="logType != null">
+				#{logType, jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				#{userId, jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				#{operator, jdbcType=VARCHAR},
+			</if>
+			<if test="level != null">
+				#{level, jdbcType=VARCHAR},
+			</if>
+			<if test="clientIp != null">
+				#{clientIp, jdbcType=VARCHAR},
+			</if>
+			<if test="serverIp != null">
+				#{serverIp, jdbcType=VARCHAR},
+			</if>
+			<if test="visitPath != null">
+				#{visitPath, jdbcType=VARCHAR},
+			</if>
+			<if test="msg != null">
+				#{msg, jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="content != null">
+				#{content, jdbcType=CLOB}
+			</if>
+		</trim>
+	</insert>
+	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
+		select count(*) from ect_sys_log
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<update id="updateByConditionSelective" parameterType="map">
+		update ect_sys_log
+		<set>
+			<if test="data.logType != null">
+				FLOG_TYPE = #{data.logType, jdbcType=VARCHAR},
+			</if>
+			<if test="data.userId != null">
+				FUSER_ID = #{data.userId, jdbcType=VARCHAR},
+			</if>
+			<if test="data.operator != null">
+				FOPERATOR = #{data.operator, jdbcType=VARCHAR},
+			</if>
+			<if test="data.level != null">
+				FLEVEL = #{data.level, jdbcType=VARCHAR},
+			</if>
+			<if test="data.clientIp != null">
+				FCLIENT_IP = #{data.clientIp, jdbcType=VARCHAR},
+			</if>
+			<if test="data.serverIp != null">
+				FSERVER_IP = #{data.serverIp, jdbcType=VARCHAR},
+			</if>
+			<if test="data.visitPath != null">
+				FVISIT_PATH = #{data.visitPath, jdbcType=VARCHAR},
+			</if>
+			<if test="data.msg != null">
+				FMSG = #{data.msg, jdbcType=VARCHAR},
+			</if>
+			<if test="data.updateTime != null">
+				FUPDATE_TIME = #{data.updateTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="data.content != null">
+				FCONTENT = #{data.content, jdbcType=CLOB}
+			</if>
+		</set>
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByCondition" parameterType="map">
+		update ect_sys_log
+		set 
+			FLOG_TYPE = #{data.logType, jdbcType=VARCHAR},
+			FUSER_ID = #{data.userId, jdbcType=VARCHAR},
+			FOPERATOR = #{data.operator, jdbcType=VARCHAR},
+			FLEVEL = #{data.level, jdbcType=VARCHAR},
+			FCLIENT_IP = #{data.clientIp, jdbcType=VARCHAR},
+			FSERVER_IP = #{data.serverIp, jdbcType=VARCHAR},
+			FVISIT_PATH = #{data.visitPath, jdbcType=VARCHAR},
+			FMSG = #{data.msg, jdbcType=VARCHAR},
+			FUPDATE_TIME = #{data.updateTime, jdbcType=TIMESTAMP},
+			FCONTENT = #{data.content, jdbcType=CLOB}
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</update>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.elwy.eplus.core.entity.SysLog">
+		update ect_sys_log
+		<set>
+			<if test="logType != null">
+				FLOG_TYPE = #{logType, jdbcType=VARCHAR},
+			</if>
+			<if test="userId != null">
+				FUSER_ID = #{userId, jdbcType=VARCHAR},
+			</if>
+			<if test="operator != null">
+				FOPERATOR = #{operator, jdbcType=VARCHAR},
+			</if>
+			<if test="level != null">
+				FLEVEL = #{level, jdbcType=VARCHAR},
+			</if>
+			<if test="clientIp != null">
+				FCLIENT_IP = #{clientIp, jdbcType=VARCHAR},
+			</if>
+			<if test="serverIp != null">
+				FSERVER_IP = #{serverIp, jdbcType=VARCHAR},
+			</if>
+			<if test="visitPath != null">
+				FVISIT_PATH = #{visitPath, jdbcType=VARCHAR},
+			</if>
+			<if test="msg != null">
+				FMSG = #{msg, jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				FUPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+			</if>
+			<if test="content != null">
+				FCONTENT = #{content, jdbcType=CLOB}
+			</if>
+		</set>
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.elwy.eplus.core.entity.SysLog">
+		update ect_sys_log
+		set 
+			
+			FLOG_TYPE = #{logType, jdbcType=VARCHAR},
+			FUSER_ID = #{userId, jdbcType=VARCHAR},
+			FOPERATOR = #{operator, jdbcType=VARCHAR},
+			FLEVEL = #{level, jdbcType=VARCHAR},
+			FCLIENT_IP = #{clientIp, jdbcType=VARCHAR},
+			FSERVER_IP = #{serverIp, jdbcType=VARCHAR},
+			FVISIT_PATH = #{visitPath, jdbcType=VARCHAR},
+			FMSG = #{msg, jdbcType=VARCHAR},
+			FUPDATE_TIME = #{updateTime, jdbcType=TIMESTAMP},
+			FCONTENT = #{content, jdbcType=CLOB}
+		where FID = #{id, jdbcType=VARCHAR}
+	</update>
+</mapper>

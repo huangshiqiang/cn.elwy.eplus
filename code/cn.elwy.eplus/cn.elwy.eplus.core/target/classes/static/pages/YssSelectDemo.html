@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SelectDemo</title>
+    <link href="../resource/css/style.min.css" rel="stylesheet">
+    <link href="../resource/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../resource/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../resource/css/animate.min.css" rel="stylesheet">
+    <link href="../resource/plugins/jqgrid/ui.jqgrid.css" rel="stylesheet">
+    <link href="../resource/css/bootstrap-select.css" rel="stylesheet">
+ 
+</head>
+<body>
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="select-test" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">带表格树的下拉</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select id="select-test" class="show-tick form-control m-b">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="select-test-1" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">单选下拉</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select id="select-test-1" class="show-tick form-control m-b">
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="select-test-2" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">多选下拉</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select id="select-test-2" class="show-tick form-control m-b" multiple>
+                </select>
+            </div>
+        </div>
+        <!-- 可删除的select框 -->
+        
+        <div class="form-group">
+            <label for="select-test-3" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">单选下拉</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select id="select-test-3" class="show-tick form-control m-b" multiple data-max-options="1">
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="select-test-4" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">多选下拉</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select id="select-test-4" class="show-tick form-control m-b" multiple>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="select-test-5" class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">自定义</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select id="select-test-5" class="show-tick form-control m-b selectyss"  data-keystr="c_DV_CODE" data-valuestr="c_DV_NAME"
+                data-url="/YSSUCOBRIDGE/fast-plm/select?operate=accountType&type=ZDJSDD" data-setvalue="SFZ,JGZ" multiple>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label  class="col-lg-2 col-md-2 col-sm-2 col-xs-4 control-label">单选实例</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-8">
+                <select  class="show-tick form-control m-b selectyss"   data-keystr="c_DV_CODE" data-valuestr="c_DV_NAME"
+                data-url="../resource/js/module/user/testJson/test2.json" data-lazyload="true" data-max-options="1" multiple>
+                </select>
+            </div>
+        </div>
+        
+        
+        
+        
+        
+        
+        <div class="form-group">
+            <textarea id="result" rows="5" cols="55"></textarea>
+            <input id="btn" type="button" value="获取数据">
+        </div>
+    </form>
+</div>
+<!--  
+<div style="height:400px;width:354px;">
+    <div id="AZone" class="jqGrid_wrapper full-width full-height">
+        <table id="AZone_dataGrid"></table>
+    </div>
+    <script>
+        $(function(){
+            $('#AZone_dataGrid').YssDataGrid({
+                treeGrid : true,
+                treeGridModel : 'adjacency',//nested
+                ExpandColumn : 'c_PORT_NAME_ST',
+                url:"/YSSUCOBRIDGE/webplus/webPort?operate=getPortTree",
+                colModel : [
+                    {
+                        header : '组合简称',
+                        name : 'c_PORT_NAME_ST',
+                        index:'c_PORT_NAME_ST',
+                        width:250,
+                        checkbox:true,
+                        checkedRow:true
+                    },
+                    {
+                        header : 'id',
+                        name : 'id',
+                        index:'id',
+                        width:100,
+                        key:true
+                    }
+                ],
+                rownumbers: false,
+                ExpandColClick: false,
+                pager: "false",
+                multiselect : true,
+                shrinkToFit : false,
+                treeIcons:{
+                    plus:'fa fa-plus-square',
+                    minus:'fa fa-minus-square',
+                    leaf:''
+                }
+            });
+        });
+    </script>
+</div>-->
+   <script src="../resource/plugins/jquery/jquery.min.js"></script>
+	<script src="../resource/plugins/bootstrap/bootstrap.min.js"></script>
+	<script src="../resource/plugins/bootstrap/bootstrap-select.js"></script>
+	<script src="../resource/plugins/jqgrid/i18n/grid.locale-cn.js"></script>
+	<script src="../resource/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+	<script src="../resource/js/common/jquery.YssDataGrid.js"></script>
+	<script src="../resource/js/common/common.js"></script>
+	<script src="../resource/plugins/layer/layer.js"></script>
+	<script src="../resource/js/common/layer.js"></script>
+	<script src="../resource/js/common/jquery.YssSelect.js"></script>
+<script type="text/javascript">
+$(function(){
+	var select2 = $('#select-test-2').YssSelect({
+        url:"../resource/js/module/user/testJson/test2.json",
+        keystr : "c_DV_CODE",
+        valuestr : "c_DV_NAME",
+        
+    });
+
+	var select1 = $('#select-test-1').YssSelect({
+        url:"../resource/js/module/user/testJson/test2.json",
+        keystr : "c_DV_CODE",
+        valuestr : "c_DV_NAME",
+       
+    });
+	
+	var select4 = $('#select-test-4').YssSelect({
+    url:"../resource/js/module/user/testJson/test2.json",
+    keystr : "c_DV_CODE",
+    valuestr : "c_DV_NAME",
+    deleteicon:true
+});
+
+var select3 = $('#select-test-3').YssSelect({
+    url:"../resource/js/module/user/testJson/test2.json",
+    keystr : "c_DV_CODE",
+    valuestr : "c_DV_NAME",
+    deleteicon:true
+});
+
+
+
+
+    var select = $('#select-test').YssSelect({
+        url:"/YSSUCOBRIDGE/webplus/webPort?operate=getPortTree",
+        treeView : true,
+        hiddenHead:true,
+        width:250,
+        treeOpts : {
+            AllowCheckParentNode: true, // 是否在获取值的时候算上父节点
+            ExpandColumn : 'c_PORT_NAME_ST',
+            colModel : [
+                {
+                    header : '组合简称',
+                    name : 'c_PORT_NAME_ST',
+                    index:'c_PORT_NAME_ST',
+                    width:250,
+                    checkbox:true,
+                    checkedRow:true
+                },
+                {
+                    header : '组合代码',
+                    name : 'id',
+                    index:'id',
+                    width:100,
+                    key:true
+                }
+            ]
+        }
+    });
+
+    $('#btn').on('click',function(){
+        $('#result').html("");
+        var html = "带表格树下拉 :" + select.getYssSelectValue() +"\n" +
+            "单选下拉 :" + select1.getYssSelectValue() +"\n" +
+            "多选下拉 :" + select2.getYssSelectValue() +"\n"+
+            "单选下拉 :" + select3.getYssSelectValue() +"\n" +
+            "多选下拉 :" + select4.getYssSelectValue() +"\n";
+        $('#result').html(html);
+    });
+    
+    // 设置默认
+//  select.setYssSelectValue([{id:'ASS_BXZCCP','c_PORT_NAME_ST':'保险资产产品'},{id:'706768','c_PORT_NAME_ST':'平安大华.固收增强三号'}]);
+    select.setYssSelectValue(['ASS_BXZCCP','706768']);
+    select1.setYssSelectValue(['JGZ']);
+    select2.setYssSelectValue(['SFZ','JGZ']);
+    select3.setYssSelectValue(['JGZ']);
+    select4.setYssSelectValue(['SFZ','JGZ'])
+});
+
+</script>
+</body>
+</html>

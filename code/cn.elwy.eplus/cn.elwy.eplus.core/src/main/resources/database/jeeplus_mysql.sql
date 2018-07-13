@@ -1,0 +1,115 @@
+-- ----------------------------
+-- 表的结构 `ECT_WIDGET`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_WIDGET`;
+CREATE TABLE `ECT_WIDGET` (
+  `FID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `FCODE` varchar(50) NOT NULL COMMENT '代码',
+  `FNAME` varchar(50) NOT NULL COMMENT '名称',
+  `FTYPE` varchar(20) NOT NULL COMMENT '类型',
+  `FENABLE` bit(1) DEFAULT 0 COMMENT '是否启用',
+  `FORDER_NO` int(11) DEFAULT 0 COMMENT '排序编号',
+  `FINCLUDE_FILE` text NOT NULL COMMENT '引用文件',
+  `FTEMPLATE` text NOT NULL COMMENT '控件模版',
+  `FREMARK` varchar(300) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`FID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8 COMMENT='控件类型信息表';
+
+-- ----------------------------
+-- 表的结构 `ECT_MODEL`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_MODEL`;
+CREATE TABLE `ECT_MODEL` (
+  `FID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `FCODE` varchar(50) NOT NULL COMMENT '代码',
+  `FNAME` varchar(50) NOT NULL COMMENT '名称',
+  `FCLASS_NAME` varchar(50) default NULL COMMENT '类名称',
+  `FPARENT_TABLE` varchar(50) default NULL COMMENT '关联父表',
+  `FPARENT_TABLE_FK` varchar(200) default NULL COMMENT '关联父表外键',
+  `FISSYNC` varchar(50) default NULL COMMENT '同步',
+  `FTYPE` varchar(20) NOT NULL COMMENT '类型:TABLE、VIEW',
+  `FENABLE` bit(1) DEFAULT 0 COMMENT '是否启用',
+  `FCAN_CUSTOM` bit(1) DEFAULT 0 COMMENT '可自定义显示',
+  `FORDER_NO` int(11) DEFAULT 0 COMMENT '排序编号',
+  `FCREATOR_ID` bigint(20) NOT NULL COMMENT '创建者',
+  `FCREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+  `FLAST_EDITOR_ID` bigint(20) DEFAULT NULL COMMENT '修改者',
+  `FLAST_EDIT_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+  `FCHECK_STATE` smallint(6) default 0 COMMENT '审核状态',
+  `FCHECKER_ID` bigint(20) DEFAULT NULL COMMENT '审核员',
+  `FCHECK_TIME` datetime DEFAULT NULL COMMENT '审核时间',
+  `FDELETE_STATE` smallint(6) default 0 COMMENT '删除状态',
+  `FDELETOR_ID` bigint(20) DEFAULT NULL COMMENT '删除者',
+  `FDELETE_TIME` datetime DEFAULT NULL COMMENT '删除时间',
+  `FREMARK` varchar(300) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`FID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8 COMMENT='模型信息表';
+
+-- ----------------------------
+-- 表的结构 `ECT_MODEL_COLUMN`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_MODEL_COLUMN`;
+CREATE TABLE `ECT_MODEL_COLUMN` (
+  `FID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `FMODEL_ID` bigint(20) NOT NULL COMMENT '模型ID',
+  `FMODEL_CODE` varchar(50) DEFAULT NULL COMMENT '模型代码',
+  `FCODE` varchar(50) NOT NULL COMMENT '代码',
+  `FNAME` varchar(50) NOT NULL COMMENT '名称',
+  `FJAVA_FIELD` varchar(200) DEFAULT NULL COMMENT 'JAVA字段名',
+  `FJAVA_TYPE` varchar(100) DEFAULT NULL COMMENT 'JAVA类型',
+  `FJDBC_TYPE` varchar(100) DEFAULT NULL COMMENT 'JDBC类型',
+  `FDICT_TYPE` VARCHAR(100) DEFAULT NULL COMMENT '字典类型',
+  `FIS_PK` bit(1) DEFAULT NULL COMMENT '是否主键',
+  `FIS_NULL` bit(1) DEFAULT NULL COMMENT '是否可为空',
+  `FIS_INSERT` bit(1) DEFAULT NULL COMMENT '是否为插入字段',
+  `FIS_EDIT` bit(1) DEFAULT NULL COMMENT '是否编辑字段',
+  `FIS_LIST` bit(1) DEFAULT NULL COMMENT '是否列表字段',
+  `FIS_QUERY` bit(1) DEFAULT NULL COMMENT '是否查询字段',
+  `FIS_FORM` bit(1) DEFAULT NULL COMMENT '是否表单显示',
+  `FQUERY_TYPE` VARCHAR(50) DEFAULT NULL COMMENT '查询方式（等于、不等于、大于、小于、范围、左LIKE、右LIKE、左右LIKE）',
+  `FWIDGET_ID` bigint(20) DEFAULT NULL COMMENT '控件类型（文本框、文本域、下拉框、复选框、单选框、字典选择、人员选择、部门选择、区域选择）',
+--  `FWIDGET_PARAMS` varchar(2000) NOT NULL COMMENT '控件JSON参数',
+--  `FFIELD_LABELS` VARCHAR(50) DEFAULT NULL,
+--  `FFIELD_KEYS` VARCHAR(512) DEFAULT NULL,
+  `FSEARCH_LABEL` VARCHAR(50) DEFAULT NULL,
+  `FSEARC_HKEY` VARCHAR(50) DEFAULT NULL,
+  `FVALIDATE_TYPE` VARCHAR(50) DEFAULT NULL,
+  `FMIN_LENGTH` VARCHAR(20) DEFAULT NULL,
+  `FMAX_LENGTH` VARCHAR(20) DEFAULT NULL,
+  `FMIN_VALUE` VARCHAR(20) DEFAULT NULL,
+  `FMAX_VALUE` VARCHAR(20) DEFAULT NULL,
+  `FENABLE` bit(1) DEFAULT 0 COMMENT '是否启用',
+  `FORDER_NO` int(11) DEFAULT 0 COMMENT '排序编号',
+  `FSETTINGS` VARCHAR(2000) DEFAULT NULL COMMENT '其它设置（扩展字段JSON）',
+  PRIMARY KEY (`FID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8 COMMENT='模型列信息表';
+
+-- ----------------------------
+-- 表的结构 `ECT_GENERATE_MODEL`
+-- ----------------------------
+DROP TABLE IF EXISTS `ECT_GENERATE_MODEL`;
+CREATE TABLE `ECT_GENERATE_MODEL` (
+  `FID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `FMODEL_ID` bigint(20) default NULL COMMENT '模型ID',
+  `FNAME` varchar(50) NOT NULL COMMENT '名称',
+  `FCATEGORY` varchar(50) default NULL COMMENT '分类',
+  `FFILE_PATH` varchar(500) default NULL COMMENT '生成文件路径',
+  `FPACKAGE_NAME` varchar(200) default NULL COMMENT '生成包路径',
+  `FMODULE_NAME` varchar(30) default NULL COMMENT '生成模块名',
+  `FSUB_MODULE_NAME` varchar(30) default NULL COMMENT '生成子模块名',
+  `FFUNCTION_CODE` varchar(50) default NULL COMMENT '功能代码',
+  `FFUNCTION_NAME` varchar(50) default NULL COMMENT '功能名称',
+  `FFUNCTION_AUTHOR` varchar(50) default NULL COMMENT '功能作者',
+  `FCREATOR_ID` bigint(20) NOT NULL COMMENT '创建者',
+  `FCREATE_TIME` datetime NOT NULL COMMENT '创建时间',
+  `FLAST_EDITOR_ID` bigint(20) DEFAULT NULL COMMENT '修改者',
+  `FLAST_EDIT_TIME` datetime DEFAULT NULL COMMENT '修改时间',
+  `FCHECK_STATE` smallint(6) default 0 COMMENT '审核状态',
+  `FCHECKER_ID` bigint(20) DEFAULT NULL COMMENT '审核员',
+  `FCHECK_TIME` datetime DEFAULT NULL COMMENT '审核时间',
+  `FDELETE_STATE` smallint(6) default 0 COMMENT '删除状态',
+  `FDELETOR_ID` bigint(20) DEFAULT NULL COMMENT '删除者',
+  `FDELETE_TIME` datetime DEFAULT NULL COMMENT '删除时间',
+  `FREMARK` varchar(300) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`FID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8 COMMENT='生成模型信息表';

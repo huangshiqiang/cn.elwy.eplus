@@ -20,7 +20,7 @@ public class BizImpl<E> implements Biz<E> {
 
 	protected boolean auditSwitch;
 	protected boolean autoAudit;
-	protected Dao<E> dao;
+	private Dao<E> dao;
 
 	public Dao<E> getDao() {
 		return dao;

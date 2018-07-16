@@ -67,7 +67,7 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 	@DS(DsId.master)
 	public Pageable<User> queryByCondition(Parameter parameter, Pageable<User> page) {
 		System.out.println("queryByCondition没走缓存");
-		return dao.selectByConditionPage(parameter, page);
+		return getDao().selectByConditionPage(parameter, page);
 	}
 
 	@Override

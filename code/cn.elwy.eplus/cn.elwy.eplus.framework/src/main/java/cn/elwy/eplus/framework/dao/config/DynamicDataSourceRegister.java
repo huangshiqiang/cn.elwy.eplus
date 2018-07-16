@@ -24,6 +24,8 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.type.AnnotationMetadata;
 
+import cn.elwy.common.util.AssertUtil;
+
 /**
  * 启动动态数据源请在启动类中（如SpringBootSampleApplication）添加 @Import(DynamicDataSourceRegister.class)
  * @author huangsq
@@ -87,9 +89,14 @@ public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar,
 		final SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
 		sessionFactory.setDataSource(clusterDataSource);
 
-		sessionFactory.setTypeAliasesPackage(env.getProperty("mybatis.typeAliasesPackage"));// 指定基包
-		sessionFactory.setMapperLocations(
-				new PathMatchingResourcePatternResolver().getResources(env.getProperty("mybatis.mapperLocations")));
+		String typeAliasesPackage = env.getProperty("mybatis.typeAliasesPackage");
+		if (AssertUtil.isNotEmpty(typeAliasesPackage)) {
+			sessionFactory.setTypeAliasesPackage(typeAliasesPackage);// 指定基包
+		}
+		String mapperLocations = env.getProperty("mybatis.mapperLocations");
+		if (AssertUtil.isNotEmpty(mapperLocations)) {
+			sessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(mapperLocations));
+		}
 
 		return sessionFactory.getObject();
 	}

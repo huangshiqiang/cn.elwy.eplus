@@ -1,21 +1,27 @@
 package cn.elwy.eplus.framework.cache;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import redis.clients.jedis.JedisPoolConfig;
 
 /**
  * Redis缓存配置类
@@ -23,50 +29,93 @@ import org.springframework.data.redis.core.RedisTemplate;
  * @version 1.0, 2018-02-19
  */
 @Configuration
-@EnableCaching
 @ConfigurationProperties(prefix = "spring.redis")
 public class RedisConfig extends CachingConfigurerSupport {
 
 	private final Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
-	// @Value("${spring.redis.host}")
 	private String host;
 
-	// @Value("${spring.redis.port}")
-	private int port;
-
-	// @Value("${spring.redis.timeout}")
-	private int timeout;
-
-	// @Value("${spring.redis.pool.max-idle}")
-	private int maxIdle;
-
-	// @Value("${spring.redis.pool.max-wait}")
-	private long maxWaitMillis;
-
-	// @Value("${spring.redis.password}")
 	private String password;
 
-	@Bean
-	public JedisConnectionFactory redisConnectionFactory() {
+	private int port;
+
+	private int timeout;
+
+	private int maxIdle;// 最大空闲连接数, 默认8个
+
+	private long maxWaitMillis;// 获取连接时的最大等待毫秒数
+
+	private boolean testOnBorrow;// 在获取连接的时候检查有效性, 默认false
+
+	private boolean testWhileIdle;// 空闲是否检查是否有效，默认为false
+
+	private List<String> cacheNames = new ArrayList<String>();// 空闲是否检查是否有效，默认为false
+
+	@Bean("jedisPoolConfig")
+	public JedisPoolConfig jedisPoolConfig() {
+		JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+		jedisPoolConfig.setMaxIdle(maxIdle);
+		jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
+		jedisPoolConfig.setTestOnBorrow(testOnBorrow);
+		jedisPoolConfig.setTestWhileIdle(testWhileIdle);
+		return jedisPoolConfig;
+	}
+
+	@Bean("jedisConnectionFactory")
+	@DependsOn({ "jedisPoolConfig" })
+	public JedisConnectionFactory redisConnectionFactory(JedisPoolConfig jedisPoolConfig) {
+		// 如果集群使用new JedisConnectionFactory(new
+		// RedisClusterConfiguration()),集群配置在RedisClusterConfiguration,这里省略具体配置
 		JedisConnectionFactory redisConnectionFactory = new JedisConnectionFactory();
+		redisConnectionFactory.setPoolConfig(jedisPoolConfig);
+
 		redisConnectionFactory.setHostName(host);
 		redisConnectionFactory.setPort(port);
+		redisConnectionFactory.setTimeout(timeout);
 		return redisConnectionFactory;
 	}
 
-	@Bean
-	public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+	/**
+	 * RedisTemplate配置
+	 * @param connectionFactory
+	 * @return RedisTemplate
+	 */
+	@Bean("redisTemplate")
+	@DependsOn({ "jedisConnectionFactory" })
+	public RedisTemplate<String, Object> redisTemplate(JedisConnectionFactory connectionFactory) {
 		RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
-		redisTemplate.setConnectionFactory(factory);
+		redisTemplate.setConnectionFactory(connectionFactory);
+		RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+		redisTemplate.setKeySerializer(redisSerializer);
+		// Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new
+		// Jackson2JsonRedisSerializer<Object>(Object.class);
+		// ObjectMapper om = new ObjectMapper();
+		// om.setVisibility(PropertyAccessor.ALL,
+		// JsonAutoDetect.Visibility.ANY);redisCacheManager
+		// om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+		// jackson2JsonRedisSerializer.setObjectMapper(om);
+		// redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+		JdkSerializationRedisSerializer jdkSerializationRedisSerializer = new JdkSerializationRedisSerializer();
+		redisTemplate.setValueSerializer(jdkSerializationRedisSerializer);
 		return redisTemplate;
 	}
 
+	/**
+	 * redis缓存管理器
+	 * @param redisTemplate
+	 * @return
+	 */
 	@Bean("redisCacheManager")
-	public RedisCacheManager cacheManager(RedisTemplate<?, ?> redisTemplate) {
+	@DependsOn({ "redisTemplate" })
+	public RedisCacheManager redisCacheManager(RedisTemplate<?, ?> redisTemplate) {
 		RedisCacheManager cacheManager = new RedisCacheManager(redisTemplate);
-		// 设置缓存过期时间(秒)
-		// cacheManager.setDefaultExpiration(60);
+		// 设置缓存过期时间(秒),默认为0不限制
+		// cacheManager.setDefaultExpiration(120);
+		// List<String> cacheNames = new ArrayList<String>();
+		// cacheNames.add("myRedis");
+		// cacheNames.add("j2CacheRedis");
+		cacheManager.setCacheNames(cacheNames);
 		return cacheManager;
 	}
 
@@ -81,6 +130,77 @@ public class RedisConfig extends CachingConfigurerSupport {
 	// JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout,
 	// password);
 	// return jedisPool;
+	// }
+
+	// /**
+	// * spring cache整合(EhCache,Redis)二级缓存具体Cache
+	// * @param redisCacheManager
+	// * @param redisTemplate
+	// * @return
+	// */
+	// @Bean
+	// public MyCacheTemplate myCacheTemplate(RedisCacheManager redisCacheManager,
+	// RedisTemplate<String, Object> redisTemplate) {
+	// MyCacheTemplate myCacheTemplate = new MyCacheTemplate();
+	// myCacheTemplate.setRedisCacheManager(redisCacheManager);
+	// myCacheTemplate.setRedisTemplate(redisTemplate);
+	// myCacheTemplate.setName("j2CacheRedis");
+	// return myCacheTemplate;
+	// }
+	//
+	// /**
+	// * 自定义redis缓存
+	// * @param redisCacheManager
+	// * @param redisTemplate
+	// * @return
+	// */
+	// @Bean
+	// public MyRedisCache myRedisCache(RedisCacheManager redisCacheManager,
+	// RedisTemplate<String, Object> redisTemplate) {
+	// MyRedisCache myRedisCache = new MyRedisCache();
+	// // 自定义属性配置缓存名称
+	// myRedisCache.setName("myRedis");
+	// // redis缓存管理器
+	// myRedisCache.setRedisCacheManager(redisCacheManager);
+	// // redisTemplate 实例
+	// myRedisCache.setRedisTemplate(redisTemplate);
+	// return myRedisCache;
+	// }
+	//
+	// /**
+	// * spring cache 统一缓存管理器
+	// * @param myCacheTemplate
+	// * @param myRedisCache
+	// * @return
+	// */
+	// @Bean
+	// @Primary
+	// public CacheManager cacheManager(MyCacheTemplate myCacheTemplate,
+	// MyRedisCache myRedisCache) {
+	// MyCacheManager cacheManager = new MyCacheManager();
+	// cacheManager.setMyCacheTemplate(myCacheTemplate);
+	// cacheManager.setMyRedisCache(myRedisCache);
+	// return cacheManager;
+	// }
+	//
+	// // 整合ehcache
+	// @Bean
+	// public EhCacheCacheManager ehCacheCacheManager(EhCacheManagerFactoryBean
+	// ch) {
+	// EhCacheCacheManager ehCacheCacheManager = new
+	// EhCacheCacheManager(ch.getObject());
+	// return ehCacheCacheManager;
+	// }
+	//
+	// @Bean
+	// public EhCacheManagerFactoryBean ehCacheManagerFactoryBean() {
+	// EhCacheManagerFactoryBean cacheManagerFactoryBean = new
+	// EhCacheManagerFactoryBean();
+	// // 这里暂时借用shiro的ehcache配置文件
+	// Resource r = new ClassPathResource("ehcache-shiro.xml");
+	// cacheManagerFactoryBean.setConfigLocation(r);
+	// cacheManagerFactoryBean.setShared(true);
+	// return cacheManagerFactoryBean;
 	// }
 
 	@Bean
@@ -170,6 +290,30 @@ public class RedisConfig extends CachingConfigurerSupport {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public boolean isTestOnBorrow() {
+		return testOnBorrow;
+	}
+
+	public void setTestOnBorrow(boolean testOnBorrow) {
+		this.testOnBorrow = testOnBorrow;
+	}
+
+	public boolean isTestWhileIdle() {
+		return testWhileIdle;
+	}
+
+	public void setTestWhileIdle(boolean testWhileIdle) {
+		this.testWhileIdle = testWhileIdle;
+	}
+
+	public List<String> getCacheNames() {
+		return cacheNames;
+	}
+
+	public void setCacheNames(List<String> cacheNames) {
+		this.cacheNames = cacheNames;
 	}
 
 }

@@ -26,7 +26,7 @@ public class DynamicSqlSessionDaoSupport extends SqlSessionDaoSupport implements
 	private ApplicationContext applicationContext;
 
 	private static Map<Object, SqlSessionFactory> targetSqlSessionFactorys;
-	private SqlSessionFactory defaultTargetSqlSessionFactory;
+	private static SqlSessionFactory defaultTargetSqlSessionFactory;
 	private SqlSession sqlSession;
 
 	@Override
@@ -53,8 +53,16 @@ public class DynamicSqlSessionDaoSupport extends SqlSessionDaoSupport implements
 		DynamicSqlSessionDaoSupport.targetSqlSessionFactorys = targetSqlSessionFactorys;
 	}
 
+	public static Map<Object, SqlSessionFactory> getTargetSqlSessionFactorys() {
+		return targetSqlSessionFactorys;
+	}
+
 	public void setDefaultTargetSqlSessionFactory(SqlSessionFactory defaultTargetSqlSessionFactory) {
-		this.defaultTargetSqlSessionFactory = defaultTargetSqlSessionFactory;
+		DynamicSqlSessionDaoSupport.defaultTargetSqlSessionFactory = defaultTargetSqlSessionFactory;
+	}
+
+	public static SqlSessionFactory getDefaultTargetSqlSessionFactory() {
+		return defaultTargetSqlSessionFactory;
 	}
 
 	@Override

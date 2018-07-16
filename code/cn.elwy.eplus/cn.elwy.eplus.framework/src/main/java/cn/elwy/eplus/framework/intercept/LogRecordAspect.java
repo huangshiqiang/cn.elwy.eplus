@@ -11,7 +11,6 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-
 import cn.elwy.common.log.Logger;
 import cn.elwy.common.log.LoggerFactory;
 import cn.elwy.common.util.JsonUtil;

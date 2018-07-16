@@ -1,7 +1,5 @@
 package cn.elwy.eplus;
 
-import java.io.File;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
@@ -15,13 +13,10 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import cn.elwy.common.AppContext;
-import cn.elwy.common.Constant;
 import cn.elwy.common.log.LoggerFactory;
-import cn.elwy.eplus.framework.dao.config.DynamicDataSourceRegister;
 import cn.elwy.eplus.framework.views.FreeMarkerView;
 import cn.elwy.eplus.framework.web.SystemInitListener;
 
@@ -36,7 +31,7 @@ import cn.elwy.eplus.framework.web.SystemInitListener;
 // @EnableTransactionManagement // 启注解事务管理
 // @EnableEncryptableProperties
 // @EnableAspectJAutoProxy(proxyTargetClass = true)
-@Import({ DynamicDataSourceRegister.class }) // 注册动态多数据源
+//@Import({ DynamicDataSourceRegister.class }) // 注册动态多数据源
 // @ServletComponentScan
 public class WebApplication extends SpringBootServletInitializer {
 

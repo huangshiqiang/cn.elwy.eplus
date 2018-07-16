@@ -19,7 +19,6 @@ import org.springframework.web.servlet.ModelAndView;
 import cn.elwy.common.PropertyConstant;
 import cn.elwy.common.i18n.Msg;
 import cn.elwy.common.model.BaseEntity;
-import cn.elwy.common.model.Condition;
 import cn.elwy.common.model.Page;
 import cn.elwy.common.model.Parameter;
 import cn.elwy.common.model.ResultDto;

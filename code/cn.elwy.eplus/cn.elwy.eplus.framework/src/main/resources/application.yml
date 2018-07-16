@@ -44,8 +44,9 @@ spring:
     proxy-target-class: true #false为启用jdk默认动态代理,true为cglib动态代理
   cache:
     type: jcache  
-    jcache.config: classpath:ehcache3.xml
-    jcache.provider: org.ehcache.jsr107.EhcacheCachingProvider
+    jcache:
+      config: classpath:ehcache3.xml
+      provider: org.ehcache.jsr107.EhcacheCachingProvider
     
   mvc:
     static-path-pattern: /**
@@ -83,11 +84,44 @@ spring:
     # 连接超时时间（毫秒）
     timeout: 0
     ssl: false
+    cacheNames: myRedis,j2CacheRedis
+
+
+shiro:  
+  hashAlgorithm: SHA-256
+  hashIterations: 1024
+  storedCredentialsHexEncoded: true
+  loginUrl: /login
+  successUrl: /
+  unauthorizedUrl: /403
+  cacheConfig: classpath:ehcache2.xml
+  filterChainDefinitionMap:
+    /logout: logout
+    /login: anon
+    /error: anon
+    /static/**: anon
+    /resource/**: anon
+    /plugins/**: anon
+    /pages/**: anon
+    /dist/**: anon
+    /bootstrap/**: anon
+    /reg: anon
+    /: authc
+    /**: authc
 
 
 
 
 
+
+
+
+
+    
+    
+    
+    
+    
   devtools:
     restart:
       enabled: false #是否开启开发者工具（true/false）

@@ -3,9 +3,11 @@ package cn.elwy.eplus.framework.dao.mybatis;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.elwy.common.exception.DaoException;
 import cn.elwy.common.model.Pageable;
@@ -22,7 +24,7 @@ import cn.elwy.eplus.framework.dao.config.DynamicSqlSessionDaoSupport;
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
-public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>, Constant, SqlIdConst {
+public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	protected final Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -35,6 +37,11 @@ public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>
 	 * @fields sqlNamespace SqlMapping命名空间
 	 */
 	protected String sqlNamespace = getDefaultSqlNamespace();
+
+	@Autowired
+	private SqlSession sqlSession;
+
+	private SqlSessionFactory sessionFactory;
 
 	public MybatisDao() {
 	}
@@ -129,7 +136,7 @@ public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>
 	}
 
 	@Override
-	public E insert(E entity) {
+	public E insert(E entity) throws DaoException {
 		Assert.notNull(entity);
 		String sqlName = getSqlName(insert);
 		try {
@@ -155,7 +162,6 @@ public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>
 	}
 
 	@Override
-	@Transactional
 	public List<E> insertBatch(List<E> entityList) {
 		Assert.notNull(entityList);
 		List<E> idList = new ArrayList<E>();
@@ -296,7 +302,6 @@ public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>
 	}
 
 	@Override
-	@Transactional
 	public int updateByPrimaryKeys(List<E> entityList) {
 		Assert.notNull(entityList);
 		int result = 0;
@@ -307,7 +312,6 @@ public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>
 	}
 
 	@Override
-	@Transactional
 	public int updateByPrimaryKeySelectives(List<E> entityList) {
 		Assert.notNull(entityList);
 		int result = 0;
@@ -315,6 +319,21 @@ public class MybatisDao<E> extends DynamicSqlSessionDaoSupport implements Dao<E>
 			result += this.updateByPrimaryKeySelective(entity);
 		}
 		return result;
+	}
+
+	public SqlSession getSqlSession() {
+		return sqlSession;
+	}
+
+	public SqlSessionFactory getSessionFactory() {
+		if (sessionFactory == null) {
+			sessionFactory = DynamicSqlSessionDaoSupport.getDefaultTargetSqlSessionFactory();
+		}
+		return sessionFactory;
+	}
+
+	public void setSessionFactory(SqlSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 
 	public String getDsId() {

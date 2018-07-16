@@ -1,12 +1,10 @@
 package cn.elwy.eplus.core.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import cn.elwy.common.exception.RunException;
 import cn.elwy.common.model.Pageable;
@@ -14,7 +12,6 @@ import cn.elwy.common.model.Parameter;
 import cn.elwy.common.model.ResultDto;
 import cn.elwy.eplus.core.biz.OrgBiz;
 import cn.elwy.eplus.core.biz.UserBiz;
-import cn.elwy.eplus.core.entity.Org;
 import cn.elwy.eplus.core.service.UserService;
 import cn.elwy.eplus.framework.entity.User;
 import cn.elwy.eplus.framework.service.BaseService;
@@ -24,8 +21,7 @@ import cn.elwy.eplus.framework.service.BaseService;
  * @author elwy
  * @version 1.0, 2018-02-19
  */
-@Service
-@Transactional(readOnly = true)
+@Service()
 public class UserServiceImpl extends BaseService<User> implements UserService {
 
 	@Resource
@@ -37,6 +33,7 @@ public class UserServiceImpl extends BaseService<User> implements UserService {
 	OrgBiz orgBiz;
 
 	@Override
+	@Cacheable(cacheNames="CONSTANT", unless="#result==null")
 	public ResultDto queryByCondition(Parameter parameter) {
 		ResultDto rd = new ResultDto();
 		try {
@@ -59,11 +56,40 @@ public class UserServiceImpl extends BaseService<User> implements UserService {
 	 * @param page 分页查询条件
 	 * @return 实体对象列表
 	 */
+	@Cacheable(cacheNames="CONSTANT", unless="#result==null")
 	public ResultDto queryByCondition(Parameter parameter, Pageable<User> page) {
 		ResultDto queryByCondition = super.queryByCondition(parameter, page);
 		try {
-			List<Org> queryAll = orgBiz.queryAll();
-			System.out.println(queryAll);
+//			UserBiz bean = SpringContext.getBean(UserBiz.class);
+//			List<User> queryAll = bean.queryAll();
+//			Org org = new Org();
+//			org.setId("111");
+//			org.setOrgType("tttt");
+//			org.setOrgName("test");
+//			org.setOrgCode("1111");
+//			org.setLvalue(1);
+//			org.setRvalue(2);
+//			org.setCreateTime(new Date());
+//			org.setCreatorId("11");
+//			org.setEditState(0);
+//			orgBiz.insert(org);
+//			
+//			org.setId("111");
+//			org.setOrgType(null);
+//			org.setOrgName("test");
+//			org.setOrgCode("1111");
+//			org.setLvalue(1);
+//			org.setRvalue(2);
+//			org.setCreateTime(new Date());
+//			org.setCreatorId("11");
+//			org.setEditState(0);
+//			orgBiz.insert(org);
+//			
+//			
+//			User entity = new User();
+//			entity.setId("fdsa");
+//			super.insert(entity );
+//			System.out.println(queryAll);
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception

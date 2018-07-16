@@ -3,7 +3,6 @@ package cn.elwy.eplus.framework.security.shiro;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -11,34 +10,22 @@ import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 
-import cn.elwy.common.model.Parameter;
-import cn.elwy.common.model.ResultDto;
-import cn.elwy.eplus.core.service.UserService;
 import cn.elwy.eplus.framework.entity.User;
 
 /**
  * @author huangsq
  * @version 1.0, 2018-02-19
  */
+@Configuration
 public class ShiroRealm extends AuthorizingRealm {
 
-	/**
-	 * 加盐参数
-	 */
-	public final static String hashAlgorithmName = "MD5";
-
-	/**
-	 * 循环次数
-	 */
-	public final static int hashIterations = 2;
-
-	@Autowired
-	private UserService userService;
+	public ShiroRealm() {
+		System.out.println("ShiroRealm");
+	}
 
 	/**
 	 * 登录认证
@@ -46,26 +33,36 @@ public class ShiroRealm extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
 		String username = String.valueOf(token.getPrincipal());
-		String password = new String((char[]) token.getCredentials());
 		// 通过数据库进行验证
 		try {
-			Parameter parameter = new Parameter();
-			parameter.setId("11");
-			parameter.addParam("FUSER_NAME", username);
-			// parameter.addParam("FPASSWORD", password);
-			final ResultDto rd = userService.queryByCondition(parameter);// PrimaryKey(parameter.getId());
-			if (rd != null) {
-				User user = (User) rd.getDatas().get(0);
-				Session session = SecurityUtils.getSubject().getSession();
-				session.setAttribute("user", user);
-				// 设置盐值
+			User user = ShiroFactroy.instance().user(username);
+			if (user != null) {
 				ByteSource salt = ByteSource.Util.bytes(username);
 
-				// byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
-				return new SimpleAuthenticationInfo(username, // new Principal(user, token.isMobileLogin()),
+				return new SimpleAuthenticationInfo(username, // new Principal(user,
+						// token.isMobileLogin()),
 						user.getPassword(), salt, getName());
-				// return new SimpleAuthenticationInfo(username, password, getName());
 			}
+			// Parameter parameter = new Parameter();
+			// parameter.setId("11");
+			// parameter.addParam("FUSER_NAME", username);
+			// // parameter.addParam("FPASSWORD", password);
+			// UserService userService = SpringContext.getBean(UserService.class);
+			// final ResultDto rd = userService.queryByCondition(parameter);//
+			// PrimaryKey(parameter.getId());
+			// if (rd != null) {
+			// User user2 = (User) rd.getDatas().get(0);
+			// Session session = SecurityUtils.getSubject().getSession();
+			// session.setAttribute("user", user2);
+			// // 设置盐值
+			// ByteSource salt = ByteSource.Util.bytes(username);
+			//
+			// // byte[] salt = Encodes.decodeHex(user.getPassword().substring(0,16));
+			// return new SimpleAuthenticationInfo(user2, // new Principal(user,
+			// // token.isMobileLogin()),
+			// password, salt, getName());
+			// // return new SimpleAuthenticationInfo(username, password, getName());
+			// }
 			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -98,7 +95,8 @@ public class ShiroRealm extends AuthorizingRealm {
 		authorizationInfo.addStringPermissions(permissions);
 
 		// final User user = userService.selectByUsername(username);
-		// final List<Role> roleInfos = roleService.selectRolesByUserId(user.getId());
+		// final List<Role> roleInfos =
+		// roleService.selectRolesByUserId(user.getId());
 		// for (Role role : roleInfos) {
 		// // 添加角色
 		// System.err.println(role);
@@ -113,17 +111,5 @@ public class ShiroRealm extends AuthorizingRealm {
 		// }
 		return authorizationInfo;
 	}
-
-	// /**
-	// * 设置认证加密方式
-	// */
-	// @Override
-	// public void setCredentialsMatcher(CredentialsMatcher credentialsMatcher) {
-	// HashedCredentialsMatcher md5CredentialsMatcher = new
-	// HashedCredentialsMatcher();
-	// md5CredentialsMatcher.setHashAlgorithmName(hashAlgorithmName);
-	// md5CredentialsMatcher.setHashIterations(hashIterations);
-	// super.setCredentialsMatcher(md5CredentialsMatcher);
-	// }
 
 }

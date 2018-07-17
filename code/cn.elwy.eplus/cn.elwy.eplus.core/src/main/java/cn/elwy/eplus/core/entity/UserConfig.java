@@ -1,6 +1,6 @@
 package cn.elwy.eplus.core.entity;
 
-import cn.elwy.common.model.CommonEntity;
+import cn.elwy.common.entity.CommonEntity;
 
 public class UserConfig extends CommonEntity {
 

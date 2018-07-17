@@ -31,21 +31,21 @@
 			<choose>
 				<when test="criterias != null and criterias.size() &gt; 0">
 					<foreach collection="criterias" item="criteria" separator="AND">
-						<if test="criteria.rules != null and criteria.rules.size() &gt; 0">
+						<if test="criteria.queryRules != null and criteria.queryRules.size() &gt; 0">
 							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
-								<foreach collection="criteria.rules" item="item">
+								<foreach collection="criteria.queryRules" item="item" index="_i">
 									<choose>
 										<when test="item.isNoValue()">
-											${criteria.op} ${item.field} ${item.op}
+											${criteria.queryOps[_i]} ${item.field} ${item.op}
 										</when>
 										<when test="item.isSingleValue()">
-											${criteria.op} ${item.field} ${item.op} #{item.value}
+											${criteria.queryOps[_i]} ${item.field} ${item.op} #{item.value}
 										</when>
 										<when test="item.isBetweenValue()">
-											${criteria.op} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
+											${criteria.queryOps[_i]} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
 										</when>
 										<when test="item.isListValue()">
-											${criteria.op} ${item.field} ${item.op}
+											${criteria.queryOps[_i]} ${item.field} ${item.op}
 											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
 												#{listItem}
 											</foreach>
@@ -54,27 +54,27 @@
 								</foreach>
 							</trim>
 						</if>
-						<if test="criteria.groups != null and criteria.groups.size() &gt; 0">
-							${criteria.gop}
+						<if test="criteria.ruleGroups != null and criteria.ruleGroups.size() &gt; 0">
+							${criteria.op}
 							<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
-								<foreach collection="criteria.groups" item="groupItem">
-									<if test="groupItem.rules != null and groupItem.rules.size() &gt; 0">
-										${criteria.rgop}
+								<foreach collection="criteria.ruleGroups" item="groupItem" index="_j">
+									<if test="groupItem.queryRules != null and groupItem.queryRules.size() &gt; 0">
+										${criteria.groupOps[_j]}
 										<trim prefix="(" suffix=")" prefixOverrides="AND|OR">
-											<foreach collection="groupItem.rules" item="ruleItem">
+											<foreach collection="groupItem.queryRules" item="item" index="_k">
 												<choose>
-													<when test="ruleItem.isNoValue()">
-														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
+													<when test="item.isNoValue()">
+														${groupItem.queryOps[_k]} ${item.field} ${item.op}
 													</when>
-													<when test="ruleItem.isSingleValue()">
-														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value}
+													<when test="item.isSingleValue()">
+														${groupItem.queryOps[_k]} ${item.field} ${item.op} #{item.value}
 													</when>
-													<when test="ruleItem.isBetweenValue()">
-														${groupItem.op} ${ruleItem.field} ${ruleItem.op} #{ruleItem.value} and #{ruleItem.secondValue}
+													<when test="item.isBetweenValue()">
+														${groupItem.queryOps[_k]} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
 													</when>
-													<when test="ruleItem.isListValue()">
-														${groupItem.op} ${ruleItem.field} ${ruleItem.op}
-														<foreach collection="ruleItem.value" item="listItem" open="(" close=")" separator=",">
+													<when test="item.isListValue()">
+														${groupItem.queryOps[_k]} ${item.field} ${item.op}
+														<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
 															#{listItem}
 														</foreach>
 													</when>
@@ -175,7 +175,13 @@
 			</otherwise>
 		</choose>
 	</sql>
-	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+	<select id="countByCondition" parameterType="cn.elwy.common.entity.Condition" resultType="java.lang.Long">
+		select count(*) from ect_widgets
+		<if test="_parameter != null">
+			<include refid="Condition_Where_Clause" />
+		</if>
+	</select>
+	<select id="selectByCondition" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Condition">
 		select
 		<include refid="Base_Column_List" />
 		from ect_widgets
@@ -192,7 +198,7 @@
 			</foreach>
 		</if>
 	</select>
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.model.Parameter">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="cn.elwy.common.entity.Condition">
 		select 
 		<include refid="Base_Column_List" />
 		from ect_widgets
@@ -206,7 +212,7 @@
 		delete from ect_widgets
 		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
 	</delete>
-	<delete id="deleteByCondition" parameterType="cn.elwy.common.model.Parameter">
+	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Condition">
 		delete from ect_widgets
 		<if test="_parameter != null">
 			<include refid="Condition_Where_Clause" />
@@ -385,12 +391,6 @@
 			</if>
 		</trim>
 	</insert>
-	<select id="countByCondition" parameterType="cn.elwy.common.model.Parameter" resultType="java.lang.Long">
-		select count(*) from ect_widgets
-		<if test="_parameter != null">
-			<include refid="Condition_Where_Clause" />
-		</if>
-	</select>
 	<update id="updateByConditionSelective" parameterType="map">
 		update ect_widgets
 		<set>

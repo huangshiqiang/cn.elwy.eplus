@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import cn.elwy.common.entity.ResultDto;
 import cn.elwy.common.exception.CheckedException;
 import cn.elwy.common.exception.RunException;
-import cn.elwy.common.model.ResultDto;
 
 /**
  * 统一异常处理类

@@ -2,7 +2,7 @@ package cn.elwy.eplus.core.biz;
 
 import java.util.List;
 
-import cn.elwy.common.model.Parameter;
+import cn.elwy.common.entity.Parameter;
 import cn.elwy.eplus.framework.biz.Biz;
 import cn.elwy.eplus.framework.entity.User;
 

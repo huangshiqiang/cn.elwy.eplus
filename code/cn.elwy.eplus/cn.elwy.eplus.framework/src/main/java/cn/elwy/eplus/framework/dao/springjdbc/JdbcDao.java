@@ -7,8 +7,8 @@ import javax.sql.DataSource;
 
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
+import cn.elwy.common.entity.Condition;
+import cn.elwy.common.entity.Pageable;
 import cn.elwy.eplus.framework.dao.Dao;
 
 /**
@@ -25,12 +25,12 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public int countByCondition(Parameter parameter) {
+	public int countByCondition(Condition condition) {
 		return 0;
 	}
 
 	@Override
-	public int deleteByCondition(Parameter parameter) {
+	public int deleteByCondition(Condition condition) {
 		return 0;
 	}
 
@@ -63,12 +63,12 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public List<E> selectByCondition(Parameter parameter) {
+	public List<E> selectByCondition(Condition condition) {
 		return null;
 	}
 
 	@Override
-	public Pageable<E> selectByConditionPage(Parameter parameter, Pageable<E> page) {
+	public Pageable<E> selectByConditionPage(Condition condition, Pageable<E> page) {
 		return null;
 	}
 
@@ -83,12 +83,12 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public int updateByCondition(Parameter parameter) {
+	public int updateByCondition(Condition condition) {
 		return 0;
 	}
 
 	@Override
-	public int updateByConditionSelectives(Parameter parameter) {
+	public int updateByConditionSelectives(Condition condition) {
 		return 0;
 	}
 

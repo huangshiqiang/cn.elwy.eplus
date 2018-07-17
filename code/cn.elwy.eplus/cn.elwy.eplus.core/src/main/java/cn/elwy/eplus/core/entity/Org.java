@@ -2,7 +2,7 @@ package cn.elwy.eplus.core.entity;
 
 import java.util.Date;
 
-import cn.elwy.common.model.CommonEntity;
+import cn.elwy.common.entity.CommonEntity;
 
 public class Org extends CommonEntity {
 

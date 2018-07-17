@@ -2,9 +2,9 @@ package cn.elwy.eplus.framework.service;
 
 import java.util.List;
 
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
-import cn.elwy.common.model.ResultDto;
+import cn.elwy.common.entity.Pageable;
+import cn.elwy.common.entity.Parameter;
+import cn.elwy.common.entity.ResultDto;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**

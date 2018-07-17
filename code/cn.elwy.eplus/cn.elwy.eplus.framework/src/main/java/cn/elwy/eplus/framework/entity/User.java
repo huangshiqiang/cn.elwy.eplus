@@ -2,7 +2,7 @@ package cn.elwy.eplus.framework.entity;
 
 import java.util.Date;
 
-import cn.elwy.common.model.CommonEntity;
+import cn.elwy.common.entity.CommonEntity;
 
 public class User extends CommonEntity {
 

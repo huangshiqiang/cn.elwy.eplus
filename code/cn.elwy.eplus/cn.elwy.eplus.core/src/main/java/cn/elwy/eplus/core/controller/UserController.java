@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import cn.elwy.common.model.ResultDto;
+import cn.elwy.common.entity.ResultDto;
 import cn.elwy.common.util.AssertUtil;
-import cn.elwy.eplus.core.service.UserService;
 import cn.elwy.eplus.framework.annotation.Function;
 import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.controller.BaseController;
 import cn.elwy.eplus.framework.entity.User;
+import cn.elwy.eplus.framework.service.UserService;
 import cn.elwy.eplus.framework.web.WebUtil;
 
 /**

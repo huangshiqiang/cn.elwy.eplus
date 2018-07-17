@@ -13,6 +13,7 @@ import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import cn.elwy.common.AppContext;
@@ -26,6 +27,7 @@ import cn.elwy.eplus.framework.web.SystemInitListener;
  * @version 1.0, 2018-02-19
  */
 @SpringBootApplication()
+@ComponentScan({ "cn.elwy.eplus" })
 // @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @EnableCaching // 开启缓存
 // @EnableTransactionManagement // 启注解事务管理

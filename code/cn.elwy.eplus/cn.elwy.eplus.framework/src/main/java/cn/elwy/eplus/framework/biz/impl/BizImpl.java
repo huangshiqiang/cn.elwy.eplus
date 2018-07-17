@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.elwy.common.entity.Auditable;
+import cn.elwy.common.entity.Condition;
+import cn.elwy.common.entity.ConditionBuilder;
+import cn.elwy.common.entity.Deletable;
+import cn.elwy.common.entity.Editable;
+import cn.elwy.common.entity.Pageable;
+import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.id.IdUtil;
-import cn.elwy.common.model.Auditable;
-import cn.elwy.common.model.Deletable;
-import cn.elwy.common.model.Editable;
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
 import cn.elwy.common.util.Assert;
 import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.biz.Biz;
@@ -43,12 +45,14 @@ public class BizImpl<E> implements Biz<E> {
 
 	@Operation(code = "count")
 	public int countByCondition(Parameter parameter) {
-		return dao.countByCondition(parameter);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return dao.countByCondition(condition);
 	}
 
 	@Operation(code = "delete")
 	public int deleteByCondition(Parameter parameter) {
-		return dao.deleteByCondition(parameter);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return dao.deleteByCondition(condition);
 	}
 
 	@Operation(code = "delete")
@@ -148,12 +152,14 @@ public class BizImpl<E> implements Biz<E> {
 	// @Cacheable(value = "CONSTANT", key = "test")
 	@Operation(code = "queryByCondition")
 	public List<E> queryByCondition(Parameter parameter) {
-		return dao.selectByCondition(parameter);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return dao.selectByCondition(condition);
 	}
 
 	@Operation(code = "queryByCondition")
 	public Pageable<E> queryByCondition(Parameter parameter, Pageable<E> page) {
-		return dao.selectByConditionPage(parameter, page);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return dao.selectByConditionPage(condition, page);
 	}
 
 	@Operation(code = "queryByPrimaryKey")
@@ -183,7 +189,8 @@ public class BizImpl<E> implements Biz<E> {
 		if (entity instanceof Editable) {
 			updateEditInfo((Editable) entity);
 		}
-		return dao.updateByCondition(parameter);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return dao.updateByCondition(condition);
 	}
 
 	@Operation(code = "updateByConditionSelectives")
@@ -192,7 +199,8 @@ public class BizImpl<E> implements Biz<E> {
 		if (entity instanceof Editable) {
 			updateEditInfo((Editable) entity);
 		}
-		return dao.updateByConditionSelectives(parameter);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return dao.updateByConditionSelectives(condition);
 	}
 
 	@Operation(code = "updateByPrimaryKey")

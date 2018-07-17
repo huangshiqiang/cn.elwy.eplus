@@ -21,10 +21,10 @@ import org.slf4j.LoggerFactory;
 import com.github.pagehelper.Page;
 
 import cn.elwy.common.PropertyConstant;
+import cn.elwy.common.entity.Criteria;
+import cn.elwy.common.entity.OrderRule;
+import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.exception.ExceptionSupport;
-import cn.elwy.common.model.Criteria;
-import cn.elwy.common.model.OrderRule;
-import cn.elwy.common.model.Parameter;
 import cn.elwy.common.util.AssertUtil;
 import cn.elwy.common.util.ConvertTypeUtil;
 import cn.elwy.common.util.DateUtil;
@@ -105,7 +105,7 @@ public class WebUtil implements PropertyConstant {
 		String criteriaText = request.getParameter(CRITERIAS);
 		if (AssertUtil.isNotEmpty(criteriaText)) {
 			List<Criteria> criterias = JsonUtil.toList(criteriaText, Criteria.class);
-			// for (Criteria criteria : criterias) {
+			// for (Criteria criteria : groups) {
 			// parameter.and(criteria);
 			// }
 			parameter.setCriterias(criterias);

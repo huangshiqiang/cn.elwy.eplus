@@ -9,9 +9,9 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
+import cn.elwy.common.entity.Condition;
 import cn.elwy.common.log.Logger;
 import cn.elwy.common.log.LoggerFactory;
-import cn.elwy.common.model.Condition;
 import cn.elwy.common.util.AssertUtil;
 import cn.elwy.eplus.framework.annotation.DataAuth;
 import cn.elwy.eplus.framework.annotation.Log;

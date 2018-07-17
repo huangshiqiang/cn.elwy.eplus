@@ -8,21 +8,21 @@ import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import cn.elwy.common.dao.SqlBuilder;
+import cn.elwy.common.entity.Criteria;
+import cn.elwy.common.entity.Pageable;
+import cn.elwy.common.entity.Parameter;
+import cn.elwy.common.entity.ResultDto;
+import cn.elwy.common.entity.Criteria.OP;
 import cn.elwy.common.exception.RunException;
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
-import cn.elwy.common.model.ResultDto;
 import cn.elwy.eplus.core.biz.OrgBiz;
 import cn.elwy.eplus.core.biz.UserBiz;
 import cn.elwy.eplus.core.entity.Org;
-import cn.elwy.eplus.core.service.UserService;
 import cn.elwy.eplus.framework.context.SpringContext;
 import cn.elwy.eplus.framework.entity.User;
 import cn.elwy.eplus.framework.service.BaseService;
+import cn.elwy.eplus.framework.service.UserService;
 
 /**
  * UserService
@@ -64,12 +64,41 @@ public class UserServiceImpl extends BaseService<User> implements UserService {
 	 * @param page 分页查询条件
 	 * @return 实体对象列表
 	 */
-	@Cacheable(cacheNames="CONSTANT", unless="#result==null")
+//	@Cacheable(cacheNames="CONSTANT", unless="#result==null")
 	public ResultDto queryByCondition(Parameter parameter, Pageable<User> page) {
 		ResultDto queryByCondition = super.queryByCondition(parameter, page);
 		try {
+			Criteria c = new Criteria();
+//			c.orAllLike("FUSER_NAME", "fa");
+//			c.andStartLike("FUSER_CODE", "fa");
+//			c.orEqualTo("FEDIT_STATE", 1);
+			
+			Criteria c1 = new Criteria();
+			// c.setGop(gop);
+			c1.orAllLike("FUSER_NAME", "fa");
+			c1.orStartLike("FUSER_CODE", "fa");
+			c.orCriteria(c1);
+			
+			Criteria c2 = new Criteria();
+			// c.setGop(gop);
+			c2.orAllLike("FUSER_NAME", "fa");
+			c2.orStartLike("FUSER_CODE", "fa");
+			c.orCriteria(c2);
+			
+//			c.setOp(OP.OR);
+			parameter.getCriterias().add(c);
+
 			UserBiz bean = SpringContext.getBean(UserBiz.class);
-			List<User> queryAll = bean.queryAll();
+			List<User> queryAll = bean.queryByCondition(parameter);
+			
+				SqlBuilder instance = SqlBuilder.getInstance(c);
+				String ql = instance.buildQl();
+				System.out.println(ql);
+//				List<Object> valueList = instance.getValueList();
+
+			
+			
+			
 			Org org = new Org();
 			org.setId("111");
 			org.setOrgType("tttt");

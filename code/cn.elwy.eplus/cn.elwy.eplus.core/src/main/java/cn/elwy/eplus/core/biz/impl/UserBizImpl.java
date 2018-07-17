@@ -10,8 +10,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
+import cn.elwy.common.entity.Condition;
+import cn.elwy.common.entity.ConditionBuilder;
+import cn.elwy.common.entity.Pageable;
+import cn.elwy.common.entity.Parameter;
 import cn.elwy.eplus.core.biz.UserBiz;
 import cn.elwy.eplus.core.dao.UserDao;
 import cn.elwy.eplus.framework.annotation.DS;
@@ -67,7 +69,8 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 	@DS(DsId.master)
 	public Pageable<User> queryByCondition(Parameter parameter, Pageable<User> page) {
 		System.out.println("queryByCondition没走缓存");
-		return getDao().selectByConditionPage(parameter, page);
+		Condition condition = ConditionBuilder.getCondition(parameter);
+		return getDao().selectByConditionPage(condition, page);
 	}
 
 	@Override

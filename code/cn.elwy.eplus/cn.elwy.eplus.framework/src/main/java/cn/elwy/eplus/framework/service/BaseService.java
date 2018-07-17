@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import cn.elwy.common.entity.Pageable;
+import cn.elwy.common.entity.Parameter;
+import cn.elwy.common.entity.ResultDto;
 import cn.elwy.common.exception.RunException;
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
-import cn.elwy.common.model.ResultDto;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**

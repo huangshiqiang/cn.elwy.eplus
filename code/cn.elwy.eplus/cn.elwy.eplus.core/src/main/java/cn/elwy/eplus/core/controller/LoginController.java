@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import cn.elwy.common.model.ResultDto;
+import cn.elwy.common.entity.ResultDto;
 import cn.elwy.eplus.framework.entity.User;
 import cn.elwy.eplus.framework.security.SessionUtil;
 

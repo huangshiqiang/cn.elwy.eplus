@@ -2,7 +2,7 @@ package cn.elwy.eplus.framework.support;
 
 import java.util.List;
 
-import cn.elwy.common.model.Pageable;
+import cn.elwy.common.entity.Pageable;
 
 /**
  * @author huangsq

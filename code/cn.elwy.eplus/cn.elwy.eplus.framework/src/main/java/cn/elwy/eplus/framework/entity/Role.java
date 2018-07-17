@@ -1,6 +1,6 @@
 package cn.elwy.eplus.framework.entity;
 
-import cn.elwy.common.model.CommonEntity;
+import cn.elwy.common.entity.CommonEntity;
 
 public class Role extends CommonEntity {
 

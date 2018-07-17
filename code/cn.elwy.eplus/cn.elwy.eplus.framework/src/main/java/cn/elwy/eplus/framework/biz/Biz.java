@@ -2,8 +2,8 @@ package cn.elwy.eplus.framework.biz;
 
 import java.util.List;
 
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
+import cn.elwy.common.entity.Pageable;
+import cn.elwy.common.entity.Parameter;
 import cn.elwy.eplus.framework.dao.Dao;
 
 /**

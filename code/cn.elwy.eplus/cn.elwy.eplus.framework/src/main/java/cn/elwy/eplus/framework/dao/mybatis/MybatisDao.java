@@ -9,9 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import cn.elwy.common.entity.Condition;
+import cn.elwy.common.entity.Pageable;
 import cn.elwy.common.exception.DaoException;
-import cn.elwy.common.model.Pageable;
-import cn.elwy.common.model.Parameter;
 import cn.elwy.common.util.Assert;
 import cn.elwy.common.util.ClassUtil;
 import cn.elwy.eplus.framework.Constant;
@@ -92,22 +92,22 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public int countByCondition(Parameter parameter) {
-		Assert.notNull(parameter);
+	public int countByCondition(Condition condition) {
+		Assert.notNull(condition);
 		String sqlName = getSqlName(countByCondition);
 		try {
-			return getSqlSession().selectOne(sqlName, parameter);
+			return getSqlSession().selectOne(sqlName, condition);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据条件统计记录数出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public int deleteByCondition(Parameter parameter) {
-		Assert.notNull(parameter);
+	public int deleteByCondition(Condition condition) {
+		Assert.notNull(condition);
 		String sqlName = getSqlName(deleteByCondition);
 		try {
-			return getSqlSession().delete(sqlName, parameter);
+			return getSqlSession().delete(sqlName, condition);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据条件删除对象出错！语句：%s", sqlName), e);
 		}
@@ -209,23 +209,23 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public List<E> selectByCondition(Parameter parameter) {
+	public List<E> selectByCondition(Condition condition) {
 		String sqlName = getSqlName(selectByCondition);
 		try {
-			return getSqlSession().selectList(sqlName, parameter);
+			return getSqlSession().selectList(sqlName, condition);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据条件查询对象出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public Pageable<E> selectByConditionPage(Parameter parameter, Pageable<E> page) {
-		Assert.notNull(parameter);
+	public Pageable<E> selectByConditionPage(Condition condition, Pageable<E> page) {
+		Assert.notNull(condition);
 		Assert.notNull(page);
 		String sqlName = getSqlName(selectByCondition);
 		try {
 			MyBatisPage<E> mbPage = new MyBatisPage<E>(page.getOffset(), page.getLimit());
-			List<E> datas = getSqlSession().selectList(sqlName, parameter, mbPage);
+			List<E> datas = getSqlSession().selectList(sqlName, condition, mbPage);
 			page.setDatas(datas);
 			page.setTotalRecord(mbPage.getTotalRecord());
 			return page;
@@ -257,23 +257,23 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public int updateByCondition(Parameter parameter) {
+	public int updateByCondition(Condition condition) {
 		String sqlName = getSqlName(updateByCondition);
-		return update(sqlName, parameter);
+		return update(sqlName, condition);
 	}
 
 	@Override
-	public int updateByConditionSelectives(Parameter parameter) {
+	public int updateByConditionSelectives(Condition condition) {
 		String sqlName = getSqlName(updateByConditionSelectives);
-		return update(sqlName, parameter);
+		return update(sqlName, condition);
 	}
 
-	protected int update(String sqlName, Parameter parameter) {
-		Assert.notNull(parameter);
-		Object record = parameter.getData();
+	protected int update(String sqlName, Condition condition) {
+		Assert.notNull(condition);
+		Object record = condition.getData();
 		Assert.notNull(record);
 		try {
-			return getSqlSession().update(sqlName, parameter);
+			return getSqlSession().update(sqlName, condition);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据条件更新对象出错！语句：%s", sqlName), e);
 		}

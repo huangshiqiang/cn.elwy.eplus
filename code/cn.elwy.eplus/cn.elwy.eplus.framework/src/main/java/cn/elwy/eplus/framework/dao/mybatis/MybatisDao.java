@@ -18,7 +18,6 @@ import cn.elwy.eplus.framework.Constant;
 import cn.elwy.eplus.framework.annotation.DS.DsId;
 import cn.elwy.eplus.framework.dao.Dao;
 import cn.elwy.eplus.framework.dao.SqlIdConst;
-import cn.elwy.eplus.framework.dao.config.DynamicSqlSessionDaoSupport;
 
 /**
  * @author huangsq
@@ -48,6 +47,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 获取泛型类型的实体对象类全名
+	 * 
 	 * @return
 	 */
 	protected String getDefaultSqlNamespace() {
@@ -68,6 +68,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 获取SqlMapping命名空间
+	 * 
 	 * @return SqlMapping命名空间
 	 */
 	public String getSqlNamespace() {
@@ -76,7 +77,9 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 设置SqlMapping命名空间。 以改变默认的SqlMapping命名空间， 不能滥用此方法随意改变SqlMapping命名空间。
-	 * @param sqlNamespace SqlMapping命名空间
+	 * 
+	 * @param sqlNamespace
+	 *            SqlMapping命名空间
 	 */
 	public void setSqlNamespace(String sqlNamespace) {
 		this.sqlNamespace = sqlNamespace;
@@ -84,7 +87,9 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 将SqlMapping命名空间与给定的SqlMapping名组合在一起。
-	 * @param sqlName SqlMapping名
+	 * 
+	 * @param sqlName
+	 *            SqlMapping名
 	 * @return 组合了SqlMapping命名空间后的完整SqlMapping名
 	 */
 	protected String getSqlName(String sqlName) {
@@ -183,32 +188,6 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public List<E> selectAll() {
-		String sqlName = getSqlName(selectByCondition);
-		try {
-			return getSqlSession().selectList(sqlName);
-		} catch (Exception e) {
-			throw new DaoException(String.format("根据条件查询对象出错！语句：%s", sqlName), e);
-		}
-	}
-
-	@Override
-	public Pageable<E> selectAllByPage(Pageable<E> page) {
-		Assert.notNull(page);
-		String sqlName = getSqlName(selectByCondition);
-		try {
-			MyBatisPage<E> mbPage = new MyBatisPage<E>(page.getOffset(), page.getLimit());
-			List<E> datas = getSqlSession().selectList(sqlName, mbPage);
-
-			page.setDatas(datas);
-			page.setTotalRecord(mbPage.getTotalRecord());
-			return page;
-		} catch (Exception e) {
-			throw new DaoException(String.format("根据条件分页查询对象出错！语句：%s", sqlName), e);
-		}
-	}
-
-	@Override
 	public List<E> selectByCondition(Condition condition) {
 		String sqlName = getSqlName(selectByCondition);
 		try {
@@ -219,7 +198,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public Pageable<E> selectByConditionPage(Condition condition, Pageable<E> page) {
+	public Pageable<E> selectByCondition(Condition condition, Pageable<E> page) {
 		Assert.notNull(condition);
 		Assert.notNull(page);
 		String sqlName = getSqlName(selectByCondition);
@@ -327,7 +306,8 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	public SqlSessionFactory getSessionFactory() {
 		if (sessionFactory == null) {
-			sessionFactory = DynamicSqlSessionDaoSupport.getDefaultTargetSqlSessionFactory();
+			// sessionFactory =
+			// DynamicSqlSessionDaoSupport.getDefaultTargetSqlSessionFactory();
 		}
 		return sessionFactory;
 	}

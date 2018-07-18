@@ -68,7 +68,7 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public Pageable<E> selectByConditionPage(Condition condition, Pageable<E> page) {
+	public Pageable<E> selectByCondition(Condition condition, Pageable<E> page) {
 		return null;
 	}
 

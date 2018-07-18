@@ -141,12 +141,12 @@ public class BizImpl<E> implements Biz<E> {
 
 	@Operation(code = "queryAll")
 	public List<E> queryAll() {
-		return dao.selectAll();
+		return dao.selectByCondition(null);
 	}
 
 	@Operation(code = "queryAll")
 	public Pageable<E> queryAllByPage(Pageable<E> page) {
-		return dao.selectAllByPage(page);
+		return dao.selectByCondition(null, page);
 	}
 
 	// @Cacheable(value = "CONSTANT", key = "test")
@@ -159,7 +159,7 @@ public class BizImpl<E> implements Biz<E> {
 	@Operation(code = "queryByCondition")
 	public Pageable<E> queryByCondition(Parameter parameter, Pageable<E> page) {
 		Condition condition = ConditionBuilder.getCondition(parameter);
-		return dao.selectByConditionPage(condition, page);
+		return dao.selectByCondition(condition, page);
 	}
 
 	@Operation(code = "queryByPrimaryKey")

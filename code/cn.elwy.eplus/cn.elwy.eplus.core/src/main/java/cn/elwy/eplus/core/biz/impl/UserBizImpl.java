@@ -70,7 +70,7 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 	public Pageable<User> queryByCondition(Parameter parameter, Pageable<User> page) {
 		System.out.println("queryByCondition没走缓存");
 		Condition condition = ConditionBuilder.getCondition(parameter);
-		return getDao().selectByConditionPage(condition, page);
+		return getDao().selectByCondition(condition, page);
 	}
 
 	@Override

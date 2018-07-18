@@ -90,6 +90,7 @@ public class UserServiceImpl extends BaseService<User> implements UserService {
 
 			UserBiz bean = SpringContext.getBean(UserBiz.class);
 			List<User> queryAll = bean.queryByCondition(parameter);
+			List<User> queryAll1 = bean.queryAll();
 			
 				SqlBuilder instance = SqlBuilder.getInstance(c);
 				String ql = instance.buildQl();
@@ -99,34 +100,34 @@ public class UserServiceImpl extends BaseService<User> implements UserService {
 			
 			
 			
-			Org org = new Org();
-			org.setId("111");
-			org.setOrgType("tttt");
-			org.setOrgName("test");
-			org.setOrgCode("1111");
-			org.setLvalue(1);
-			org.setRvalue(2);
-			org.setCreateTime(new Date());
-			org.setCreatorId("11");
-			org.setEditState(0);
-			orgBiz.insert(org);
-			
-			org.setId("111");
-			org.setOrgType(null);
-			org.setOrgName("test");
-			org.setOrgCode("1111");
-			org.setLvalue(1);
-			org.setRvalue(2);
-			org.setCreateTime(new Date());
-			org.setCreatorId("11");
-			org.setEditState(0);
-			orgBiz.insert(org);
-			
-			
-			User entity = new User();
-			entity.setId("fdsa");
-			super.insert(entity );
-			System.out.println(queryAll);
+//			Org org = new Org();
+//			org.setId("111");
+//			org.setOrgType("tttt");
+//			org.setOrgName("test");
+//			org.setOrgCode("1111");
+//			org.setLvalue(1);
+//			org.setRvalue(2);
+//			org.setCreateTime(new Date());
+//			org.setCreatorId("11");
+//			org.setEditState(0);
+//			orgBiz.insert(org);
+//			
+//			org.setId("111");
+//			org.setOrgType(null);
+//			org.setOrgName("test");
+//			org.setOrgCode("1111");
+//			org.setLvalue(1);
+//			org.setRvalue(2);
+//			org.setCreateTime(new Date());
+//			org.setCreatorId("11");
+//			org.setEditState(0);
+//			orgBiz.insert(org);
+//			
+//			
+//			User entity = new User();
+//			entity.setId("fdsa");
+//			super.insert(entity );
+//			System.out.println(queryAll);
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception

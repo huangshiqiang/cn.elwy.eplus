@@ -6,7 +6,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * APP接口的Utils类
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class AppSendUtils {
 
-	private static final Logger Log = Logger.getLogger(AppSendUtils.class);
+	private static final Logger Log = LoggerFactory.getLogger(AppSendUtils.class);
 
 	public static String connectURL(String dest_url, String commString) {
 
@@ -45,7 +46,7 @@ public class AppSendUtils {
 			rec_string = sb.toString();
 
 		} catch (Exception e) {
-			Log.error(e, e);
+			Log.error(e.getMessage(), e);
 			return "";
 		} finally {
 			try {
@@ -59,7 +60,7 @@ public class AppSendUtils {
 					rd.close();
 				}
 			} catch (Exception e) {
-				Log.error(e, e);
+				Log.error(e.getMessage(), e);
 			}
 		}
 

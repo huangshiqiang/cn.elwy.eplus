@@ -38,7 +38,6 @@ public abstract class BaseController<E> implements PropertyConstant, Constant {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
-	protected String modelView;
 	protected String detailView;
 	protected String listView;
 	protected String formView;
@@ -50,7 +49,6 @@ public abstract class BaseController<E> implements PropertyConstant, Constant {
 	}
 
 	public BaseController(String modelView) {
-		this.modelView = modelView;
 		this.detailView = modelView + "_detail";
 		this.formView = modelView + "_form";
 		this.listView = modelView;

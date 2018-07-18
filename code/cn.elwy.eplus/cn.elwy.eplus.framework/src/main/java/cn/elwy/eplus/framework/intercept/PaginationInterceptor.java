@@ -21,7 +21,8 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.elwy.common.util.CloseUtil;
 import cn.elwy.eplus.framework.dao.dialect.Dialect;
@@ -37,7 +38,7 @@ import cn.elwy.eplus.framework.dao.mybatis.MyBatisPage;
 		RowBounds.class, ResultHandler.class }) })
 public class PaginationInterceptor implements Interceptor {
 
-	private static final Logger logger = Logger.getLogger(PaginationInterceptor.class);
+	private static final Logger logger = LoggerFactory.getLogger(PaginationInterceptor.class);
 
 	private String dialectType = "mysql";
 

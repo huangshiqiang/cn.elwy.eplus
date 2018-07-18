@@ -29,13 +29,6 @@ public class ControllerSupport implements PropertyConstant {
 
 		ModelAndView mv = getModelAndView(request);
 		mv.setViewName(view);
-		if (view != null) {
-			mv.addObject("author", "http://www.elwy.cn");
-			mv.addObject("keywords", "通用企业管理系统");
-			mv.addObject("description", "通用企业管理系统");
-			mv.addObject("title", "通用企业管理系统");
-			mv.addObject("_v", "1.0");
-		}
 
 		return mv;
 	}

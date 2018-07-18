@@ -18,7 +18,8 @@ import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import cn.elwy.common.util.CloseUtil;
 import cn.elwy.eplus.framework.dao.dialect.Dialect;
@@ -34,7 +35,7 @@ import cn.elwy.eplus.framework.dao.mybatis.MyBatisPage;
 		@Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class PageInterceptor implements Interceptor {
 
-	private static final Logger logger = Logger.getLogger(PageInterceptor.class);
+	private static final Logger logger = LoggerFactory.getLogger(PageInterceptor.class);
 	private String dialectType = "mysql";
 
 	@Override

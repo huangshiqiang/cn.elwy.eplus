@@ -2,7 +2,6 @@ package cn.elwy.eplus.framework.security.shiro;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,16 +17,13 @@ import cn.elwy.eplus.framework.service.UserService;
 @Transactional(readOnly = true)
 public class ShiroFactroy implements IShiro {
 
-	@Autowired
-	private UserService userService;
-
 	public static IShiro instance() {
 		return SpringContext.getBean(IShiro.class);
 	}
 
 	@Override
 	public User user(String username) {
-
+		UserService userService = SpringContext.getBean(UserService.class);
 		Parameter parameter = new Parameter();
 		parameter.setId("11");
 		parameter.addParam("FUSER_NAME", username);

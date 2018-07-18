@@ -45,8 +45,8 @@ public class SystemInitListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent event) {
 		try {
 			String path = event.getServletContext().getRealPath("/");
-			AppContext.defaultAppHome(new File(path, Constant.APP_HOME_DIR));
-			logger.info("=================app_home: " + path);
+			AppContext.setDefaultAppHome(new File(path, Constant.APP_HOME_DIR));
+			logger.info("=================defaultAppHome: " + path);
 
 			AppContext.start();
 			logger.info("初始化应用系统成功！");

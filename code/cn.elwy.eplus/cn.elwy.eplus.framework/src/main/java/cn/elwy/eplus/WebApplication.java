@@ -41,7 +41,7 @@ public class WebApplication extends SpringBootServletInitializer {
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		try {
 			String path = servletContext.getRealPath("/");
-			// AppContext.defaultAppHome(new File(path, Constant.APP_HOME_DIR));
+			// AppContext.setDefaultAppHome(new File(path, Constant.APP_HOME_DIR));
 			AppContext.start();
 			Logger logger = LoggerFactory.getLogger(getClass());
 

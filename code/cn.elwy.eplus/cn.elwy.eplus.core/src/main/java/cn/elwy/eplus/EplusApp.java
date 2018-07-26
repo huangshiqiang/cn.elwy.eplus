@@ -35,7 +35,7 @@ import cn.elwy.eplus.framework.web.SystemInitListener;
 // @EnableAspectJAutoProxy(proxyTargetClass = true)
 // @Import({ DynamicDataSourceRegister.class }) // 注册动态多数据源
 // @ServletComponentScan
-public class WebApplication extends SpringBootServletInitializer {
+public class EplusApp extends SpringBootServletInitializer {
 
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
@@ -83,6 +83,6 @@ public class WebApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		AppContext.start();
-		SpringApplication.run(WebApplication.class, args);
+		SpringApplication.run(EplusApp.class, args);
 	}
 }

@@ -32,15 +32,14 @@
 	<logger name="org.hibernate.engine.QueryParameters" level="WARN" />
 	<logger name="org.hibernate.engine.query.HQLQueryPlan" level="WARN" />
 
-	<logger name="cn.elwy" level="${logLevel}" additivity="false">
-		<appender-ref ref="STDOUT" />
-		<appender-ref ref="FILE_SYS_ALL" />
-	</logger>
-
 	<!-- Root 输出级别和目标 -->
 	<root level="${logLevel}">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="FILE_SYS_ALL" />
 	</root>
+	<logger name="cn.elwy" level="${logLevel}" additivity="false">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE_SYS_ALL" />
+	</logger>
 
 </configuration>

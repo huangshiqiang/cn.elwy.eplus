@@ -50,14 +50,14 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 	@Override
 	@DataAuth(codes = { "tt" })
 	@DS(DsId.cluster)
-	@Cacheable(value = CONSTANT, key = "#parameter.toString()")
+//	@Cacheable(value = CONSTANT, key = "#parameter.toString()")
 	public List<User> queryByCondition(Parameter parameter) {
 		System.out.println(parameter);
 		return super.queryByCondition(parameter);
 	}
 
 	@DataAuth(codes = { "tt" })
-	@Cacheable(value = CONSTANT, key = "#parameter.toString()")
+//	@Cacheable(value = CONSTANT, key = "#parameter.toString()")
 	public List<User> queryByCondition(Parameter parameter, int test) {
 		System.out.println(parameter);
 		return super.queryByCondition(parameter);

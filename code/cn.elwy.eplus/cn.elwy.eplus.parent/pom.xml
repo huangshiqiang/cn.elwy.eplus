@@ -3,38 +3,16 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>cn.elwy</groupId>
+	<parent>
+		<groupId>cn.elwy</groupId>
+		<artifactId>cn.elwy.web.parent</artifactId>
+		<version>2.0.0</version>
+	</parent>
+
 	<artifactId>cn.elwy.eplus.parent</artifactId>
-	<version>2.0.0</version>
 	<packaging>pom</packaging>
 	<name>cn.elwy.eplus.parent</name>
 	<description>Elwy Plus Parent</description>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.6.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
-	</parent>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<source.jdk.version>1.8</source.jdk.version>
-		<target.jdk.version>1.8</target.jdk.version>
-		<compiler.jdk.version>1.8</compiler.jdk.version>
-		<maven.test.skip>true</maven.test.skip>
-		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
-		<surefireArgLine>-Xms512m -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:MaxNewSize=256m</surefireArgLine>
-
-		<druid.version>1.0.28</druid.version>
-		<shiro.version>1.4.0</shiro.version>
-		<mybatisplus-spring-boot-starter.version>1.0.1</mybatisplus-spring-boot-starter.version>
-		<fastjson.version>1.2.31</fastjson.version>
-		<!-- <ehcache.version>3.2.2</ehcache.version> -->
-		<swagger.version>2.2.2</swagger.version>
-	</properties>
 
 	<modules>
 		<module>../cn.elwy.eplus.core</module>
@@ -42,521 +20,44 @@
 	</modules>
 
 	<dependencies>
-		<dependency>
-			<groupId>cn.elwy</groupId>
-			<artifactId>cn.elwy.common</artifactId>
-			<version>2.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>${fastjson.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.cache</groupId>
-			<artifactId>cache-api</artifactId>
-		</dependency>
-		<!-- <dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			</dependency> -->
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-		</dependency>
-
-		<!--shiro依赖 -->
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-core</artifactId>
-			<version>${shiro.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-spring</artifactId>
-			<version>${shiro.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.shiro</groupId>
-			<artifactId>shiro-ehcache</artifactId>
-			<version>${shiro.version}</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>slf4j-api</artifactId>
-					<groupId>org.slf4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.mybatis.spring.boot</groupId>
-			<artifactId>mybatis-spring-boot-starter</artifactId>
-			<version>1.3.2</version>
-		</dependency>
-
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-		</dependency>
-		<dependency>
+		<!--
+			<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web-services</artifactId>
-		</dependency>
-		<dependency>
+			</dependency>
+			<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
-		</dependency>
-		<dependency>
+			</dependency>
+
+			<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-jdbc</artifactId>
-		</dependency>
-		<dependency>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+			</dependency>
+			<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-aop</artifactId>
-		</dependency>
-		<dependency>
+			<artifactId>spring-boot-starter-batch</artifactId>
+			</dependency>
+			<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-		</dependency>
+			<artifactId>spring-boot-starter-data-ldap</artifactId>
+			</dependency>
+			<dependency>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
+			</dependency>
+			<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			</dependency>
+			<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+			</dependency>
+		-->
 
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>${druid.version}</version>
-		</dependency>
-
-		<!--二维码 -->
-		<dependency>
-			<groupId>com.google.zxing</groupId>
-			<artifactId>core</artifactId>
-			<version>3.2.1</version>
-			<scope>provided</scope>
-		</dependency>
-
-
-
-
-
-
-
-
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
 	</dependencies>
 
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-		<testSourceDirectory>src/test/java</testSourceDirectory>
-		<resources>
-			<!-- 先指定 src/main/resources下所有文件及文件夹为资源文件 -->
-			<resource>
-				<directory>src/main/resources</directory>
-				<!-- <includes>
-					<include>**/*</include>
-					</includes> -->
-			</resource>
-			<!-- 设置对jdbc.properties进行过虑，即这些文件中的${key}会被替换掉为真正的值 -->
-			<resource>
-				<directory>src/main/resources</directory>
-				<includes>
-					<include>config/jdbc.properties</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-				<!-- <excludes>
-					<exclude>**/*.java</exclude>
-					</excludes> -->
-			</resource>
-			<resource>
-				<directory>WebContent</directory>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-			</testResource>
-			<testResource>
-				<directory>src/test/java</directory>
-				<!-- <excludes>
-					<exclude>**/*.java</exclude>
-					</excludes> -->
-			</testResource>
-		</testResources>
-
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<inherited>true</inherited>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<source>${source.jdk.version}</source>
-						<target>${target.jdk.version}</target>
-						<compilerVersion>${compiler.jdk.version}</compilerVersion>
-						<fork>true</fork>
-						<meminitial>128m</meminitial>
-						<maxmem>1024m</maxmem>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
-					<executions>
-						<execution>
-							<id>copy-dependencies</id>
-							<phase>generate-sources</phase>
-							<goals>
-								<goal>copy-dependencies</goal>
-							</goals>
-							<configuration>
-								<outputDirectory>${project.build.outputDirectory}/lib</outputDirectory>
-								<overWriteReleases>false</overWriteReleases>
-								<overWriteSnapshots>false</overWriteSnapshots>
-								<overWriteIfNewer>true</overWriteIfNewer>
-								<includeScope>runtime</includeScope>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>2.6</version>
-					<configuration>
-						<!--
-							<archive>
-							<manifest>
-							<mainClass>cn.elwy.kit.AppMain</mainClass>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							</manifest>
-							</archive>
-						-->
-						<classesDirectory></classesDirectory>
-						<includeEmptyDirectories>true</includeEmptyDirectories>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<inherited>false</inherited>
-					<configuration>
-						<includeEmptyDirectories>true</includeEmptyDirectories>
-						<archive>
-							<manifestFile>WebContent/META-INF/MANIFEST.MF</manifestFile>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<classpathPrefix>lib/</classpathPrefix>
-								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-								<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							</manifest>
-							<manifestEntries>
-								<Class-Path>.</Class-Path>
-								<Bundle-Version>${project.version}</Bundle-Version>
-								<Built-At>${maven.build.timestamp}</Built-At>
-							</manifestEntries>
-						</archive>
-						<webResources>
-							<resource>
-								<directory>WebContent</directory>
-							</resource>
-						</webResources>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<includeEmptyDirs>true</includeEmptyDirs>
-					</configuration>
-					<executions>
-						<!-- <execution> <id>copy-resources</id> <phase>generate-sources</phase> <goals> <goal>copy-resources</goal>
-							</goals> <configuration> <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory> <resources>
-							<resource>
-							<directory>META-INF</directory> </resource> </resources> </configuration> </execution> -->
-						<!-- <execution> <id>copy-resources-web</id> <phase>generate-sources</phase> <goals> <goal>copy-resources</goal>
-							</goals> <configuration> <outputDirectory>${basedir}/target/test-classes</outputDirectory> <resources> <resource>
-							<directory>WebContent</directory>
-							</resource> </resources> </configuration> </execution> -->
-						<!-- <execution> <id>copy-resources-mate</id> <phase>process-resources</phase> <goals> <goal>copy-resources</goal>
-							</goals> <configuration> <outputDirectory>${basedir}/target/test-classes/META-INF</outputDirectory> <resources> <resource>
-							<directory>${project.build.outputDirectory}/META-INF</directory> </resource> </resources> </configuration> </execution> -->
-					</executions>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.felix</groupId>
-					<artifactId>maven-bundle-plugin</artifactId>
-					<extensions>true</extensions>
-					<configuration>
-						<!-- <archive>
-							<manifestFile>META-INF/MANIFEST.MF</manifestFile>
-							<manifest>
-							<addClasspath>false</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							</manifest>
-							<manifestEntries>
-							<Bundle-Version>${project.version}</Bundle-Version>
-							</manifestEntries>
-							</archive> -->
-
-						<includeEmptyDirectories>true</includeEmptyDirectories>
-						<instructions>
-							<_include>META-INF/MANIFEST.MF</_include>
-							<_failok>true</_failok>
-							<_sofamode>true</_sofamode>
-							<Built-At>${maven.build.timestamp}</Built-At>
-							<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-							<Bundle-Version>${project.version}</Bundle-Version>
-							<Bundle-Category>elwy</Bundle-Category>
-							<Bundle-Vendor>elwy.cn</Bundle-Vendor>
-							<Bundle-RequiredExecutionEnvironment>JavaSE-1.8</Bundle-RequiredExecutionEnvironment>
-							<Export-Package />
-							<Import-Package />
-							<Bundle-ClassPath>.</Bundle-ClassPath>
-							<Embed-Dependency>*;scope=compile;inline=false</Embed-Dependency>
-							<Embed-Directory>lib</Embed-Directory>
-						</instructions>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.8</version>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<configuration>
-						<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
-						<aggregate>true</aggregate>
-						<charset>${project.build.sourceEncoding}</charset>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<docencoding>${project.build.sourceEncoding}</docencoding>
-					</configuration>
-					<executions>
-						<execution>
-							<id>attach-javadocs</id>
-							<phase>site</phase>
-							<goals>
-								<goal>aggregate</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<!-- Sets the VM argument line used when unit tests are run. -->
-						<argLine>${surefireArgLine}</argLine>
-						<!-- Skips unit tests if the value of skip.unit.tests property is true -->
-						<!-- <skipTests>${maven.test.skip}</skipTests> -->
-						<includes>
-							<include>**/*Test.java</include>
-						</includes>
-						<excludes>
-							<!-- Excludes integration tests when unit tests are run. -->
-							<exclude>**/*SuiteTest.java</exclude>
-						</excludes>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<includes>com/yss/sofa/**/*.java</includes>
-					</configuration>
-					<dependencies>
-						<dependency>
-							<groupId>com.puppycrawl.tools</groupId>
-							<artifactId>checkstyle</artifactId>
-							<version>5.5.101</version>
-						</dependency>
-					</dependencies>
-
-					<!-- <executions>
-						<execution>
-						<id>checkstyle-banned-dependencies</id>
-						<goals>
-						<goal>checkstyle</goal>
-						</goals>
-						<configuration>
-						<rules>
-						<bannedDependencies>
-						<excludes>
-						<exclude>com.puppycrawl.tools:checkstyle</exclude>
-						</excludes>
-						</bannedDependencies>
-						</rules>
-						<fail>true</fail>
-						</configuration>
-						</execution>
-						</executions> -->
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-pmd-plugin</artifactId>
-					<configuration>
-						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-						<targetJdk>${target.jdk.version}</targetJdk>
-						<includes>
-							<include>cn/elwy/eplus/**/action/*.java</include>
-							<include>cn/elwy/eplus/**/action/**/*.java</include>
-							<include>cn/elwy/eplus/**/biz/*.java</include>
-							<include>cn/elwy/eplus/**/biz/**/*.java</include>
-							<include>cn/elwy/eplus/**/dao/*.java</include>
-							<include>cn/elwy/eplus/**/dao/**/*.java</include>
-							<include>cn/elwy/eplus/**/controller/*.java</include>
-							<include>cn/elwy/eplus/**/controller/**/*.java</include>
-							<include>cn/elwy/eplus/**/service/*.java</include>
-							<include>cn/elwy/eplus/**/service/**/*.java</include>
-							<include>cn/elwy/eplus/**/services/*.java</include>
-							<include>cn/elwy/eplus/**/services/**/*.java</include>
-						</includes>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>findbugs-maven-plugin</artifactId>
-					<configuration>
-						<!-- <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile> <includeFilterFile>findbugs-include.xml</includeFilterFile>
-							<configLocation>${basedir}/springside-findbugs.xml</configLocation> -->
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-						<threshold>High</threshold>
-						<effort>Default</effort>
-						<findbugsXmlOutput>true</findbugsXmlOutput>
-						<findbugsXmlWithMessages>true</findbugsXmlWithMessages>
-						<!-- <findbugsXmlOutputDirectory>target/site</findbugsXmlOutputDirectory> -->
-						<xmlOutput>true</xmlOutput>
-						<formats>
-							<format>html</format>
-						</formats>
-						<!-- <onlyAnalyze>cn.elwy.*</onlyAnalyze> -->
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>cobertura-maven-plugin</artifactId>
-					<configuration>
-						<encoding>${project.build.sourceEncoding}</encoding>
-						<formats>
-							<format>html</format>
-							<format>xml</format>
-						</formats>
-						<instrumentation>
-							<includes>
-								<include>cn/elwy/eplus/**/*.class</include>
-								<include>cn/elwy/eplus/**/action/*.class</include>
-								<include>cn/elwy/eplus/**/action/**/*.class</include>
-								<include>cn/elwy/eplus/**/biz/*.class</include>
-								<include>cn/elwy/eplus/**/biz/**/*.class</include>
-								<include>cn/elwy/eplus/**/dao/*.class</include>
-								<include>cn/elwy/eplus/**/dao/**/*.class</include>
-								<include>cn/elwy/eplus/**/controller/*.class</include>
-								<include>cn/elwy/eplus/**/controller/**/*.class</include>
-								<include>cn/elwy/eplus/**/service/*.class</include>
-								<include>cn/elwy/eplus/**/service/**/*.class</include>
-								<include>cn/elwy/eplus/**/services/*.class</include>
-								<include>cn/elwy/eplus/**/services/**/*.class</include>
-							</includes>
-						</instrumentation>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>dashboard-maven-plugin</artifactId>
-					<version>1.0.0-beta-1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.7.0.201403182114</version>
-					<!-- <configuration> <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile> <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-						</configuration> -->
-					<executions>
-						<execution>
-							<id>JaCoCo Agent</id>
-							<phase>test-compile</phase>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
-							<configuration>
-								<propertyName>surefireArgLine</propertyName>
-								<!-- <destFile>${project.build.directory}/coverage-reports/jacoco.exec</destFile> -->
-							</configuration>
-						</execution>
-						<execution>
-							<id>JaCoCo Report</id>
-							<phase>test</phase>
-							<goals>
-								<goal>report</goal>
-							</goals>
-							<!-- <configuration>
-								<dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
-								<outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
-								</configuration> -->
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>jdepend-maven-plugin</artifactId>
-					<version>2.0-beta-2</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-	</build>
 
 </project>

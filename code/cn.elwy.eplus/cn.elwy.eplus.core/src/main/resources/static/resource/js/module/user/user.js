@@ -1,30 +1,47 @@
+// 重置GridWrapper的高度
+// id 为最接近table的div的id
 $(function() {
 
-  var p = window;
-  var c = '.panels-body';
-  var divs = ['.panels-header', '.panels-footer', '#searchForm'];
-  var h;
-  h = autoHeight(c, p, divs);
-  
-  $(".jqGrid_wrapper").height(h);
+	$('button[data-btn-type="add"]').on("click", function() {
+		$('.direct-chat').toggleClass('panels-side-open');
+		// $('.right-side').addClass('panels-detail-open');
+	});
+	$('button[data-btn-type="delete"]').on("click", function() {
+		$('.right-side1').removeClass('panels-detail-open');
+		$('.right-side1').addClass('panels-detail');
+	});
+	$('.btn-close-side1').on("click", function() {
+		$('.right-side1').addClass('panels-detail-open');
+	});
+});
 
+$(function() {
 
-  // 自动填充
+	var p = window;
+	var c = '.panels-body';
+	var divs = [ '.panels-header', '.panels-footer', '#searchForm' ];
+	var h;
+	h = autoHeight(c, p, divs);
+
+	$(".jqGrid_wrapper").height(h);
+
+	// 自动填充
 	var dataGridConfig = initDataGrid();
 	var gd = $('#dataGrid').YssDataGrid(dataGridConfig);
 	addEvent();
-	
+
 });
 
 function autoHeight(id, container, chield) {
-    var container_h = $(container).height();
-    var height = 0;
-    for (i = 0; i < chield.length; i++) {
-        height += $(chield[i]).outerHeight();
-    }
-    var realHeight = container_h - height - 3;
-    $(id).outerHeight(realHeight);
-    return realHeight;
+	var container_h = $(container).height();
+	var height = 0;
+	for (i = 0; i < chield.length; i++) {
+		height += $(chield[i]).outerHeight();
+	}
+	var realHeight = container_h - height - 3;
+	$(id).outerHeight(realHeight);
+	$(window).resize();
+	return realHeight;
 }
 
 function initDataGrid() {
@@ -65,8 +82,8 @@ function initDataGrid() {
 						return actions.join('');
 					}
 				} ],
-				altRows : true,
-				altclass : 'someClass',
+		altRows : true,
+		altclass : 'someClass',
 		onSelectRow : gridOnSelectRow,
 		ondblClickRow : gridOndblClickRow,
 		toolbar : [ {
@@ -106,7 +123,7 @@ function btnAdd(event) {
 	});
 	$("#operate2").val("save");
 	// 打开窗口
-	var index = YssLayer.createDialogWithToolBar(1, "添加用户", $('#form_id'), $('#toolbar').html(),800,670);
+	var index = YssLayer.createDialogWithToolBar(1, "添加用户", $('#form_id'), $('#toolbar').html(), 800, 670);
 	unreadonly();
 }
 
@@ -120,7 +137,7 @@ function btnEdit(event) {
 	var data = dg.jqGrid('getRowData', id);
 	initForm(data);
 	$('#operate2').val('update');
-	var index = YssLayer.createDialogWithToolBar(1, "修改用户", $('#form_id'), $('#toolbar').html(),800,670);
+	var index = YssLayer.createDialogWithToolBar(1, "修改用户", $('#form_id'), $('#toolbar').html(), 800, 670);
 	unreadonly();
 	$('#c_USER_CODE').attr('readonly', true);
 }
@@ -160,7 +177,7 @@ function btnDelete(event) {
 			}, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
 			dataType : 'json',
 			success : function(result) { // 回调函数，result，返回值
-//				retdData = result.data;
+			// retdData = result.data;
 				if (result && !result.success) {
 					YssLayer.messageAlter("删除用户失败！！！", 2);
 					return false;
@@ -186,7 +203,7 @@ function btnCopy(event) {
 	$('#id').val('');
 	$('#c_USER_CODE').val('');
 	$('#operate2').val('save');
-	var index = YssLayer.createDialogWithToolBar(1, "复制用户", $('#form_id'), $('#toolbar').html(),800,670);
+	var index = YssLayer.createDialogWithToolBar(1, "复制用户", $('#form_id'), $('#toolbar').html(), 800, 670);
 	unreadonly();
 }
 
@@ -226,32 +243,31 @@ function btnHelp(event) {
 
 }
 
-
 function gridOnSelectRow(rowid, status, e) {
 	console.info(layerIndex);
-	if(layerIndex==0){
+	if (layerIndex == 0) {
 		return false;
 	}
 	var opera = $('#operate2').val();
 	// alert(opera);
-	 if(opera != "view"){
-		 var index = YssLayer.showConfirm("换行之后，正在编辑的内容将不会得到保存，确定继续吗？",function(){
+	if (opera != "view") {
+		var index = YssLayer.showConfirm("换行之后，正在编辑的内容将不会得到保存，确定继续吗？", function() {
 			status = "rowChange";
 			lastSel = rowid;
 			var tableName = e.currentTarget.id;
-			var row = $("#"+tableName).jqGrid('getRowData', rowid);
+			var row = $("#" + tableName).jqGrid('getRowData', rowid);
 			initForm(row);
 			$('#operate2').val('view');
 			isreadonly();
 			YssLayer.closeLayer(index);
-		 });
-	 } else {
-		 if (rowid && rowid !== lastSel) {
+		});
+	} else {
+		if (rowid && rowid !== lastSel) {
 			status = "rowChange";
 			lastSel = rowid;
 			var tableName = e.currentTarget.id;
-			var row = $("#"+tableName).jqGrid('getRowData', rowid);
-//				var row = $("#dataGrid").jqGrid('getRowData', rowid);
+			var row = $("#" + tableName).jqGrid('getRowData', rowid);
+			// var row = $("#dataGrid").jqGrid('getRowData', rowid);
 			initForm(row);
 			$('#operate2').val('view');
 			isreadonly();
@@ -259,7 +275,7 @@ function gridOnSelectRow(rowid, status, e) {
 			// $(".layui-layer-edit").css("cursor", "default");
 			// $(".layui-layer-edit").attr('href', '#');
 		}
-	 }
+	}
 
 }
 
@@ -267,26 +283,26 @@ function gridOndblClickRow(rowid, iRow, iCol, e) {
 	status = "doubleClick";
 	lastSel = rowid;
 	var tableName = e.currentTarget.id;
-	var row = $("#"+tableName).jqGrid('getRowData', rowid);
-	var index = YssLayer.createDialogWithToolBar(1, "查看用户", $('#form_id'), $('#toolbar').html(),800,670);
+	var row = $("#" + tableName).jqGrid('getRowData', rowid);
+	var index = YssLayer.createDialogWithToolBar(1, "查看用户", $('#form_id'), $('#toolbar').html(), 800, 670);
 	initForm(row);
 	$('#operate2').val('view');
 	isreadonly();
-//	alert($('#operate2').val());
-//	console.log($('#operate2').val());
-	
-//	if (rowid && rowid !== lastSel) {
-//		status = "doubleClick";
-//		lastSel = rowid;
-//		var row = $("#dataGrid").jqGrid('getRowData', rowid);
-//		initForm(row);
-//		isreadonly();
-//		$('#operate2').val('view');
-//		YssLayer.createDialogWithToolBar(1, "查看用户", $('#form_id'), $('#toolbar').html());
-//		// $(".layui-layer-edit").attr({"disabled":"disabled"});
-//		// $(".layui-layer-edit").css("cursor", "default");
-//		// $(".layui-layer-edit").attr('href', '#');
-//	}
+	// alert($('#operate2').val());
+	// console.log($('#operate2').val());
+
+	// if (rowid && rowid !== lastSel) {
+	// status = "doubleClick";
+	// lastSel = rowid;
+	// var row = $("#dataGrid").jqGrid('getRowData', rowid);
+	// initForm(row);
+	// isreadonly();
+	// $('#operate2').val('view');
+	// YssLayer.createDialogWithToolBar(1, "查看用户", $('#form_id'), $('#toolbar').html());
+	// // $(".layui-layer-edit").attr({"disabled":"disabled"});
+	// // $(".layui-layer-edit").css("cursor", "default");
+	// // $(".layui-layer-edit").attr('href', '#');
+	// }
 }
 
 function initForm(rowData) {
@@ -316,7 +332,7 @@ function initForm(rowData) {
 	$("#c_FAX_NO").val(rowData.c_FAX_NO);
 	$("#c_OFFIC_ADDR").val(rowData.c_OFFIC_ADDR);
 	$("#c_ZIP_CODE").val(rowData.c_ZIP_CODE);
-	//$("#operate2").val(rowData.operate2);
+	// $("#operate2").val(rowData.operate2);
 	$("#c_PASS_MARK").val(rowData.c_PASS_MARK);
 	$("#c_DV_STATE").val(rowData.c_DV_STATE);
 	$("#modifier").val(rowData.modifier);
@@ -362,9 +378,9 @@ function addEvent() {
 	$('#btnFullScreen').on('click', btnFullScreen);
 	$('#btnHelp').on('click', btnHelp);
 	// 更多条件菜单点击事件不传播
-    $("ul.dropdown-menu").on("click", "[data-stopPropagation]", function(e) {
-        e.stopPropagation();
-    }); 
+	$("ul.dropdown-menu").on("click", "[data-stopPropagation]", function(e) {
+		e.stopPropagation();
+	});
 	$('#btnAddRow').on('click', addrow);
 }
 
@@ -413,7 +429,7 @@ function unreadonly() {
 
 var lastSel = null;
 var status = null;
-var layerIndex = 0;//窗口是否关闭，0关闭，1打开。
+var layerIndex = 0;// 窗口是否关闭，0关闭，1打开。
 // ---- 弹出框测试事件 start---- //
 // 重写的保存事件
 function layer_save_event(e) {
@@ -496,7 +512,7 @@ function layer_delete_event(e) {
 	$('#operate2').val('del');
 	var id = $('#dataGrid').jqGrid('getGridParam', 'selrow');
 	var data = $('#dataGrid').jqGrid('getRowData', id);
-	
+
 	var usercode = data.c_USER_CODE;
 	if (usercode == "SYS" || usercode == "chf") {
 		YssLayer.messageAlter("系统用户，不允许删除！", 2);
@@ -508,7 +524,7 @@ function layer_delete_event(e) {
 		YssLayer.messageAlter("审核通过，不允许删除！", 2);
 		return;
 	}
-	
+
 	var index = YssLayer.showConfirm("确定删除吗？", function() {
 		var parameter = {};
 		parameter.data = data;
@@ -611,33 +627,33 @@ var confirmDel = function() {
 }
 
 // 新增条件行
-var addrow = function addrow(){
-    var html = '<li style="margin-top: 5px;" data-stopPropagation="true">';
-    html += '<div class="input-group input-group-sm gap">';
-    html += '<select class="form-control" name="userType" style="width:80px;">';
-    html += '<option value="and">并</option>';
-    html += '<option value="or">或</option></select>';
-    html += '<input type="text" class="form-control" style="width:100px;" id="username" name="username" placeholder="条件1" />';
-    html += '<select class="form-control" name="userType" style="width:80px;">';
-    html += '<option value="eq">等于</option>';
-    html += '<option value="ne">不等</option>';
-    html += '<option value="lt">小于</option>';
-    html += '<option value="le">小于等于</option>';
-    html += '<option value="gt">大于</option>';
-    html += '<option value="ge">大于等于</option></select>';
-    html += '<input type="text" class="form-control" style="width:100px;" id="userCode" name="userCode" placeholder="条件2" />';
-    html += '<a href="#" onclick="delrow(this)"><i class="fa fa-times-circle" style="margin:10px 10px 10px 10px;"></i></a></div></li>';
+var addrow = function addrow() {
+	var html = '<li style="margin-top: 5px;" data-stopPropagation="true">';
+	html += '<div class="input-group input-group-sm gap">';
+	html += '<select class="form-control" name="userType" style="width:80px;">';
+	html += '<option value="and">并</option>';
+	html += '<option value="or">或</option></select>';
+	html += '<input type="text" class="form-control" style="width:100px;" id="username" name="username" placeholder="条件1" />';
+	html += '<select class="form-control" name="userType" style="width:80px;">';
+	html += '<option value="eq">等于</option>';
+	html += '<option value="ne">不等</option>';
+	html += '<option value="lt">小于</option>';
+	html += '<option value="le">小于等于</option>';
+	html += '<option value="gt">大于</option>';
+	html += '<option value="ge">大于等于</option></select>';
+	html += '<input type="text" class="form-control" style="width:100px;" id="userCode" name="userCode" placeholder="条件2" />';
+	html += '<a href="#" onclick="delrow(this)"><i class="fa fa-times-circle" style="margin:10px 10px 10px 10px;"></i></a></div></li>';
 	$("ul.dropdown-menu").append(html);
 }
 
-//删除条件行
-function delrow(obj){
+// 删除条件行
+function delrow(obj) {
 	var evt = window.event || arguments.callee.caller.arguments[0]; // 获取event对象
 	evt.stopPropagation();
 	$(obj).closest('li').remove();
 }
 
-$(window).bind('resize', function () {
-    // 自动填充
-	$('#table_div').height($(document.body).height()-$('#header').height());
+$(window).bind('resize', function() {
+	// 自动填充
+	$('#table_div').height($(document.body).height() - $('#header').height());
 });

@@ -177,7 +177,7 @@ function btnDelete(event) {
 			}, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
 			dataType : 'json',
 			success : function(result) { // 回调函数，result，返回值
-			// retdData = result.data;
+				// retdData = result.data;
 				if (result && !result.success) {
 					YssLayer.messageAlter("删除用户失败！！！", 2);
 					return false;

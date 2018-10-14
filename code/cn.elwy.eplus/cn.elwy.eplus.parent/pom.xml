@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>cn.elwy</groupId>
 		<artifactId>cn.elwy.web.parent</artifactId>
-		<version>2.0.0</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>cn.elwy.eplus.parent</artifactId>
@@ -14,10 +14,10 @@
 	<name>cn.elwy.eplus.parent</name>
 	<description>Elwy Plus Parent</description>
 
-	<modules>
+	<!-- <modules>
 		<module>../cn.elwy.eplus.core</module>
 		<module>../cn.elwy.eplus.framework</module>
-	</modules>
+	</modules> -->
 
 	<dependencies>
 		<!--

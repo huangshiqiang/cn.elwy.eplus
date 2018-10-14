@@ -49,6 +49,8 @@
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
+	background:#DEE2E5;
+	/* border:1px solid #c5dbec; */
 }
 .ui-jqgrid .ui-jqgrid-hbox {
 	float: left;
@@ -67,6 +69,10 @@
 .ui-jqgrid .ui-jqgrid-htable thead th div {
 	overflow: hidden;
 	position:relative;
+	text-align: center;
+}
+.ui-jqgrid .ui-jqgrid-htable thead th div>input{
+	display: table;
 }
 .ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {
 	overflow: hidden;
@@ -250,7 +256,8 @@ div.tablediv > .table-bordered {
 {
 	border-left-width: 0px;
 	border-top: 1px solid #ddd;
-	padding : 4px 0px;
+	/* padding : 4px 0px; */
+	padding : 1px 0px;
 	position: relative;
 	height: auto;
 	white-space: nowrap;
@@ -266,7 +273,7 @@ div.tablediv > .table-bordered {
 	border-left: 0;
 	border-bottom: 0;
 	border-top: 0;
-	height: 30px;
+	height: 25px;
 }
 .ui-jqgrid .ui-pg-table {
 	position: relative;
@@ -714,9 +721,12 @@ a.g-menu-item, a.soptclass, a.clearsearchclass {
 }
 
 .cbox {
-	width : 18px;
-	height : 18px;
+	width : 15px;
+	height : 15px;
     font-size: 11px;
+}
+.cbox:before{
+	background:#fff;
 }
 
 .ui-jqgrid .ui-scroll-popup {
@@ -840,6 +850,30 @@ ul.ui-search-menu li, ul.ui-nav-menu li {
 .frozen-div, .frozen-bdiv {
 	background-color: #fff;
 }
+
+
+.ui-jqgrid-titlebar {
+    height: 40px;
+    line-height: 24px;
+    color: #676a6c;
+    background-color: #F9F9F9;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5)
+}
+
+.ui-jqgrid .ui-jqgrid-title {
+    float: left;
+    margin-left: 5px;
+    font-weight: 700
+}
+
+.ui-jqgrid .ui-jqgrid-titlebar {
+    position: relative;
+    border-left: 0 solid;
+    border-right: 0 solid;
+    border-top: 0 solid
+}
+
+
 /*
 .ui-jqgrid .ui-jqgrid-caption,
 .ui-jqgrid .ui-jqgrid-pager,

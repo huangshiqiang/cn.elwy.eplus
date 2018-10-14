@@ -35,12 +35,12 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public int deleteByPrimaryKey(String id) {
+	public int deleteByPrimaryKey(E entity) {
 		return 0;
 	}
 
 	@Override
-	public int deleteByPrimaryKeys(String... ids) {
+	public int deleteByPrimaryKeys(List<E> entityList) {
 		return 0;
 	}
 
@@ -72,12 +72,10 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 		return null;
 	}
 
-	@Override
 	public E selectByPrimaryKey(String id) {
 		return null;
 	}
 
-	@Override
 	public List<E> selectByPrimaryKeys(String... ids) {
 		return null;
 	}
@@ -88,7 +86,7 @@ public abstract class JdbcDao<E> extends JdbcDaoSupport implements Dao<E> {
 	}
 
 	@Override
-	public int updateByConditionSelectives(Condition condition) {
+	public int updateByConditionSelective(Condition condition) {
 		return 0;
 	}
 

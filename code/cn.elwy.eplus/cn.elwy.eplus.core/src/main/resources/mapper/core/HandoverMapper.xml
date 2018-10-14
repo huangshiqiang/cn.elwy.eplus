@@ -42,7 +42,7 @@
 										<when test="item.isBetweenValue()">
 											${criteria.queryOps[_i]} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
 										</when>
-										<when test="item.isListValue()">
+										<when test="item.isMultiValue()">
 											${criteria.queryOps[_i]} ${item.field} ${item.op}
 											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
 												#{listItem}
@@ -70,7 +70,7 @@
 													<when test="item.isBetweenValue()">
 														${groupItem.queryOps[_k]} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
 													</when>
-													<when test="item.isListValue()">
+													<when test="item.isMultiValue()">
 														${groupItem.queryOps[_k]} ${item.field} ${item.op}
 														<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
 															#{listItem}

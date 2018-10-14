@@ -63,15 +63,15 @@ public class UserBizImpl extends BizImpl<User> implements UserBiz {
 		return super.queryByCondition(parameter);
 	}
 
-	@Operation(code = "queryByCondition")
-	// @Cacheable(value = CONSTANT, key = "#parameter.toString()")
-	@Transactional(propagation = Propagation.REQUIRED)
-	@DS(DsId.master)
-	public Pageable<User> queryByCondition(Parameter parameter, Pageable<User> page) {
-		System.out.println("queryByCondition没走缓存");
-		Condition condition = ConditionBuilder.getCondition(parameter);
-		return getDao().selectByCondition(condition, page);
-	}
+//	@Operation(code = "queryByCondition")
+//	// @Cacheable(value = CONSTANT, key = "#parameter.toString()")
+//	@Transactional(propagation = Propagation.REQUIRED)
+//	@DS(DsId.master)
+//	public Pageable<User> queryByCondition(Parameter parameter, Pageable<User> page) {
+//		System.out.println("queryByCondition没走缓存");
+//		Condition condition = ConditionBuilder.getCondition(parameter);
+//		return getDao().selectByCondition(parameter, page);
+//	}
 
 	@Override
 	@DataAuth(codes = { "tt" })

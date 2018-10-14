@@ -37,7 +37,7 @@ public interface SqlIdConst {
 	/** 根据条件更新对象 */
 	public static String updateByCondition = "updateByCondition";
 	/** 根据条件更新对象 */
-	public static String updateByConditionSelectives = "updateByConditionSelectives";
+	public static String updateByConditionSelective = "updateByConditionSelective";
 	/** 根据id更新所有字段 */
 	public static String updateByPrimaryKey = "updateByPrimaryKey";
 	/** 根据id更新内容不为null的字段 */

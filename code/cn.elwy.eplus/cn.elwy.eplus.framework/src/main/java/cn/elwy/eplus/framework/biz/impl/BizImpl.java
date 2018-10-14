@@ -1,18 +1,23 @@
 package cn.elwy.eplus.framework.biz.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import cn.elwy.common.entity.Auditable;
 import cn.elwy.common.entity.Condition;
 import cn.elwy.common.entity.ConditionBuilder;
+import cn.elwy.common.entity.Criteria;
 import cn.elwy.common.entity.Deletable;
 import cn.elwy.common.entity.Editable;
+import cn.elwy.common.entity.Identity;
 import cn.elwy.common.entity.Pageable;
 import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.id.IdUtil;
 import cn.elwy.common.util.Assert;
+import cn.elwy.common.util.AssertUtil;
+import cn.elwy.common.util.ClassUtil;
 import cn.elwy.eplus.framework.annotation.Operation;
 import cn.elwy.eplus.framework.biz.Biz;
 import cn.elwy.eplus.framework.context.AppContext;
@@ -32,215 +37,384 @@ public class BizImpl<E> implements Biz<E> {
 		this.dao = dao;
 	}
 
-	@Operation(code = "audit")
-	public int audit(String... ids) {
-		Assert.notNull(ids);
-		List<E> list = new ArrayList<E>();
-		for (int i = 0; i < ids.length; i++) {
-			E s = null;
-			list.add(s);
-		}
-		return updateByPrimaryKeys(list);
-	}
-
 	@Operation(code = "count")
 	public int countByCondition(Parameter parameter) {
-		Condition condition = ConditionBuilder.getCondition(parameter);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
 		return dao.countByCondition(condition);
 	}
 
 	@Operation(code = "delete")
 	public int deleteByCondition(Parameter parameter) {
-		Condition condition = ConditionBuilder.getCondition(parameter);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
 		return dao.deleteByCondition(condition);
 	}
 
 	@Operation(code = "delete")
-	public int deleteByPrimaryKey(String id) {
-		return dao.deleteByPrimaryKey(id);
+	public int deleteByPrimaryKey(E record) {
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+			Criteria criteria = condition.addCriteria();
+			criteria.andEqualTo("FID", ((Identity) record).getId());
+			return dao.deleteByCondition(condition);
+		}
+		return dao.deleteByPrimaryKey(record);
 	}
 
 	@Operation(code = "delete")
-	public int physicalDeleteByPrimaryKeys(String... ids) {
-		return dao.deleteByPrimaryKeys(ids);
-	}
-
-	@Operation(code = "delete")
-	public int deleteByPrimaryKeys(String... ids) {
-		return dao.deleteByPrimaryKeys(ids);
-	}
-
-	@Operation(code = "logicalDelete")
-	public int logicalDelete(E entity, Parameter parameter) {
-		if (entity instanceof Deletable) {
-			updateDeleteInfo((Deletable) entity, 1);
-			return updateByConditionSelectives(entity, parameter);
-		}
-		return 0;
-	}
-
-	@Operation(code = "logicalDelete")
-	public int logicalDelete(E entity) {
-		if (entity instanceof Deletable) {
-			updateDeleteInfo((Deletable) entity, 1);
-			return updateByPrimaryKeySelective(entity);
-		}
-		return 0;
-	}
-
-	@Operation(code = "logicalDelete")
-	public int logicalDelete(List<E> entityList) {
-		Assert.notEmpty(entityList);
-		if (entityList.get(0) instanceof Deletable) {
-			for (E entity : entityList) {
-				updateDeleteInfo((Deletable) entity, 1);
+	public int deleteByPrimaryKeys(List<E> recordList) {
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+			Criteria criteria = condition.addCriteria();
+			List<String> ids = new ArrayList<String>();
+			for (E e : recordList) {
+				ids.add(((Identity) e).getId());
 			}
-			return updateByPrimaryKeySelectives(entityList);
+			criteria.andIn("FID", ids);
+			return dao.deleteByCondition(condition);
+		}
+		return dao.deleteByPrimaryKeys(recordList);
+	}
+
+	@Operation(code = "logicallyDelete")
+	public int logicallyDeleteByCondition(Parameter parameter) {
+		E record = parameter.getData();
+		if (record instanceof Deletable) {
+			updateDeleteInfo((Deletable) record, getUpdateTime(), 1);
+
+			String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+			Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
+			return dao.updateByConditionSelective(condition);
+		}
+		return 0;
+	}
+
+	@Operation(code = "logicallyDelete")
+	public int logicallyDeleteByPrimaryKey(E record) {
+		List<E> recordList = new ArrayList<E>();
+		recordList.add(record);
+		return logicallyDeleteByPrimaryKeys(recordList);
+	}
+
+	@Operation(code = "logicallyDelete")
+	public int logicallyDeleteByPrimaryKeys(List<E> recordList) {
+		Assert.notNull(recordList);
+		E record = recordList.get(0);
+		if (record instanceof Deletable) {
+			E deleteable = ClassUtil.newInstance(record.getClass());
+			updateDeleteInfo((Deletable) deleteable, getUpdateTime(), 1);
+
+			String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+			return updateByPrimaryKeys(deleteable, recordList, methodFullName);
+		}
+		return 0;
+	}
+
+	@Operation(code = "recover")
+	public int recoverByCondition(Parameter parameter) {
+		E record = parameter.getData();
+		if (record instanceof Deletable) {
+			updateDeleteInfo((Deletable) record, getUpdateTime(), 0);
+
+			String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+			Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
+			return dao.updateByConditionSelective(condition);
+		}
+		return 0;
+	}
+
+	@Operation(code = "recover")
+	public int recoverByPrimaryKey(E record) {
+		List<E> recordList = new ArrayList<E>();
+		recordList.add(record);
+		return logicallyDeleteByPrimaryKeys(recordList);
+	}
+
+	@Operation(code = "recover")
+	public int recoverByPrimaryKeys(List<E> recordList) {
+		Assert.notNull(recordList);
+		E record = recordList.get(0);
+		if (record instanceof Deletable) {
+			E deleteable = ClassUtil.newInstance(record.getClass());
+			updateDeleteInfo((Deletable) deleteable, getUpdateTime(), 0);
+
+			String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+			return updateByPrimaryKeys(deleteable, recordList, methodFullName);
 		}
 		return 0;
 	}
 
 	// @CacheEvict(value = "CONSTANT", key = "test")
 	@Operation(code = "insert")
-	public E insert(E entity) {
-		if (entity instanceof Editable) {
-			insertEditInfo((Editable) entity);
+	public E insert(E record) {
+		if (record instanceof Editable) {
+			insertEditInfo((Editable) record, getUpdateTime());
 		}
-		return dao.insert(entity);
+		return dao.insert(record);
 	}
 
 	@Operation(code = "insertBatch")
-	public List<E> insertBatch(List<E> entityList) {
-		Assert.notEmpty(entityList);
-		if (entityList.get(0) instanceof Editable) {
-			for (E entity : entityList) {
-				insertEditInfo((Editable) entity);
+	public List<E> insertBatch(List<E> recordList) {
+		Assert.notEmpty(recordList);
+		if (recordList.get(0) instanceof Editable) {
+			Date updateTime = getUpdateTime();
+			for (E record : recordList) {
+				insertEditInfo((Editable) record, updateTime);
 			}
 		}
-		return dao.insertBatch(entityList);
+		return dao.insertBatch(recordList);
 	}
 
 	@Operation(code = "insertBatchSelective")
-	public List<E> insertBatchSelective(List<E> entityList) {
-		Assert.notEmpty(entityList);
-		if (entityList.get(0) instanceof Editable) {
-			for (E entity : entityList) {
-				insertEditInfo((Editable) entity);
+	public List<E> insertBatchSelective(List<E> recordList) {
+		Assert.notEmpty(recordList);
+		if (recordList.get(0) instanceof Editable) {
+			Date updateTime = getUpdateTime();
+			for (E record : recordList) {
+				insertEditInfo((Editable) record, updateTime);
 			}
 		}
-		return dao.insertBatchSelective(entityList);
+		return dao.insertBatchSelective(recordList);
 	}
 
 	@Operation(code = "insertSelective")
-	public E insertSelective(E entity) {
-		if (entity instanceof Editable) {
-			insertEditInfo((Editable) entity);
+	public E insertSelective(E record) {
+		if (record instanceof Editable) {
+			insertEditInfo((Editable) record, getUpdateTime());
 		}
-		return dao.insertSelective(entity);
+		return dao.insertSelective(record);
 	}
 
 	@Operation(code = "queryAll")
 	public List<E> queryAll() {
-		return dao.selectByCondition(null);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		return dao.selectByCondition(condition);
 	}
 
 	@Operation(code = "queryAll")
 	public Pageable<E> queryAllByPage(Pageable<E> page) {
-		return dao.selectByCondition(null, page);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		return dao.selectByCondition(condition, page);
 	}
 
 	// @Cacheable(value = "CONSTANT", key = "test")
 	@Operation(code = "queryByCondition")
 	public List<E> queryByCondition(Parameter parameter) {
-		Condition condition = ConditionBuilder.getCondition(parameter);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
 		return dao.selectByCondition(condition);
 	}
 
 	@Operation(code = "queryByCondition")
 	public Pageable<E> queryByCondition(Parameter parameter, Pageable<E> page) {
-		Condition condition = ConditionBuilder.getCondition(parameter);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
 		return dao.selectByCondition(condition, page);
 	}
 
 	@Operation(code = "queryByPrimaryKey")
 	public E queryByPrimaryKey(String id) {
-		return dao.selectByPrimaryKey(id);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+//		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+		Criteria criteria = condition.addCriteria();
+		criteria.andEqualTo("FID", id);
+		List<E> list = dao.selectByCondition(condition);
+		if (AssertUtil.isNotEmpty(list)) {
+			return list.get(0);
+		}
+		return null;
+//		} else {
+//			return dao.selectByPrimaryKey(id);
+//		}
 	}
 
 	@Operation(code = "queryByPrimaryKeys")
 	public List<E> queryByPrimaryKeys(String... ids) {
-		return dao.selectByPrimaryKeys(ids);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+//		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+		Criteria criteria = condition.addCriteria();
+		criteria.andIn("FID", ids);
+		List<E> list = dao.selectByCondition(condition);
+		if (AssertUtil.isNotEmpty(list)) {
+			return list;
+		}
+		return Collections.emptyList();
+//		} else {
+//			return dao.selectByPrimaryKeys(ids);
+//		}
+	}
+
+	@Operation(code = "audit")
+	public int audit(E record) {
+		Assert.notNull(record);
+		List<E> recordList = new ArrayList<E>();
+		recordList.add(record);
+		return audit(record);
+	}
+
+	@Operation(code = "audit")
+	public int audit(List<E> recordList) {
+		Assert.notNull(recordList);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+
+		Date updateTime = getUpdateTime();
+		E record = ClassUtil.newInstance(recordList.get(0).getClass());
+		if (record instanceof Auditable) {
+			updateAuditInfo((Auditable) record, updateTime, 1);
+		}
+		return updateByPrimaryKeys(record, recordList, methodFullName);
 	}
 
 	@Operation(code = "unaudit")
-	public int unaudit(String... ids) {
-		Assert.notNull(ids);
-		List<E> list = new ArrayList<E>();
-		for (int i = 0; i < ids.length; i++) {
-			E s = null;
-			list.add(s);
+	public int unaudit(E record) {
+		Assert.notNull(record);
+		List<E> recordList = new ArrayList<E>();
+		recordList.add(record);
+		return unaudit(record);
+	}
+
+	@Operation(code = "unaudit")
+	public int unaudit(List<E> recordList) {
+
+		Assert.notNull(recordList);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+
+		Date updateTime = getUpdateTime();
+		E record = ClassUtil.newInstance(recordList.get(0).getClass());
+		if (record instanceof Auditable) {
+			updateAuditInfo((Auditable) record, updateTime, 0);
 		}
-		return updateByPrimaryKeys(list);
+		return updateByPrimaryKeys(record, recordList, methodFullName);
 	}
 
 	@Operation(code = "updateByCondition")
-	public int updateByCondition(E entity, Parameter parameter) {
-		Assert.notEmpty(entity);
-		if (entity instanceof Editable) {
-			updateEditInfo((Editable) entity);
+	public int updateByCondition(Parameter parameter) {
+		E record = parameter.getData();
+		Assert.notEmpty(record);
+		if (record instanceof Editable) {
+			updateEditInfoAndAutoAudit((Editable) record, getUpdateTime());
 		}
-		Condition condition = ConditionBuilder.getCondition(parameter);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
 		return dao.updateByCondition(condition);
 	}
 
-	@Operation(code = "updateByConditionSelectives")
-	public int updateByConditionSelectives(E entity, Parameter parameter) {
-		Assert.notEmpty(entity);
-		if (entity instanceof Editable) {
-			updateEditInfo((Editable) entity);
+	@Operation(code = "updateByConditionSelective")
+	public int updateByConditionSelective(Parameter parameter) {
+		E record = parameter.getData();
+		Assert.notEmpty(record);
+		if (record instanceof Editable) {
+			updateEditInfoAndAutoAudit((Editable) record, getUpdateTime());
 		}
-		Condition condition = ConditionBuilder.getCondition(parameter);
-		return dao.updateByConditionSelectives(condition);
+
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName, parameter);
+		return dao.updateByConditionSelective(condition);
 	}
 
 	@Operation(code = "updateByPrimaryKey")
-	public int updateByPrimaryKey(E entity) {
-		Assert.notNull(entity);
-		if (entity instanceof Editable) {
-			updateEditInfo((Editable) entity);
+	public int updateByPrimaryKey(E record) {
+		Assert.notNull(record);
+		if (record instanceof Editable) {
+			updateEditInfoAndAutoAudit((Editable) record, getUpdateTime());
 		}
-		return dao.updateByPrimaryKey(entity);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+			condition.setData(record);
+			Criteria criteria = condition.addCriteria();
+			criteria.andEqualTo("FID", ((Identity) record).getId());
+			return dao.updateByCondition(condition);
+		} else {
+			return dao.updateByPrimaryKey(record);
+		}
 	}
 
 	@Operation(code = "updateByPrimaryKeys")
-	public int updateByPrimaryKeys(List<E> entityList) {
-		Assert.notEmpty(entityList);
-		if (entityList.get(0) instanceof Editable) {
-			for (E entity : entityList) {
-				updateEditInfo((Editable) entity);
+	public int updateByPrimaryKeys(List<E> recordList) {
+		Assert.notEmpty(recordList);
+		if (recordList.get(0) instanceof Editable) {
+			Date updateTime = getUpdateTime();
+			for (E record : recordList) {
+				updateEditInfoAndAutoAudit((Editable) record, updateTime);
 			}
 		}
-		return dao.updateByPrimaryKeys(entityList);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+			Criteria criteria = condition.addCriteria();
+			int result = 0;
+			for (E record : recordList) {
+				condition.setData(record);
+				criteria.andEqualTo("FID", ((Identity) record).getId());
+				result += dao.updateByCondition(condition);
+				criteria.clear();
+			}
+			return result;
+		} else {
+			return dao.updateByPrimaryKeys(recordList);
+		}
 	}
 
 	@Operation(code = "updateByPrimaryKeySelective")
-	public int updateByPrimaryKeySelective(E entity) {
-		Assert.notNull(entity);
-		if (entity instanceof Editable) {
-			updateEditInfo((Editable) entity);
+	public int updateByPrimaryKeySelective(E record) {
+		Assert.notNull(record);
+		if (record instanceof Editable) {
+			updateEditInfoAndAutoAudit((Editable) record, getUpdateTime());
 		}
-		return dao.updateByPrimaryKeySelective(entity);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+			Criteria criteria = condition.addCriteria();
+			criteria.andEqualTo("FID", ((Identity) record).getId());
+			return dao.updateByConditionSelective(condition);
+		} else {
+			return dao.updateByPrimaryKeySelective(record);
+		}
 	}
 
 	@Operation(code = "updateByPrimaryKeySelectives")
-	public int updateByPrimaryKeySelectives(List<E> entityList) {
-		Assert.notEmpty(entityList);
-		if (entityList.get(0) instanceof Editable) {
-			for (E entity : entityList) {
-				updateEditInfo((Editable) entity);
+	public int updateByPrimaryKeySelectives(List<E> recordList) {
+		Assert.notEmpty(recordList);
+		if (recordList.get(0) instanceof Editable) {
+			Date updateTime = getUpdateTime();
+			for (E record : recordList) {
+				updateEditInfoAndAutoAudit((Editable) record, updateTime);
 			}
 		}
-		return dao.updateByPrimaryKeySelectives(entityList);
+		String methodFullName = getMethodFullName(ClassUtil.getCurrentStackTraceElement());
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		if (AssertUtil.isNotEmpty(condition.getCriterias())) {
+			Criteria criteria = condition.addCriteria();
+			int result = 0;
+			for (E record : recordList) {
+				criteria.andEqualTo("FID", ((Identity) record).getId());
+				result += dao.updateByConditionSelective(condition);
+			}
+			return result;
+		} else {
+			return dao.updateByPrimaryKeySelectives(recordList);
+		}
+	}
+
+	protected int updateByPrimaryKeys(E record, List<E> recordList, String methodFullName) {
+		Condition condition = ConditionBuilder.getCondition(methodFullName);
+		condition.setData(record);
+		Criteria criteria = condition.addCriteria();
+		List<String> ids = new ArrayList<String>();
+		for (E e : recordList) {
+			ids.add(((Identity) e).getId());
+		}
+//		criteria.andEqualTo("FID", "QpCYtRb8G78vq2bI002");
+		criteria.andIn("FID", ids);
+		return dao.updateByConditionSelective(condition);
 	}
 
 	/**
@@ -260,14 +434,17 @@ public class BizImpl<E> implements Biz<E> {
 	 * 插入记录时更新编辑信息
 	 * @param editable
 	 */
-	protected void insertEditInfo(Editable editable) {
-		Date updateTime = getUpdateTime();
+	protected void insertEditInfo(Editable editable, Date updateTime) {
+		editable.setId(generateId(updateTime));
+
 		String userId = AppContext.getUserId();
 		editable.setCreatorId(userId);
 		editable.setCreateTime(updateTime);
-		editable.setId(generateId(updateTime));
+		editable.setEditorId(userId);
+		editable.setEditTime(updateTime);
+
 		if (editable instanceof Auditable) {
-			updateAuditInfo((Auditable) editable, userId, updateTime);
+			updateAutoAuditInfo((Auditable) editable, updateTime);
 		}
 	}
 
@@ -275,46 +452,53 @@ public class BizImpl<E> implements Biz<E> {
 	 * 保存记录时更新编辑信息
 	 * @param editable
 	 */
-	protected void updateEditInfo(Editable editable) {
-		String userId = AppContext.getUserId();
-		Date updateTime = getUpdateTime();
-		editable.setEditorId(userId);
+	protected void updateEditInfoAndAutoAudit(Editable editable, Date updateTime) {
+		editable.setEditorId(AppContext.getUserId());
 		editable.setEditTime(updateTime);
-		if (editable instanceof Auditable) {
-			updateAuditInfo((Auditable) editable, userId, updateTime);
-		}
-	}
 
-	/**
-	 * 保存记录时更新删除信息
-	 * @param deletable
-	 */
-	protected void updateDeleteInfo(Deletable deletable, int deleteState) {
-		if (deleteState > 0) {
-			String userId = AppContext.getUserId();
-			Date updateTime = getUpdateTime();
-			deletable.setDeletorId(userId);
-			deletable.setDeleteTime(updateTime);
-		} else {
-			deletable.setDeletorId(null);
-			deletable.setDeleteTime(null);
+		if (editable instanceof Auditable) {
+			updateAutoAuditInfo((Auditable) editable, updateTime);
 		}
-		deletable.setDeleteState(deleteState);
 	}
 
 	/**
 	 * 保存记录时更新审核信息
-	 * @param auditable
+	 * @param deletable
 	 * @param userId
 	 * @param updateTime
+	 * @param state
 	 */
-	protected void updateAuditInfo(Auditable auditable, String userId, Date updateTime) {
-		// 启用自审核功能
+	protected void updateDeleteInfo(Deletable deletable, Date updateTime, int state) {
+		deletable.setDeletorId(AppContext.getUserId());
+		deletable.setDeleteTime(updateTime);
+		deletable.setDeleteState(state);
+	}
+
+	/**
+	 * 保存记录时更新审核信息
+	 * @param record
+	 * @param userId
+	 * @param updateTime
+	 * @param state
+	 */
+	protected void updateAutoAuditInfo(Auditable record, Date updateTime) {
 		if (autoAudit()) {
-			auditable.setAuditorId(userId);
-			auditable.setAuditTime(updateTime);
-			auditable.setAuditState(1);
+			updateAuditInfo((Auditable) record, updateTime, 1);
 		}
+	}
+
+	/**
+	 * 保存记录时更新审核信息
+	 * @param record
+	 * @param userId
+	 * @param updateTime
+	 * @param state
+	 */
+	protected void updateAuditInfo(Auditable record, Date updateTime, int state) {
+		Auditable auditable = (Auditable) record;
+		auditable.setAuditorId(AppContext.getUserId());
+		auditable.setAuditTime(updateTime);
+		auditable.setAuditState(state);
 	}
 
 	protected String generateId(Date date) {
@@ -327,6 +511,12 @@ public class BizImpl<E> implements Biz<E> {
 
 	protected boolean autoAudit() {
 		return false;
+	}
+
+	protected String getMethodFullName(StackTraceElement ste) {
+		String simpleName = this.getClass().getName();
+//		return ste.getClassName() + ste.getMethodName();
+		return simpleName + "." + ste.getMethodName();
 	}
 
 }

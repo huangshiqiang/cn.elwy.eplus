@@ -1,5 +1,6 @@
 package cn.elwy.eplus.framework.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import cn.elwy.common.entity.Pageable;
 import cn.elwy.common.entity.Parameter;
 import cn.elwy.common.entity.ResultDto;
 import cn.elwy.common.exception.RunException;
+import cn.elwy.common.util.Assert;
 import cn.elwy.eplus.framework.biz.Biz;
 
 /**
@@ -21,20 +23,12 @@ public class BaseService<E> implements Service<E> {
 	@Autowired
 	protected Biz<E> biz;
 
-	public ResultDto audit(String... ids) {
-		ResultDto rd = new ResultDto();
-		try {
-			rd.setData(biz.audit(ids));
-		} catch (RunException e) {
-			rd.setSuccess(false);
-			rd.setMessage(e.getMessage());
-			rd.setDetailMesssage(e);
-		} catch (Exception e) {
-			rd.setSuccess(false);
-			rd.setMessage(e.getMessage());
-			rd.setDetailMesssage(e);
-		}
-		return rd;
+	public Biz<E> getBiz() {
+		return biz;
+	}
+
+	public void setBiz(Biz<E> biz) {
+		this.biz = biz;
 	}
 
 	@Override
@@ -70,10 +64,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto deleteByPrimaryKey(String id) {
+	public ResultDto deleteByPrimaryKey(E record) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.deleteByPrimaryKey(id));
+			rd.setData(biz.deleteByPrimaryKey(record));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -86,10 +80,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto deleteByPrimaryKeys(String... ids) {
+	public ResultDto deleteByPrimaryKeys(List<E> recordList) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.deleteByPrimaryKeys(ids));
+			rd.setData(biz.deleteByPrimaryKeys(recordList));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -102,14 +96,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public Biz<E> getBiz() {
-		return biz;
-	}
-
-	public ResultDto insert(E entity) {
+	public ResultDto logicallyDeleteByCondition(Parameter parameter) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.insert(entity));
+			rd.setData(biz.logicallyDeleteByCondition(parameter));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -122,10 +112,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto insertBatch(List<E> entityList) {
+	public ResultDto logicallyDeleteByPrimaryKey(E record) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.insertBatch(entityList));
+			rd.setData(biz.logicallyDeleteByPrimaryKey(record));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -138,10 +128,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto insertBatchSelective(List<E> entityList) {
+	public ResultDto logicallyDeleteByPrimaryKeys(List<E> recordList) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.insertBatchSelective(entityList));
+			rd.setData(biz.logicallyDeleteByPrimaryKeys(recordList));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -154,10 +144,106 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto insertSelective(E entity) {
+	public ResultDto recoverByCondition(Parameter parameter) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.insertSelective(entity));
+			rd.setData(biz.recoverByCondition(parameter));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto recoverByPrimaryKey(E record) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.recoverByPrimaryKey(record));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto recoverByPrimaryKeys(List<E> recordList) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.recoverByPrimaryKeys(recordList));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto insert(E record) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.insert(record));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto insertBatch(List<E> recordList) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.insertBatch(recordList));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto insertBatchSelective(List<E> recordList) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.insertBatchSelective(recordList));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto insertSelective(E record) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.insertSelective(record));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -280,14 +366,17 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public void setBiz(Biz<E> biz) {
-		this.biz = biz;
+	public ResultDto audit(E record) {
+		Assert.notNull(record);
+		List<E> recordList = new ArrayList<E>();
+		recordList.add(record);
+		return audit(recordList);
 	}
 
-	public ResultDto unaudit(String... ids) {
+	public ResultDto audit(List<E> recordList) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.unaudit(ids));
+			rd.setData(biz.audit(recordList));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -300,10 +389,17 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto updateByCondition(E entity, Parameter parameter) {
+	public ResultDto unaudit(E record) {
+		Assert.notNull(record);
+		List<E> recordList = new ArrayList<E>();
+		recordList.add(record);
+		return unaudit(recordList);
+	}
+
+	public ResultDto unaudit(List<E> recordList) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.updateByCondition(entity, parameter));
+			rd.setData(biz.unaudit(recordList));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -316,10 +412,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto updateByConditionSelectives(E entity, Parameter parameter) {
+	public ResultDto updateByCondition(Parameter parameter) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.updateByConditionSelectives(entity, parameter));
+			rd.setData(biz.updateByCondition(parameter));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -332,10 +428,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto updateByPrimaryKey(E entity) {
+	public ResultDto updateByConditionSelective(Parameter parameter) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.updateByPrimaryKey(entity));
+			rd.setData(biz.updateByConditionSelective(parameter));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -348,10 +444,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto updateByPrimaryKeys(List<E> entityList) {
+	public ResultDto updateByPrimaryKey(E record) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.updateByPrimaryKeys(entityList));
+			rd.setData(biz.updateByPrimaryKey(record));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -364,10 +460,10 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto updateByPrimaryKeySelective(E entity) {
+	public ResultDto updateByPrimaryKeys(List<E> recordList) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.updateByPrimaryKeySelective(entity));
+			rd.setData(biz.updateByPrimaryKeys(recordList));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());
@@ -380,10 +476,26 @@ public class BaseService<E> implements Service<E> {
 		return rd;
 	}
 
-	public ResultDto updateByPrimaryKeySelectives(List<E> entityList) {
+	public ResultDto updateByPrimaryKeySelective(E record) {
 		ResultDto rd = new ResultDto();
 		try {
-			rd.setData(biz.updateByPrimaryKeySelectives(entityList));
+			rd.setData(biz.updateByPrimaryKeySelective(record));
+		} catch (RunException e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		} catch (Exception e) {
+			rd.setSuccess(false);
+			rd.setMessage(e.getMessage());
+			rd.setDetailMesssage(e);
+		}
+		return rd;
+	}
+
+	public ResultDto updateByPrimaryKeySelectives(List<E> recordList) {
+		ResultDto rd = new ResultDto();
+		try {
+			rd.setData(biz.updateByPrimaryKeySelectives(recordList));
 		} catch (RunException e) {
 			rd.setSuccess(false);
 			rd.setMessage(e.getMessage());

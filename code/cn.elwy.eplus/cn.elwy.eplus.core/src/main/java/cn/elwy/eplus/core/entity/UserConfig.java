@@ -5,7 +5,6 @@ import cn.elwy.common.entity.CommonEntity;
 public class UserConfig extends CommonEntity {
 
 	private static final long serialVersionUID = 1L;
-
 	private String userId; // 用户ID
 	private String confCode; // 代码
 	private String confName; // 名称

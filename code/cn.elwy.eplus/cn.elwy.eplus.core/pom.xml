@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>cn.elwy</groupId>
 		<artifactId>cn.elwy.eplus.parent</artifactId>
-		<version>2.0.0</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>cn.elwy.eplus.core</artifactId>
@@ -17,8 +17,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>cn.elwy</groupId>
+			<artifactId>cn.elwy.common</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>cn.elwy</groupId>
 			<artifactId>cn.elwy.eplus.framework</artifactId>
-			<version>2.0.0</version>
+			<version>1.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.auth0</groupId>
@@ -28,12 +33,14 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
 		<!-- 邮件 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
+			<version>${spring-boot.version}</version>
 		</dependency>
 
 	</dependencies>

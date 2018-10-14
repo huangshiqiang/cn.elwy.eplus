@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cn.elwy.common.entity.Condition;
+import cn.elwy.common.entity.Identity;
 import cn.elwy.common.entity.Pageable;
 import cn.elwy.common.exception.DaoException;
 import cn.elwy.common.util.Assert;
@@ -47,7 +48,6 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 获取泛型类型的实体对象类全名
-	 * 
 	 * @return
 	 */
 	protected String getDefaultSqlNamespace() {
@@ -68,7 +68,6 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 获取SqlMapping命名空间
-	 * 
 	 * @return SqlMapping命名空间
 	 */
 	public String getSqlNamespace() {
@@ -77,9 +76,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 设置SqlMapping命名空间。 以改变默认的SqlMapping命名空间， 不能滥用此方法随意改变SqlMapping命名空间。
-	 * 
-	 * @param sqlNamespace
-	 *            SqlMapping命名空间
+	 * @param sqlNamespace SqlMapping命名空间
 	 */
 	public void setSqlNamespace(String sqlNamespace) {
 		this.sqlNamespace = sqlNamespace;
@@ -87,9 +84,7 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 
 	/**
 	 * 将SqlMapping命名空间与给定的SqlMapping名组合在一起。
-	 * 
-	 * @param sqlName
-	 *            SqlMapping名
+	 * @param sqlName SqlMapping名
 	 * @return 组合了SqlMapping命名空间后的完整SqlMapping名
 	 */
 	protected String getSqlName(String sqlName) {
@@ -119,70 +114,70 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public int deleteByPrimaryKey(String id) {
-		Assert.notNull(id);
+	public int deleteByPrimaryKey(E record) {
+		Assert.notNull(record);
 		String sqlName = getSqlName(deleteByPrimaryKey);
 		try {
-			return getSqlSession().delete(sqlName, id);
+			return getSqlSession().delete(sqlName, ((Identity) record).getId());
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据ID删除对象出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public int deleteByPrimaryKeys(String... ids) {
-		Assert.notNull(ids);
+	public int deleteByPrimaryKeys(List<E> recordList) {
+		Assert.notNull(recordList);
 		String sqlName = getSqlName(deleteByPrimaryKeys);
 		try {
-			return getSqlSession().delete(sqlName, ids);
+			return getSqlSession().delete(sqlName, recordList);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据IDS删除对象出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public E insert(E entity) throws DaoException {
-		Assert.notNull(entity);
+	public E insert(E record) throws DaoException {
+		Assert.notNull(record);
 		String sqlName = getSqlName(insert);
 		try {
-			// if (StringUtils.isBlank(entity.getId()))
-			// entity.setId(generateId());
-			getSqlSession().insert(sqlName, entity);
-			return entity;
+			// if (StringUtils.isBlank(record.getId()))
+			// record.setId(generateId());
+			getSqlSession().insert(sqlName, record);
+			return record;
 		} catch (Exception e) {
 			throw new DaoException(String.format("添加对象出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public E insertSelective(E entity) {
-		Assert.notNull(entity);
+	public E insertSelective(E record) {
+		Assert.notNull(record);
 		String sqlName = getSqlName(insertSelective);
 		try {
-			getSqlSession().insert(sqlName, entity);
-			return entity;
+			getSqlSession().insert(sqlName, record);
+			return record;
 		} catch (Exception e) {
 			throw new DaoException(String.format("添加对象出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public List<E> insertBatch(List<E> entityList) {
-		Assert.notNull(entityList);
+	public List<E> insertBatch(List<E> recordList) {
+		Assert.notNull(recordList);
 		List<E> idList = new ArrayList<E>();
-		for (E entity : entityList) {
-			idList.add(this.insert(entity));
+		for (E record : recordList) {
+			idList.add(this.insert(record));
 		}
 		return idList;
 	}
 
 	@Override
-	public List<E> insertBatchSelective(List<E> entityList) {
-		Assert.notNull(entityList);
+	public List<E> insertBatchSelective(List<E> recordList) {
+		Assert.notNull(recordList);
 		List<E> idList = new ArrayList<E>();
 
-		for (E entity : entityList) {
-			idList.add(this.insertSelective(entity));
+		for (E record : recordList) {
+			idList.add(this.insertSelective(record));
 		}
 		return idList;
 	}
@@ -213,27 +208,27 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 		}
 	}
 
-	@Override
-	public E selectByPrimaryKey(String id) {
-		Assert.notNull(id);
-		String sqlName = getSqlName(selectByPrimaryKey);
-		try {
-			return getSqlSession().selectOne(sqlName, id);
-		} catch (Exception e) {
-			throw new DaoException(String.format("根据ID查询对象出错！语句：%s", sqlName), e);
-		}
-	}
-
-	@Override
-	public List<E> selectByPrimaryKeys(String... ids) {
-		Assert.notNull(ids);
-		String sqlName = getSqlName(selectByPrimaryKey);
-		try {
-			return getSqlSession().selectList(sqlName, ids);
-		} catch (Exception e) {
-			throw new DaoException(String.format("根据ID查询对象出错！语句：%s", sqlName), e);
-		}
-	}
+//	@Override
+//	public E selectByPrimaryKey(String id) {
+//		Assert.notNull(id);
+//		String sqlName = getSqlName(selectByPrimaryKey);
+//		try {
+//			return getSqlSession().selectOne(sqlName, id);
+//		} catch (Exception e) {
+//			throw new DaoException(String.format("根据ID查询对象出错！语句：%s", sqlName), e);
+//		}
+//	}
+//
+//	@Override
+//	public List<E> selectByPrimaryKeys(String... ids) {
+//		Assert.notNull(ids);
+//		String sqlName = getSqlName(selectByPrimaryKey);
+//		try {
+//			return getSqlSession().selectList(sqlName, ids);
+//		} catch (Exception e) {
+//			throw new DaoException(String.format("根据ID查询对象出错！语句：%s", sqlName), e);
+//		}
+//	}
 
 	@Override
 	public int updateByCondition(Condition condition) {
@@ -242,15 +237,13 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public int updateByConditionSelectives(Condition condition) {
-		String sqlName = getSqlName(updateByConditionSelectives);
+	public int updateByConditionSelective(Condition condition) {
+		String sqlName = getSqlName(updateByConditionSelective);
 		return update(sqlName, condition);
 	}
 
 	protected int update(String sqlName, Condition condition) {
-		Assert.notNull(condition);
-		Object record = condition.getData();
-		Assert.notNull(record);
+		Assert.notNull(condition.getData());
 		try {
 			return getSqlSession().update(sqlName, condition);
 		} catch (Exception e) {
@@ -259,43 +252,43 @@ public class MybatisDao<E> implements Dao<E>, Constant, SqlIdConst {
 	}
 
 	@Override
-	public int updateByPrimaryKey(E entity) {
-		Assert.notNull(entity);
+	public int updateByPrimaryKey(E record) {
+		Assert.notNull(record);
 		String sqlName = getSqlName(updateByPrimaryKey);
 		try {
-			return getSqlSession().update(sqlName, entity);
+			return getSqlSession().update(sqlName, record);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据ID更新对象出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public int updateByPrimaryKeySelective(E entity) {
-		Assert.notNull(entity);
+	public int updateByPrimaryKeySelective(E record) {
+		Assert.notNull(record);
 		String sqlName = getSqlName(updateByPrimaryKeySelective);
 		try {
-			return getSqlSession().update(sqlName, entity);
+			return getSqlSession().update(sqlName, record);
 		} catch (Exception e) {
 			throw new DaoException(String.format("根据ID更新对象某些属性出错！语句：%s", sqlName), e);
 		}
 	}
 
 	@Override
-	public int updateByPrimaryKeys(List<E> entityList) {
-		Assert.notNull(entityList);
+	public int updateByPrimaryKeys(List<E> recordList) {
+		Assert.notNull(recordList);
 		int result = 0;
-		for (E entity : entityList) {
-			result += this.updateByPrimaryKey(entity);
+		for (E record : recordList) {
+			result += this.updateByPrimaryKey(record);
 		}
 		return result;
 	}
 
 	@Override
-	public int updateByPrimaryKeySelectives(List<E> entityList) {
-		Assert.notNull(entityList);
+	public int updateByPrimaryKeySelectives(List<E> recordList) {
+		Assert.notNull(recordList);
 		int result = 0;
-		for (E entity : entityList) {
-			result += this.updateByPrimaryKeySelective(entity);
+		for (E record : recordList) {
+			result += this.updateByPrimaryKeySelective(record);
 		}
 		return result;
 	}

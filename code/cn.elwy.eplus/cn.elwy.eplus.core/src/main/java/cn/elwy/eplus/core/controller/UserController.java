@@ -42,8 +42,14 @@ public class UserController extends BaseController<User> {
 	@Operation(code = "list")
 	public ModelAndView list(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("list");
-		return super.list(request, response);
 		// mv.addObject(OPERATE, OPERATE_LIST);
+		return super.list(request, response);
+	}
+
+	@Override
+	public ResultDto update(HttpServletRequest request, HttpServletResponse response, User record) {
+		System.out.println(record);
+		return super.update(request, response, record);
 	}
 
 	@Override
@@ -80,7 +86,7 @@ public class UserController extends BaseController<User> {
 		user.setCreatorId("11");
 
 		if (AssertUtil.isNotEmpty(id) && AssertUtil.isNotEmpty(operate) && operate.equals(OPERATE_EDIT)) {
-			rd = service.updateByPrimaryKey(user);
+			rd = service.updateByPrimaryKeySelective(user);
 		} else {
 			rd = service.insert(user);
 		}

@@ -60,7 +60,7 @@
 										<when test="item.isBetweenValue()">
 											${criteria.queryOps[_i]} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
 										</when>
-										<when test="item.isListValue()">
+										<when test="item.isMultiValue()">
 											${criteria.queryOps[_i]} ${item.field} ${item.op}
 											<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
 												#{listItem}
@@ -88,7 +88,7 @@
 													<when test="item.isBetweenValue()">
 														${groupItem.queryOps[_k]} ${item.field} ${item.op} #{item.value} and #{item.secondValue}
 													</when>
-													<when test="item.isListValue()">
+													<when test="item.isMultiValue()">
 														${groupItem.queryOps[_k]} ${item.field} ${item.op}
 														<foreach collection="item.value" item="listItem" open="(" close=")" separator=",">
 															#{listItem}
@@ -268,13 +268,13 @@
 		from ect_user
 		where FID = #{_parameter.id,jdbcType=BIGINT}
 	</select>
-	<delete id="deleteByPrimaryKey">
+	<delete id="deleteByPrimaryKey" parameterType="cn.elwy.eplus.framework.entity.User">
 		delete from ect_user
 		where FID = #{id,jdbcType=BIGINT}
 	</delete>
-	<delete id="deleteByPrimaryKeys">
+	<delete id="deleteByPrimaryKeys" parameterType="java.util.List">
 		delete from ect_user
-		where FID in (<foreach collection="ids" item="id" open="(" close=")" separator=",">#{listItem}</foreach>)
+		where FID in (<foreach collection="list" item="item" open="(" close=")" separator=",">#{item.id}</foreach>)
 	</delete>
 	<delete id="deleteByCondition" parameterType="cn.elwy.common.entity.Condition">
 		delete from ect_user

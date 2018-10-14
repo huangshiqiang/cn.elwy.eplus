@@ -15,21 +15,18 @@ public interface Biz<E> {
 
 	/**
 	 * 设置实体对应的Dao
-	 * @author huangsq
 	 * @param dao
 	 */
 	public void setDao(Dao<E> dao);
 
 	/**
 	 * 获取实体的Dao
-	 * @author huangsq
 	 * @return
 	 */
 	public Dao<E> getDao();
 
 	/**
 	 * 根据查询条件返回实体数目
-	 * @author huangsq
 	 * @param parameter 查询条件
 	 * @return 返回实体数目
 	 */
@@ -37,198 +34,205 @@ public interface Biz<E> {
 
 	/**
 	 * 根据条件删除对象
-	 * @author huangsq
 	 * @param parameter 查询条件
 	 * @return 影响条数
 	 */
 	public int deleteByCondition(Parameter parameter);
 
 	/**
-	 * 根据id删除对象
-	 * @author huangsq
-	 * @param id 主键
+	 * 根据实体的主键删除对象
+	 * @param record 记录
 	 * @return 影响条数
 	 */
-	public int deleteByPrimaryKey(String id);
+	public int deleteByPrimaryKey(E record);
 
 	/**
-	 * 根据多个ids删除对象
-	 * @author huangsq
-	 * @param ids 主键
+	 * 批量根据实体的主键删除对象
+	 * @param recordList 记录集
 	 * @return 影响条数
 	 */
-	public int deleteByPrimaryKeys(String... ids);
+	public int deleteByPrimaryKeys(List<E> recordList);
 
 	/**
 	 * 根据条件逻辑删除对象
-	 * @author huangsq
-	 * @param entity 记录
 	 * @param parameter 查询条件
-	 * @return
+	 * @return 影响条数
 	 */
-	public int logicalDelete(E entity);
+	public int logicallyDeleteByCondition(Parameter parameter);
 
 	/**
 	 * 根据条件逻辑删除对象
-	 * @author huangsq
-	 * @param entity 记录
+	 * @param record 记录
+	 * @return 影响条数
+	 */
+	public int logicallyDeleteByPrimaryKey(E record);
+
+	/**
+	 * 批量根据条件逻辑删除对象
+	 * @param recordList 记录集
+	 * @return 影响条数
+	 */
+	public int logicallyDeleteByPrimaryKeys(List<E> recordList);
+
+	/**
+	 * 根据条件恢复对象
 	 * @param parameter 查询条件
-	 * @return
+	 * @return 影响条数
 	 */
-	public int logicalDelete(E entity, Parameter parameter);
+	public int recoverByCondition(Parameter parameter);
 
 	/**
-	 * 根据条件逻辑删除对象
-	 * @author huangsq
-	 * @param entityList 记录集
-	 * @return
+	 * 根据条件恢复对象
+	 * @param record 记录
+	 * @return 影响条数
 	 */
-	public int logicalDelete(List<E> entityList);
+	public int recoverByPrimaryKey(E record);
+
+	/**
+	 * 批量根据条件恢复对象
+	 * @param recordList 记录集
+	 * @return 影响条数
+	 */
+	public int recoverByPrimaryKeys(List<E> recordList);
 
 	/**
 	 * 插入所有字段的内容
-	 * @author huangsq
-	 * @param entity 记录
-	 * @return entity
+	 * @param record 记录
+	 * @return record
 	 */
-	public E insert(E entity);
+	public E insert(E record);
 
 	/**
 	 * 批量插入所有字段的内容
-	 * @author huangsq
-	 * @param entityList 记录集
-	 * @return entityList
+	 * @param recordList 记录集
+	 * @return recordList
 	 */
-	public List<E> insertBatch(List<E> entityList);
+	public List<E> insertBatch(List<E> recordList);
 
 	/**
 	 * 批量插入内容不为null的字段
-	 * @author huangsq
-	 * @param entityList 记录集
-	 * @return entityList
+	 * @param recordList 记录集
+	 * @return recordList
 	 */
-	public List<E> insertBatchSelective(List<E> entityList);
+	public List<E> insertBatchSelective(List<E> recordList);
 
 	/**
 	 * 插入内容不为null的字段
-	 * @author huangsq
-	 * @param entity 记录
-	 * @return entity
+	 * @param record 记录
+	 * @return record
 	 */
-	public E insertSelective(E entity);
+	public E insertSelective(E record);
 
 	/**
 	 * 查询所有对象
-	 * @author huangsq
-	 * @return 实体对象列表
+	 * @return 记录列表
 	 */
 	public List<E> queryAll();
 
 	/**
 	 * 查询所有对象
-	 * @author huangsq
 	 * @param page 分页
-	 * @return 实体对象列表
+	 * @return 记录列表
 	 */
 	public Pageable<E> queryAllByPage(Pageable<E> page);
 
 	/**
-	 * 根据条件查询实体对象
-	 * @author huangsq
+	 * 根据条件查询记录
 	 * @param parameter 查询条件
-	 * @return 实体对象列表
+	 * @return 记录列表
 	 */
 	public List<E> queryByCondition(Parameter parameter);
 
 	/**
-	 * 根据条件查询实体对象
-	 * @author huangsq
+	 * 根据条件查询记录
 	 * @param parameter 查询条件
 	 * @param page 分页查询条件
-	 * @return 实体对象列表
+	 * @return 记录列表
 	 */
 	public Pageable<E> queryByCondition(Parameter parameter, Pageable<E> page);
 
 	/**
 	 * 根据id查找对象
-	 * @author huangsq
 	 * @param id 主键
-	 * @return 实体对象
+	 * @return 记录
 	 */
 	public E queryByPrimaryKey(String id);
 
 	/**
 	 * 根据ids查找对象
-	 * @author huangsq
 	 * @param ids 主键
-	 * @return 实体对象列表
+	 * @return 记录列表
 	 */
 	public List<E> queryByPrimaryKeys(String... ids);
 
 	/**
 	 * 根据条件更新对象
-	 * @author huangsq
-	 * @param entity 记录
 	 * @param parameter 查询条件
 	 * @return 影响条数
 	 */
-	public int updateByCondition(E entity, Parameter parameter);
+	public int updateByCondition(Parameter parameter);
 
 	/**
 	 * 根据条件更新对象
-	 * @author huangsq
-	 * @param entity 记录
 	 * @param parameter 查询条件
 	 * @return 影响条数
 	 */
-	public int updateByConditionSelectives(E entity, Parameter parameter);
+	public int updateByConditionSelective(Parameter parameter);
 
 	/**
 	 * 根据id更新所有字段
-	 * @author huangsq
-	 * @param entity 记录
+	 * @param record 记录
 	 * @return 影响条数
 	 */
-	public int updateByPrimaryKey(E entity);
+	public int updateByPrimaryKey(E record);
 
 	/**
-	 * 批量根据id更新内容不为null的字段
-	 * @author huangsq
-	 * @param entityList 记录
+	 * 批量根据id更新所有字段
+	 * @param recordList 记录
 	 * @return 影响条数
 	 */
-	public int updateByPrimaryKeys(List<E> entityList);
+	public int updateByPrimaryKeys(List<E> recordList);
 
 	/**
 	 * 根据id更新内容不为null的字段
-	 * @author huangsq
-	 * @param entity 记录
+	 * @param record 记录
 	 * @return 影响条数
 	 */
-	public int updateByPrimaryKeySelective(E entity);
+	public int updateByPrimaryKeySelective(E record);
 
 	/**
 	 * 批量根据id更新内容不为null的字段
-	 * @author huangsq
-	 * @param entityList 记录
+	 * @param recordList 记录
 	 * @return 影响条数
 	 */
-	public int updateByPrimaryKeySelectives(List<E> entityList);
+	public int updateByPrimaryKeySelectives(List<E> recordList);
 
 	/**
-	 * 根据多个ids审核对象
-	 * @author huangsq
-	 * @param ids 主键
+	 * 审核
+	 * @param record 记录
 	 * @return 影响条数
 	 */
-	public int audit(String... ids);
+	public int audit(E record);
 
 	/**
-	 * 根据多个ids反审核对象
-	 * @author huangsq
-	 * @param ids 主键
+	 * 批量审核
+	 * @param recordList 记录集
 	 * @return 影响条数
 	 */
-	public int unaudit(String... ids);
+	public int audit(List<E> recordList);
+
+	/**
+	 * 反审核
+	 * @param record 记录
+	 * @return 影响条数
+	 */
+	public int unaudit(E record);
+
+	/**
+	 * 批量反审核
+	 * @param recordList 记录集
+	 * @return 影响条数
+	 */
+	public int unaudit(List<E> recordList);
 
 }

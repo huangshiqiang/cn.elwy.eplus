@@ -1,90 +1,121 @@
 <!DOCTYPE html>
 <html>
 <head>
-<#include "/include/themes.htm">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Bootstrap 3.3.6 -->
+<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="../resource/themes/default/css/plugins/jqgrid/ui.jqgrid.css">
 
-<!-- 
-<link rel="stylesheet" href="${request.contextPath}/resource/themes/css/bootstrap.min.css" media="print"/>
-<link rel="stylesheet" href="${ctx}/resource/js/module/user/print.css" media="print"/>
-<link rel="stylesheet" href="${request.contextPath}/resource/themes/default/css/animate.min.css" media="print"/>
-<link rel="stylesheet" href="${request.contextPath}/resource/themes/default/css/style.min.css" media="print"/> 
--->
-<link rel="stylesheet" href="${request.contextPath}/resource/themes/css/font-awesome.min.css" media="print"/>
-<link rel="stylesheet" href="${request.contextPath}/resource/themes/default/css/plugins/jqgrid/ui.jqgrid.css" media="print"/>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="../dist/css/font-awesome.min.css">
+<!-- Ionicons -->
+<link rel="stylesheet" href="../dist/css/ionicons.min.css">
+<!-- Theme style -->
+<link rel="stylesheet" href="../dist/css/AdminLTE.min.css">
+<!-- AdminLTE Skins. Choose a skin from the css/skins
+           folder instead of downloading all of them to reduce the load. -->
+<link rel="stylesheet" href="../dist/css/skins/all-skins.min.css">
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
-	<!-- Main content -->
-	<section class="content">
-		<div class="row">
-			<div class="col-xs-12">
-				<div class="nav-tabs-custom">
-					<ul class="nav nav-tabs">
-						<li class="active"><a href="#fa-icons" data-toggle="tab">用户管理</a></li>
-						<div class="btn-group pull-right">
-							<button type="button" class="btn btn-default" data-btn-type="add">新增</button>
-							<button type="button" class="btn btn-default" data-btn-type="edit">编辑</button>
-							<button type="button" class="btn btn-default" data-btn-type="copy">复制</button>
-							<button type="button" class="btn btn-default" data-btn-type="delete">删除</button>
-							<button type="button" class="btn btn-default" data-btn-type="audit">审核</button>
-							<button type="button" class="btn btn-default" data-btn-type="unaudit">反审核</button>
-							<button type="button" class="btn btn-default" data-btn-type="print">打印</button>
-							<button type="button" class="btn btn-default" data-btn-type="export">导出</button>
-							<button type="button" class="btn btn-default" data-btn-type="import">导出</button>
-						</div>
-					</ul>
-					<div class="tab-content">
-						<!-- Font Awesome Icons -->
-						<div class="tab-pane active" id="fa-icons">
-							<form id="searchForm" modelAttribute="role" action="${ctx}/user/query" method="post" class="form-inline"
-								onsubmit="return false;">
-								<div class="input-group input-group-sm">
-									<input type="text" class="form-control " id="username" name="username" placeholder="请输入用户名" />
-								</div>
-								<div class="input-group input-group-sm">
-									<input type="text" class="form-control " id="userCode" name="userCode" placeholder="请输入用户代码" />
-								</div>
-								<div class="input-group input-group-sm">
-									<select class="form-control" id="userType" name="FUSER_TYPE">
-										<option value="1">全部数据</option>
-										<option value="2">已审核</option>
-										<option value="3">未审核</option>
-									</select>
-								</div>
-								<div class="btn-group">
-									<button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
-									<button type="reset" class="btn btn-default" data-btn-type="reset">重置</button>
-								</div>
-							</form>
-
-							<section id="new">
-								<div id="table_div" class="jqGrid_wrapper">
-									<table id="dataGrid"></table>
-									<div id="dataGridPage"></div>
-								</div>
-							</section>
-						</div>
-						<!-- /#fa-icons -->
-						<!-- /#ion-icons -->
-					</div>
-					<!-- /.tab-content -->
-				</div>
-				<!-- /.nav-tabs-custom -->
-			</div>
-			<!-- /.col -->
+	<!-- Direct Chat -->
+	<div class="panels panels-primary direct-chat">
+		<!-- DIRECT CHAT PRIMARY -->
+		<div class="panels-header with-border1">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#tab_1" data-toggle="tab">用户管理</a></li>
+				<!--<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"> Dropdown <span
+                    class="caret"></span>
+            </a>
+                <ul class="dropdown-menu">
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
+                    <li role="presentation" class="divider"></li>
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+                </ul></li> -->
+				<li class="btn-group pull-right">
+					<button type="button" class="btn btn-primary" data-toggle="tooltip" data-widget=".panels-detail-toggle"
+						data-btn-type="add">新增</button>
+					<button type="button" class="btn btn-default" data-btn-type="edit">编辑</button>
+					<button type="button" class="btn btn-default" data-btn-type="copy">复制</button>
+					<button type="button" class="btn btn-default" data-btn-type="delete">删除</button>
+					<button type="button" class="btn btn-default" data-btn-type="audit">审核</button>
+					<button type="button" class="btn btn-default" data-btn-type="unaudit">反审核</button>
+					<button type="button" class="btn btn-default" data-btn-type="import">导入</button>
+					<button type="button" class="btn btn-default" data-btn-type="export">导出</button>
+					<button type="button" class="btn btn-default" data-btn-type="print">打印</button>
+					<button type="button" class="btn btn-default" data-btn-type="print">设置</button>
+				</li>
+			</ul>
 		</div>
-		<!-- /.row -->
-	</section>
+		<div class="tab-pane active" id="tab_1">
+			<form id="searchForm" modelAttribute="role" action="../user/query.json" method="post"
+				class="panels-search form-inline border-bottom" onsubmit="return false;">
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control " id="username" name="username" placeholder="请输入用户名" />
+				</div>
+				<div class="input-group input-group-sm">
+					<input type="text" class="form-control " id="userCode" name="userCode" placeholder="请输入用户代码" />
+				</div>
+				<div class="btn-group">
+					<button type="button" class="btn btn-primary" data-btn-type="search">查询</button>
+					<button type="reset" class="btn btn-default" data-btn-type="reset">重置</button>
+				</div>
+			</form>
+			<!-- /.panels-header -->
+			<div class="panels-body">
+				<!-- Conversations are loaded here -->
+				<section id="new">
+					<div id="table_div" class="jqGrid_wrapper">
+						<table id="dataGrid"></table>
+					</div>
+				</section>
+				<!--/.direct-chat-messages-->
+				<div class="panels-side">
+					<div class="nav-tabs-custom">
+						<!-- Tabs within a box -->
+						<ul class="nav nav-tabs">
+							<li class="active"><a href="#revenue-chart" data-toggle="tab"><i class="fa fa-edit"></i> 编辑</a></li>
+							<li><a href="#sales-chart" data-toggle="tab"><i class="fa fa-gear"></i> 设置</a></li>
+							<li class="btn-group pull-right">
+								<button type="button" class="btn btn-default fa fa-plus" data-btn-type="add" title="添加"></button>
+								<button type="button" class="btn btn-default fa fa-save" data-btn-type="save" title="保存"></button>
+								<button type="button" class="btn btn-default fa fa-edit" data-btn-type="edit" title="修改"></button>
+								<button type="button" class="btn btn-default fa fa-copy" data-btn-type="copy" title="修改"></button>
+								<button type="button" class="btn btn-default fa fa-close" data-btn-type="close" title="关闭"></button>
+							</li>
+						</ul>
+						<div class="tab-content no-padding ">
+							<!-- Morris chart - Sales -->
+							<div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px;"></div>
+							<div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
+						</div>
+					</div>
+				</div>
+				<!-- /.direct-chat-pane -->
+			</div>
+			<!-- /.panels-body -->
+		</div>
+		<!-- /.tab-pane -->
+		<div class="panels-footer">
+			<form action="#" method="post">
+				<div id="dataGridPage"></div>
+			</form>
+		</div>
+		<!-- /.panels-footer-->
+	</div>
+	<!-- /.panels -->
 	<!-- /.content -->
 
 	<#include "/include/js.htm">
-	<script src="${request.contextPath}/resource/js/plugins/validate/jquery.validate.min.js"></script>
-	<script src="${request.contextPath}/resource/js/plugins/validate/messages_zh.min.js"></script>
-	<script src="${request.contextPath}/resource/js/plugins/mask/jquery.maskedinput.min.js"></script>
-	<script src="${request.contextPath}/resource/js/plugins/layer/laydate/laydate.js"></script>
-	<script src="${request.contextPath}/resource/js/plugins/jquery/jQuery.print.js"></script>
-	<script type="text/javascript" src="${request.contextPath}/resource/js/module/user/user.js?v=${_v}"></script>
-	<script type="text/javascript" src="${request.contextPath}/resource/js/module/user/user_form.js"></script>
+	<script src="${ctx}/plugins/validate/jquery.validate.min.js"></script>
+	<script src="${ctx}/plugins/validate/messages_zh.min.js"></script>
+	<script src="${ctx}/plugins/mask/jquery.maskedinput.min.js"></script>
+	<script src="${ctx}/plugins/layer/laydate/laydate.js"></script>
+	<script src="${ctx}/plugins/jquery/jQuery.print.js"></script>
+	<script src="${ctx}/dist/js/module/user/user.js?v=${_v}"></script>
 	
 	<script type="text/javascript">
 	 

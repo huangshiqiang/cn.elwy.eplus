@@ -1,0 +1,310 @@
+$(function() {
+	initWidget();
+	initEvent();
+	setInterval("testConnetion()", 60 * 1000); //1分钟执行一次
+});
+
+function initWidget() {
+	if ($('#funPlan').length > 0) {
+		$('#funPlan').YssSelect({
+			url : ctx + "/config/customFunWeb?operate=getFunPlanList",
+			keystr : "c_PLAN_CODE",
+			valuestr : "c_PLAN_NAME",
+			liveSearch : false,
+			width : '100%',
+			noneSelectedText : "请选择业务方案",
+			change : function(e) {
+				var selectValue = e.target.value;
+				// 切换业务管家方案
+				if ($('#top_menu_switch').prop('checked')) { // 选中
+					FastMenu.changeMenuPlan(selectValue, "top");
+				} else {
+					FastMenu.changeMenuPlan(selectValue);
+				}
+			}
+		}).setYssSelectValue([ 'SystemWebDefalut' ]); // 默认选中默认的web版的业务管家方案
+	}
+
+	if ($('#top_menu_switch').length > 0) {
+		$('#top_menu_switch').change(function() {
+			var selectValue = $('#funPlan').val();
+			if ($('#top_menu_switch').prop('checked')) { // 选中
+				FastMenu.changeMenuPlan(selectValue, "top");
+			} else {
+				FastMenu.changeMenuPlan(selectValue);
+			}
+		});
+	}
+}
+
+function initEvent() {
+	layer.config({
+		anim: 1, //默认动画风格
+		skin: 'layui-layer-lan' //默认皮肤
+	});
+	// 退出
+	$('#logout').click(function() {
+		var index = layer.confirm("确定要退出吗？",{
+			btn : ['确认','取消'],
+		}, function() {
+			layer.close(index);
+			window.location.href = ctx + '/logout';
+		});
+	});
+	
+	// 切换用户
+	$('#switchUser').on('click', function() {
+		window.location.href = ctx + "/fast-sso/login";
+	});
+	
+	// 重新登录
+	$('#reloginBtn').on('click', function() {
+		var data = {
+		"USERNAME" : $("#userName").val(),
+		"PASSWORD" : $("#passWord").val(),
+		"POST" : $("#post").val()
+		};
+		var parameter = {};
+		parameter.data = data;
+		parameter.operate = "ajaxLogin";
+		$.ajax({
+			type : "post",
+			contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+			url : ctx + "/fast-sso/login",
+			data : {
+				"parameter" : JSON.stringify(parameter)
+			},
+			dataType : 'json',
+			success : function(result) { // 回调函数，result，返回值
+				if (result && !result.success) {
+					layer.alert("密码错误", {
+						icon : 0,
+						title : '警告'
+					});
+					$("#passWord").val("");
+					return false;
+				} else if (result.success) {
+					hideMask();
+					// 重新刷新sessionStorage
+					var retdData = result.datas;
+					sessionStorage.timeOut = retdData[1];
+					sessionStorage.lastAccessTime = retdData[2];
+					}
+		
+				}
+			});
+	});
+
+	//search下拉列表的点击事件
+	$(document).on("click", ".sidebar-formList>li", function() {
+		var liText = $(this).text();
+		search_menu(liText);
+		$('#menuSearch').val("");
+		$(".sidebar-formList").html("");
+	})
+
+	//document.getElementById('menuSearch').addEventListener('input', creatSearchList);
+		/* var win = ($.browser.msie) ? document : window; */
+	// 窗口点击事件
+	$(window).on("click", function() {
+		$(".sidebar-formList").html("");
+		$('#menuSearch').val("");
+	})
+
+	// 菜单搜索输入框
+	$('#menuSearch').on("keydown", function(event) {
+		if (event.keyCode == 13) {
+			$(".sidebar-formList").find("li.active").click();
+		}
+	}).on('input propertychange', creatSearchList);
+	
+	//上下按钮事件
+	$(document).on("keydown", function(event) {
+		if (event.keyCode == "40" || event.keyCode == "38") {
+			var alllength = $(".sidebar-formList").find("li").length;
+			var index = $(".sidebar-formList").find("li.active").index();
+			if (event.keyCode == "40") {
+				index++;
+				if (index >= alllength) {
+					index = 0;
+				}
+			}
+			if (event.keyCode == "38") {
+				index--;
+				if (index < 0) {
+					index = alllength - 1;
+				}
+			}
+			$(".sidebar-formList").find("li").removeClass("active").eq(index).addClass("active");
+			var wrapH = $(".sidebar-formList").height();
+			var liH = $(".sidebar-formList").find('li').height() * (index + 1);
+			var numberTop = liH - wrapH;
+			if (numberTop >= 0) {
+				$(".sidebar-formList").scrollTop(numberTop);
+			} else {
+				$(".sidebar-formList").scrollTop(0);
+			}
+		}
+	})
+}
+
+/**
+ * 心跳测试
+ */
+function testConnetion() {
+	// 客户端先检测
+	var d1 = new Date().getTime();
+	var d2 = new Date(sessionStorage.lastAccessTime).getTime();
+	var d3 = d1 - d2;
+	if (isNaN(d3) || d3 > sessionStorage.timeOut) { // 计算超时才向后台请求 (isNaN检测针对同一浏览器关闭当前页sessionStorage失效)
+	// 发送心跳，验证是否真的超时
+	var ajaxTimeoutTest = $.ajax({
+		url : ctx + '/fast-sso/testConnection',
+		timeout : 5000, //超时时间设置，单位毫秒
+		type : 'post',
+		dataType : 'json',
+		success : function(result) {
+			if (result.success) { // 没超时
+				// 重新刷新sessionStorage
+				var retdData = result.datas;
+				sessionStorage.timeOut = retdData[0];
+				sessionStorage.lastAccessTime = retdData[1];
+			} else { // 超时
+				showMask();
+			}
+		},
+		complete : function(XMLHttpRequest, status) {
+			if (status == 'timeout' || status == 'error') { // 超时,status还有success,error等值的情况
+						ajaxTimeoutTest.abort();
+						showMask();
+					}
+				}
+		});
+	}
+}
+
+//显示遮罩层    
+function showMask() {
+	if ($("#mask").is(":hidden")) {
+		$("#mask").css("height", $(document).height());
+		$("#mask").css("width", $(document).width());
+		$("#mask").show();
+	}
+}
+
+//隐藏遮罩层  
+function hideMask() {
+	$("#mask").hide();
+}
+
+//添加字符串的去除空格方法
+String.prototype.trim = function() {
+	return this.replace(/\s+/g, "");
+}
+
+//点击菜单搜索按钮
+function search_menu(textValue) {
+	//要搜索的值
+	var text = textValue.trim();
+	var $ul = $('.sidebar-menu');
+	$ul.find("a.J_menuItem").each(function() {
+		var $a = $(this);
+		//判断是否含有要搜索的字符串
+		if ($a.text().trim().toLowerCase() == text) {
+			//如果a标签的父级是隐藏的就展开
+			$ul = $a.parents("ul");
+			if ($ul.is(":hidden")) {
+				$a.parents("ul").prev().click();
+			}
+			//点击该菜单
+			$a.click();
+			//return false;
+		}
+	});
+}
+function getSearchList() {
+	var targetValue = $('#menuSearch').val();
+	if (targetValue.trim() == "") return;
+	var targetArry = [];
+	for ( var i in FastMenu.pingyinList) {
+		var pinyinFirst = FastMenu.pingyinList[i].pinyinFirst;
+		if (FastMenu.pingyinList[i].hangziAll.indexOf(targetValue) >= 0) {
+			targetArry.push(FastMenu.pingyinList[i].hangziAll);
+			continue;
+		}
+		if (FastMenu.pingyinList[i].pinyinAll.indexOf(targetValue) >= 0) {
+			targetArry.push(FastMenu.pingyinList[i].hangziAll);
+			continue;
+		}
+		//for (var j in pinyinFirst) {
+		if (pinyinFirst.toLowerCase().indexOf(targetValue) >= 0) {
+			targetArry.push(FastMenu.pingyinList[i].hangziAll);
+			continue;
+		}
+		//}	
+	}
+	return targetArry;
+}
+
+//生成下拉列表
+function creatSearchList() {
+	var targetArry = getSearchList();
+	var targetValue = $('#menuSearch').val();
+	var ulHtml = "";
+	for (var i = 0; i < targetArry.length; i++) {
+		ulHtml += '<li>' + targetArry[i] + '</li>';
+	}
+	if (targetValue == "") {
+		ulHtml = "";
+	}
+	$(".sidebar-formList").html($(ulHtml));
+	$(".sidebar-formList").find("li:first").addClass("active")
+}
+
+//控制全屏
+var isFullScreen = false;  
+
+function handleFullScreen() {
+	if (isFullScreen) {
+		exitFullScreen();
+		isFullScreen = false;
+	} else {
+		requestFullScreen();
+		isFullScreen = true;
+	}
+};
+
+// 退出全屏 判断浏览器种类
+function exitFullScreen () {
+	var el = document;
+	// 判断各种浏览器，找到正确的方法
+	var exitMethod = el.exitFullscreen || // W3C
+		el.webkitCancelFullScreen || el.webkitExitFullscreen || // Chrome
+		el.mozCancelFullScreen; // FireFox
+		el.cancelFullScreen;
+	if (typeof exitMethod != "undefined" && exitMethod) {
+		exitMethod.call(el);
+	} else if (isIE()) {// for Internet Explorer
+		// for IE，这里和fullScreen相同，模拟按下F11键退出全屏
+		var wscript = new ActiveXObject("WScript.Shell");
+		if (wscript !== null) {
+			wscript.SendKeys("{F11}");
+		}
+	}
+};
+
+function requestFullScreen () {
+	var el = document.documentElement;
+	// 判断各种浏览器，找到正确的方法
+	var rfs = el.requestFullScreen || el.webkitRequestFullScreen ||
+	el.mozRequestFullScreen || el.msRequestFullScreen;
+	if (typeof rfs != "undefined" && rfs) {
+		rfs.call(el);
+	} else if (isIE()) {
+		// for IE，这里其实就是模拟了按下键盘的F11，使浏览器全屏
+		var wscript = new ActiveXObject("WScript.Shell");
+		if (wscript !== null) {
+			wscript.SendKeys("{F11}");
+		}
+	}
+};

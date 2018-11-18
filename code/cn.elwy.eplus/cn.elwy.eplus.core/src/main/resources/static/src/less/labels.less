@@ -1,0 +1,33 @@
+/*
+ * Component: Label
+ * ----------------
+ */
+@import "bootstrap-less/mixins.less";
+@import "bootstrap-less/variables.less";
+@import "variables.less";
+@import "mixins.less";
+@import "miscellaneous.less";
+.label-default {
+  background-color: @gray;
+  color: #444;
+}
+
+.label-danger {
+  &:extend(.bg-red);
+}
+
+.label-info {
+  &:extend(.bg-aqua);
+}
+
+.label-warning {
+  &:extend(.bg-yellow);
+}
+
+.label-primary {
+  &:extend(.bg-light-blue);
+}
+
+.label-success {
+  &:extend(.bg-green);
+}

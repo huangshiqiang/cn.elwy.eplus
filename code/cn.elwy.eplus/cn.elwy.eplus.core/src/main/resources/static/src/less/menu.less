@@ -1,0 +1,59 @@
+
+@import "bootstrap-less/mixins.less";
+@import "bootstrap-less/variables.less";
+@import "variables.less";
+@import "mixins.less";
+.nav-link {
+  cursor: pointer;
+}
+
+.skin-top(@color) {
+	.header_menu {
+    float:left;
+    margin-top:18px;
+    margin-left:10px;
+    text-align:center;
+	}
+
+	.header_menu i{
+	    margin-right:5px;
+	    display:inline-block;
+	}
+	.header_menu a {
+	    display:block;
+	    float:left;
+	    height:30px;
+	    line-height:30px;
+	    border-top:1px solid lighten(@color, 10%);
+	    border-left:1px solid lighten(@color, 10%);
+	    border-right:1px solid lighten(@color, 10%);
+	    border-top-left-radius:5px;
+	    border-top-right-radius:5px;
+	    color:#fff;
+	    font-size:16px;
+	    padding:0 15px;
+	}
+	@media screen and (max-width: 1200px) {
+	    .header_menu a{
+	        margin-right:0;
+	        padding:0 16px;
+	    }
+	    .header_user_menu{
+	        float:static;
+	    }
+	}
+	/*-------201410[kavi]: 菜单按钮选择样式---------*/
+	.header_menu a:hover, a.menu_select {
+	    border-top:1px solid lighten(@color, 10%);
+	    border-left:1px solid lighten(@color, 10%);
+	    border-right:1px solid lighten(@color, 10%);
+	    background:lighten(@color, 10%);
+	}
+	
+		.header_menu a:focus{
+	    border-top:1px solid darken(@color, 10%);
+	    border-left:1px solid darken(@color, 10%);
+	    border-right:1px solid darken(@color, 10%);
+	    background:darken(@color, 10%);
+	}
+}

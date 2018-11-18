@@ -1,0 +1,1368 @@
+/**
+ * YssDataGrid封装(基于jquery.jqGrid.js封装)
+ * @author huangsq
+ * @version 2017-07-29 v1.0
+ * @author huangjunxiong
+ * @version 2017-12-06 v2.0
+ */
+;(function($, window, document) {
+    $.jgrid.defaults.styleUI = "Bootstrap";
+    // 初始化配置项
+    var defaultOptions = {
+        mtype : "POST",
+        datatype : "json",
+        jsonReader : { // 自定义表格的JSON读取参数
+            id : "id",
+            root : "datas",
+            page : "pageNo",
+            total : "totalPage",
+            records : "totalRecord",
+            repeatitems : true,
+            cell : "cell",
+            userdata : "otherData",
+            subgrid : {
+                root : "datas"
+            }
+        },
+        treeReader : { // 自定义树表格JSON读取参数
+            level_field : "level",
+            parent_id_field : "parentId",
+            expanded_field : "expanded",
+            leaf_field : "leaf",
+            icon_field : "icon",
+            loaded : "loaded",
+            userdata : "otherData"
+        },
+        prmNames : { // 自定义Ajax请求参数
+            page : "pageNo",
+            rows : "pageSize",
+            totalrows : "totalPage",
+            sort : "orderBy",
+            order : "sort",
+            search : "_search",
+            nd : "nd",
+            id : "id",
+            oper : "operate",
+            addoper : "create",
+            editoper : "edit",
+            deloper : "del",
+            subgridid : "id",
+            npage : null
+        },
+        rowNum : 100, // 显示行数，-1为显示全部
+        rowList : [ 5, 10, 15, 20, 30, 50, 100, 200, 500, 1000 ],
+        rownumbers : true,
+        loadtext : "数据加载中...",
+        emptyrecords : "未查询到相关数据",
+        viewrecords : true,
+        autowidth : true,
+        forceFit : true,
+        sortable : false,  //列头是否排序
+        shrinkToFit : true,
+        lineSort:false,
+        loadonce:false,
+        sortname : 'id',//初始化的时候排序的字段
+		sortorder : "desc",//排序方式,可选desc,asc
+        height : "100%",
+        rownumWidth : 35, // 序号列宽
+        subGrid : false,
+        multiselect : true,
+        multiboxonly : true, // 单击复选框时在多选
+        checkFirst : false, // 选中第一条
+        altRows : true, // 斑马线样式，交替行altclass
+        tabPageId : '', // 当前页签编号（作为addTabPage的参数）
+
+        // 设置列模型参数
+        colNames : [],
+
+        // 数据表格扩展参数
+        dataId : 'id', // 指定数据主键
+        lazyLoad : false, // 是否懒加载Grid数据（仅对url远程请求数据有效），调用 dataGrid.refresh()时再进行加载
+
+        // showRownum : true, // 是否显示行号
+        // showCheckbox : false,// 是否显示复选框
+        sortableColumn : true,// 列表是否允许排序
+
+        autoGridHeight : true, // 自动表格高度
+        autoGridHeightFix : 0, // 自动表格高度宽度
+        autoGridWidth : true, // 自动表格宽度
+        autoGridWidthFix : 0, // 自动表格修复宽度
+
+        // 树结构表格参数
+        treeGrid : false, // 启用树结构表格
+        treeGridModel : 'adjacency', // 启用简单结构模式
+        ExpandColClick : true, // 单击列可展开
+        selectOnCheck : false, // 如果为false，选择行将不选中复选框。
+        parentClick : true,
+        currentEditId : null, // 当前编辑行id
+        lastSelectRow : null, // 最后一次选中行
+        resetHeight : true, // 是否重置高度（默认重置）
+		resizeGridWrapper : function(){
+			if ($(this[0]).closest(Common.getConstant('SET_BTN_TAG')).length > 0) { // 如果是在set界面中不重置大小			
+			} else {				
+				var wrapper = $(this[0]).closest(Common.getConstant('GRID_WRAPPER'));
+				var divId = (wrapper.attr("id") == undefined ? wrapper.parent().attr("id") : wrapper.attr("id"));
+				Common.resizeGridWrapper(divId);
+			}
+		},
+        // ExpandColumn : options.treeColumn, // 要展开的列
+        // defaultExpandLevel : 0, // 默认展开的层次
+        // initExpandLevel : options.defaultExpandLevel,// 保存初始化是设置的展开层次
+
+        addEvent : function(dataGrid) {// 数据请求前调用方法
+        },
+        beforeRequest : function(data) {// 数据请求前调用方法
+            // console.debug(data);
+        },
+        loadComplete : function(data) {// 数据请求完成调用方法
+            // 如果有消息，则显示提示消息
+            if (data.success === undefined) { // 针对本地数据过滤
+            } else if (data && !data.success) {
+                layer.alert(data.message, {
+                    icon : 0,
+                    title : '查询失败'
+                });
+            }
+            var config = $(this).jqGrid('getGridParam');
+            if (config.treeGrid && config.treeGrid_bigData) { // 为了配合树分页，pageSize从数据长度改回来。
+            	config.rowNum = data.pageSize;
+            	// 重置右下角分页信息
+            	var rowDataCount = 0;
+            	$.each(data.datas,function(ind,val){
+            	  if (val.level == 0) { // 按level=0判断
+            		  rowDataCount += 1;
+            	  }
+            	});
+            	var rt = $.jgrid.getRegional(this, "defaults.recordtext", config.recordtext);
+            	$(".ui-paging-info", config.pager).html($.jgrid.template(rt, 1, rowDataCount, config.records));
+            }
+            config.currentEditId = null;
+            if (config.relaAzone || config.relaForm || config.relaSelect) {
+                return;
+            }
+            var target = $(this).closest(Common.getConstant('WEBPLUS_CONTAINER')).find(Common.getConstant('HEADER')).find(Common.getConstant('BTN_TAG'));
+            Common.setButtonStatus({btns:['ALL'],target: target,status:true,effectSet:false});
+            var _context = Common.getContext();
+            var _currentPanel = _context.currentPanel;
+            if (_currentPanel != null) {
+                if (_currentPanel.lastRow != null && _currentPanel.lastRow != "") {
+                    $(this).jqGrid('setSelection', _currentPanel.lastRow);
+                } else { // 默认选中第一个
+                	if (!config.checkFirst) {                		
+                		var rowData = $(this).jqGrid("getRowData");
+                		if (rowData.length > 0) {
+                			$(this).jqGrid('setSelection', rowData[0].id);
+                		}
+                	}
+                }
+            } else {
+            	if (!config.checkFirst) {                		
+            		var rowData = $(this).jqGrid("getRowData");
+            		if (rowData.length > 0) {
+            			$(this).jqGrid('setSelection', rowData[0].id);
+            		}
+            	}
+            }
+        },
+        loadError : function(data) {
+            YssLayer.messageAlter("表格加载失败", 0);
+        },
+        gridComplete : function() {
+            var dataGridId = $(this).attr('id');
+            // var gviewId = '#gview_' + dataGridId;
+            var ids = $(this).jqGrid("getDataIDs");
+            for (var i = 0; i < ids.length; i++) {
+                var rowData = $(this).jqGrid('getRowData', ids[i]);
+                if (rowData.n_STATE == "0" || rowData.auditState == "0") {
+                    $(this).find('#' + ids[i]).find("td").addClass("text-warning");
+                } else if (rowData.n_STATE == "2" || rowData.auditState == "2") {
+                    $(this).find('#' + ids[i]).find("td").addClass("text-success");
+                }
+            }
+           /* $(gviewId).find(".ui-jqgrid-sortable").removeClass("ui-jqgrid-sortable");*/
+            var config = $(this).jqGrid('getGridParam');
+            $.proxy(privateMethods._checkboxHanler, this, config)();
+            if ($.isFunction(config.exGridComplete)) {
+                config.exGridComplete.call(this);
+            }
+        },
+        beforeSelectRow : function(rowid, e) {
+            var dom = $(e.target);
+            var config = $(this).jqGrid('getGridParam');
+            if (!config.parentClick) { // 配置了父节点不可点击
+            	var data = $(this).jqGrid("getRowData", rowid);
+            	if (data.leaf == 'false') { // 如果当前点击是父节点
+            		return false;
+            	}
+            } 
+            config.selrow = rowid;
+            var result;
+            if ($.isFunction(config.exOnSelectRow)) {
+            	result = config.exOnSelectRow.call(this, rowid, status, e);
+            }
+            
+            if (result == "stop") {
+            	config.selrow = config.lastSelectRow;
+                var dom = $(this).jqGrid('getInd', config.selrow, true);
+                $(dom).click();
+            	return false;
+            } else {            	
+            	config.lastSelectRow = rowid;
+            }
+            
+            if (config.relaAzone || config.relaForm || config.relaSelect) {
+            } else {            	
+            	$.proxy(privateMethods._initButtonStatus, this, rowid, true)();
+            }
+            // 有些需求选中行要求按钮自定义，补充配置支持
+            if ($.isFunction(config.customSelectButtonStatus)) {
+                config.customSelectButtonStatus.call(this, rowid, e);
+            }
+            
+            if (dom.is('input[type=checkbox]')) {
+                return true;
+            }
+            if (dom.is('tr')) {
+                if (!dom.hasClass('success')) {
+                    dom.addClass('success');
+                }
+            }
+            return false;
+        },
+        onSelectRow : function(rowid, status, e) {
+            var config = $(this).jqGrid('getGridParam');
+            if (!config.parentClick) { // 配置了父节点不可点击
+            	var data = $(this).jqGrid("getRowData", rowid);
+            	if (data.leaf == 'false') { // 如果当前点击是父节点
+            		return;
+            	}
+            } 
+            if ($.isFunction(config.onCheckedRow)) {
+                config.onCheckedRow.call(this, rowid, status, e);
+            }
+            if (config.relaAzone || config.relaForm || config.relaSelect) {
+            } else {            	
+            	$.proxy(privateMethods._initButtonStatus, this, rowid, false)();
+            }
+            // 有些需求选中行要求按钮自定义，补充配置支持
+            if ($.isFunction(config.customCheckedButtonStatus)) {
+                config.customCheckedButtonStatus.call(this, rowid, e);
+            }
+            var dom = $(this).getInd(rowid, true);
+            if (!$(dom).hasClass('success')) {
+                $(dom).addClass('success');
+            }
+            config.selrow = rowid;
+            config.lastSelectRow = rowid;
+            return;
+        },
+       /* onSortCol : function(index,iCol,sortorder){
+        	alert("11")
+        	return;
+        },*/
+        onCheckedRow : function (rowid, status, e) {
+            return;
+        },
+        onCellSelect : function(rowid, iCol, cellcontent, e) {
+            return;
+        },
+        ondblClickRow : function(rowid, iRow, iCol, e) {
+            var config = $(this).jqGrid('getGridParam');
+            if (!config.parentClick) { // 配置了父节点不可点击
+            	var data = $(this).jqGrid("getRowData", rowid);
+            	if (data.leaf == 'false') { // 如果当前点击是父节点
+            		return;
+            	}
+            }
+            if ($.isFunction(config.exOndblClickRow)) {
+                config.exOndblClickRow.call(this, rowid, iRow, iCol, e);
+            }
+            if (config.relaAzone || config.relaForm || config.relaSelect) {
+                return;
+            }
+            $.proxy(privateMethods._initButtonStatus, this, rowid, true)();
+            if ($.isFunction(config.customDbClickButtonStatus)) {
+                config.customDbClickButtonStatus.call(this, rowid, e);
+            }
+            return;
+        },
+        validationCell : function(elem, cv, rowIndex, index){
+//        	var config = $(this).jqGrid('getGridParam');
+//        	tr = $(this).jqGrid('getGridRowById', config.currentEditId),
+//        	positions = $.jgrid.findPos(tr);
+        	layer.alert(cv, {
+        			shade: 0,
+        			skin: 'layui-layer-lan'
+        		}, function(idx, layero){
+					if(index >= 0 ) {
+						elem.focus();
+					}
+					layer.close(idx);
+        		});
+        }
+    };
+    // 公共方法集合
+    var publicMethods = {
+        /**
+         * 获取参数
+         */
+        getParam : function(paramName) {
+            return this.jqGrid('getGridParam', paramName);
+        },
+        /**
+         * 设置参数
+         */
+        setParam : function(params) {
+            return this.jqGrid("setGridParam", params);
+        },
+        /**
+         * 获取选择行ID
+         */
+        getSelectRow : function() {
+            return this.jqGrid('getGridParam', "selrow");
+        },
+        /**
+         * 获取选中行ID数组
+         */
+        getCheckedRows : function() {
+            return this.jqGrid('getGridParam', "selarrrow");
+        },
+        getCheckedRowsData : function() {
+            var _t = this;
+            var rowsData = [];
+            var arr = _t.jqGrid('getGridParam', "selarrrow");
+            $.each(arr, function(index, id) {
+                rowsData.push(_t.jqGrid("getRowData", id));
+            });
+            return rowsData;
+        },
+        /**
+         * 获取选中的复选框的值
+         */
+        getCheckedData : function() {
+            var _checkedData = [];
+            var _trs = $(this).find('tr[id]');
+            $.each(_trs, function(index, id) {
+                var _tr = $(this);
+                var _checkeds = _tr.find('[type="checkbox"]:checked');
+                if (_checkeds.length > 0) {
+                    var _data = {};
+                    _data.id = _tr.attr('id');
+                    $.each(_checkeds, function(index, id) {
+                        var _checked = $(this);
+                        _data[_checked.attr('name')] = _checked.attr('value');
+                    });
+                    _checkedData.push(_data);
+                }
+            });
+            return _checkedData;
+        },
+        /**
+         * 设置选中复选框
+         */
+        setCheckedData : function(datas) {
+            var _checkboxs = $(this).find('input[type="checkbox"]');
+            var config = $(this).jqGrid('getGridParam');
+            $.each(_checkboxs, function(index, id) {
+                var _checkbox = $(this);
+                var _rowid = _checkbox.attr('rowid');
+                var _name = _checkbox.attr('name');
+                var _value = _checkbox.attr('value');
+                for ( var i in datas) {
+                    var data = datas[i];
+                    if (data.id == _rowid && data.hasOwnProperty(_name) && data[_name] == _value) {
+                        _checkbox.prop('checked', true);
+                        if ($.inArray(_rowid, config.selarrrow) < 0) {
+                            config.selarrrow.push(_rowid);
+                        }
+                    }
+                }
+            });
+        },
+        /**
+         * 获取选择行ID数组
+         */
+        getSelectRows : function() {
+            return this.jqGrid('getGridParam', "selarrrow");
+        },
+        /**
+         * 获取未选中行id数组
+         */
+        getUnSelectRows : function() {
+        	var unselarrrow = [];
+            var rows = $(this).find('tr[id]');
+            $.each(rows, function(index, id) {
+                if (!$(this).hasClass('ui-state-disabled')) {
+                	var _tr = $(this);
+                	if (!_tr.find('[type="checkbox"]').is(':checked')) {
+                		unselarrrow.push(_tr.attr('id'));
+                	}
+                }
+            });
+        	return unselarrrow;
+        },
+        /**
+         * 获取选择行数据数组
+         */
+        getSelectRowsData : function() {
+            var rowsData = [];
+            var _this = this;
+            $.each(_this.jqGrid('getGridParam', "selarrrow"), function(index, id) {
+                rowsData.push(_this.jqGrid("getRowData", id));
+            });
+            return rowsData;
+        },
+        /**
+         * 获取指定ID对应的行数据
+         */
+        getRowDataById : function(id) {
+            return this.jqGrid("getRowData", id);
+        },
+        /**
+         * 重新加载数据
+         */
+        reload : function(params) {
+        	var config = this.jqGrid('getGridParam');
+            var searchForm = config.searchForm;
+            if (params != null) {
+                this.jqGrid("setGridParam", {
+                    postData : params
+                }).trigger("reloadGrid");
+            } else {
+            	var basicSearchObj = $.proxy(privateMethods._getFormData, this, searchForm.attr('id'))();
+            	var advancedSearch = {};
+            	if ($.isFunction(config.advancedSearch)) {
+            		advancedSearch = config.advancedSearch.call(this);
+            	}
+            	basicSearchObj = $.extend(true, {}, basicSearchObj, advancedSearch);
+            	this.jqGrid('setGridParam', {
+                    postData : {
+                        parameter : JSON.stringify(basicSearchObj)
+                    }
+                }).trigger('reloadGrid');
+            }
+            // BUG #190909 树表格刷新之后，依旧保留了上次选中的行数据 by huangjunxiong 2018-01-31 
+            if(config.treeGrid) {
+            	config.selrow = null;
+				config.selarrrow = [];
+				$.proxy(publicMethods.resetCheck, this)();
+				config.savedRow = [];
+			}
+        },
+        getRowDomById : function(id) {
+            return this.getInd(id, true);
+        },
+        getNotLeafRows : function() {
+            var ids = this.jqGrid('getDataIDs');
+            var id2return = [];
+            var _this = this;
+            $.each(ids, function(index, id) {
+                if (_this.jqGrid("getRowData", id).isLeaf == 'false') {
+                    id2return.push(id);
+                }
+            });
+            return id2return;
+        },
+        addChildRow : function(rowid, parentid, data) {
+            this.jqGrid('addChildNode', rowid, parentid, data);
+            // 增加闪烁效果
+            var __this = this;
+            privateMethods._flash($(__this.getRowDomById(data.id)), 2, 1000);
+        },
+        delRow : function(rowid) {
+            this.jqGrid('delTreeNode', rowid);
+        },
+        getChildrens : function(rowid, deep, rs) {
+            var row = this.jqGrid("getRowData", rowid);
+            if (deep === true) {
+                if (!rs) {
+                    rs = [];
+                }
+                var childrenFirstLevel = this.jqGrid('getNodeChildren', row);
+                rs = $.merge(rs, childrenFirstLevel);
+                for ( var i in childrenFirstLevel) {
+                    $.proxy(publicMethods.getChildrens, this)(childrenFirstLevel[i].id, deep, rs);
+                }
+                return rs;
+            } else {
+                return this.jqGrid('getNodeChildren', row);
+            }
+        },
+        getParent : function(rowid, deep, rs) {
+            var row = this.jqGrid("getRowData", rowid);
+            if (deep === true) {
+                if (!rs) {
+                    rs = [];
+                }
+                var parentFirstLevel = $.proxy(publicMethods.getParent, this)(rowid, false);
+                rs = $.merge(rs, parentFirstLevel);
+                for ( var i in parentFirstLevel) {
+                    if (null != parentFirstLevel[i]) {
+                        $.proxy(publicMethods.getParent, this)(parentFirstLevel[i].id, deep, rs);
+                    }
+                }
+                return rs;
+            } else {
+                return this.jqGrid('getNodeParent', row) == null ? [] : [ this.jqGrid('getNodeParent', row) ];
+            }
+        },
+        exAddRow : function(p) {
+            var flag = true;
+            var ts = this;
+            var config = ts.jqGrid('getGridParam');
+            if (config.currentEditId != null) {
+                flag = $.proxy(publicMethods.exSaveRow, ts)(config.currentEditId);
+            }
+            if (flag) {
+                var ids = ts.jqGrid('getDataIDs');
+                var newId = parseInt(ids.length) + 1+"_pk";
+                p = $.extend(true, {
+                    rowID : newId,
+                    initdata : {},
+                    position : "first",
+                    useDefValues : true,
+                    useFormatter : false,
+                    addRowParams : {
+                        extraparam : {},
+                        url : 'clientArray',
+                        afterrestorefunc : function() {
+                            config.currentEditId = null;
+                        },
+                        aftersavefunc : function(rowid, res) {
+                            config.currentEditId = null;
+                        },
+                        successfunc : function(res) {
+                            var flag = true;
+                            if (res.status == 200) {
+                                if (res.responseJSON !== undefined) {
+                                    if (res.responseJSON.success) { // 保存成功
+                                        $(ts).jqGrid('reload');
+                                    } else { // 保存失败
+                                        flag = false;
+                                    }
+                                }
+                            } else { // 保存失败
+                                flag = false;
+                            }
+                            return flag;
+                        },
+                        errorfunc : function(rowid, res, stat) {
+                            YssLayer.messageDialogOnRightDown("保存失败，请检查后重试！！！");
+                        }
+                    }
+                }, p || {});
+                ts.jqGrid('addRow', p);
+                config.currentEditId = newId;
+            }
+        },
+        exDelRow : function(rowid) {
+            var ts = this;
+            ts.jqGrid('delRowData', rowid);
+            var config = ts.jqGrid('getGridParam');
+            if (config.currentEditId == rowid) {
+                config.currentEditId = null;
+            }
+        },
+        exEditRow : function(rowid, keys, oneditfunc, beforeSaveRow, successfunc, url, extraparam, aftersavefunc, errorfunc,
+                             afterrestorefunc) {
+            var ts = this, o = {}, args = $.makeArray(arguments).slice(1), config = ts.jqGrid('getGridParam');
+
+            if ($.type(args[0]) === "object") {
+                o = args[0];
+            } else {
+                if (keys !== undefined) {
+                    o.keys = keys;
+                }
+                if ($.isFunction(oneditfunc)) {
+                    o.oneditfunc = oneditfunc;
+                }
+                if ($.isFunction(successfunc)) {
+                    o.successfunc = successfunc;
+                } else {
+                    o.successfunc = function(res) {
+                        var flag = true;
+                        if (res.status == 200) {
+                            if (res.responseJSON !== undefined) {
+                                if (res.responseJSON.success) { // 保存成功
+                                    $(ts).jqGrid('reload');
+                                } else { // 保存失败
+                                    flag = false;
+                                }
+                            }
+                        } else { // 保存失败
+                            flag = false;
+                        }
+                        return flag;
+                    }
+                }
+                if (url !== undefined) {
+                    o.url = url;
+                } else {
+                    o.url = 'clientArray';
+                }
+                if (extraparam !== undefined) {
+                    o.extraparam = extraparam;
+                } else {
+                    o.extraparam = {};
+                }
+                if ($.isFunction(aftersavefunc)) {
+                    o.aftersavefunc = aftersavefunc;
+                } else {
+                    o.aftersavefunc = function(rowid,res) {
+                        config.currentEditId = null;
+                    }
+                }
+                if ($.isFunction(errorfunc)) {
+                    o.errorfunc = errorfunc;
+                } else {
+                    o.errorfunc = function(rowid, res, stat) {
+                        YssLayer.messageDialogOnRightDown("保存失败，请检查后重试！！！");
+                    }
+                }
+                if ($.isFunction(afterrestorefunc)) {
+                    o.afterrestorefunc = afterrestorefunc;
+                } else {
+                    o.afterrestorefunc = function() {
+                        config.currentEditId = null;
+                    }
+                }
+                
+                if ($.isFunction(beforeSaveRow)) {
+                    o.beforeSaveRow = beforeSaveRow;
+                }
+            }
+            ts.jqGrid('editRow', rowid, o);
+            config.currentEditId = rowid;
+	        isModified = true;
+        },
+        exSaveRow : function(rowid, successfunc, url, extraparam, beforeSaveRow, aftersavefunc, errorfunc, afterrestorefunc) {
+            var ts = this, args = $.makeArray(arguments).slice(1), o = {}, config = ts.jqGrid('getGridParam');
+
+            if ($.type(args[0]) === "object") {
+                o = args[0];
+            } else {
+                if ($.isFunction(successfunc)) {
+                    o.successfunc = successfunc;
+                }
+                if (url !== undefined) {
+                    o.url = url;
+                } else {
+                    o.url = 'clientArray';
+                }
+                if (extraparam !== undefined) {
+                    o.extraparam = extraparam;
+                }
+                if ($.isFunction(beforeSaveRow)) {
+                    o.beforeSaveRow = beforeSaveRow;
+                }
+                if ($.isFunction(aftersavefunc)) {
+                    o.aftersavefunc = aftersavefunc;
+                }
+                if ($.isFunction(errorfunc)) {
+                    o.errorfunc = errorfunc;
+                }
+                if ($.isFunction(afterrestorefunc)) {
+                    o.afterrestorefunc = afterrestorefunc;
+                }
+            }
+            if (ts.jqGrid('saveRow', rowid, o)) {
+                config.currentEditId = null;
+                return true;
+            }
+            return false;
+        },
+        getCurrentEditId : function() {
+            return this.jqGrid('getGridParam', 'currentEditId');
+        },
+        getLastSelectRow : function() {
+        	return this.jqGrid('getGridParam', 'lastSelectRow');
+        },
+        resizeDataGrid : function(e) {
+        	var ts = this;
+        	if (e && e.data != undefined) {
+        		ts = e.data;
+        	}
+            var id = ts.attr('id');
+            var config = ts.jqGrid('getGridParam');
+            if (e && config.relaSelect) {
+            	return false;
+            }
+            if (config.relaAzone) {
+                if (config.hiddenHead) {
+                    $('#gview_' + id + ' .ui-jqgrid-hdiv').height(0);
+                }
+            }
+            $('#gview_' + id).css('overflow', 'hidden');
+            var width = $("#gbox_" + id).parent().width();
+            ts.setGridWidth(width); // 重置宽度
+            if (config.resetHeight) {
+              if ($.isFunction(config.resizeGridWrapper)) {
+            	  config.resizeGridWrapper.call(ts);
+              }
+              $.proxy(privateMethods._calculateHeight, ts, id)();
+            }
+            $('#gview_' + id + ' .ui-jqgrid-bdiv').css('overflow', 'auto');
+            $(ts.getGridParam('pager')).css('position', 'absolute');
+            $(ts.getGridParam('pager')).css('bottom', '0px');
+            if (ts.getGridParam('customToolBar')) {
+                var width = $("#gbox_" + id).parent().width() - $("#" + id + "_toolbar").parent().outerWidth();
+                ts.setGridWidth(width); // 重置宽度
+            }
+        },
+        openParentsNode : function(rowid) {
+            var _thisGrid = this;
+            var config = _thisGrid.jqGrid('getGridParam');
+            var ind = $.jgrid.stripPref(config.idPrefix, rowid), dind = config._index[ind];
+            var ldat = config.data[dind];
+            var parent = _thisGrid.jqGrid('getNodeParent', ldat);
+            if (parent != null) {
+                _thisGrid.jqGrid('expandNode', parent);
+                _thisGrid.jqGrid('expandRow', parent);
+                _thisGrid.openParentsNode(parent.id);
+            }
+        },
+        closeAllNode : function() {
+            var _thisGrid = this;
+            var ids = _thisGrid.jqGrid('getDataIDs');
+            var config = _thisGrid.jqGrid('getGridParam');
+            $.each(ids, function(i){
+                var ind = $.jgrid.stripPref(config.idPrefix, ids[i]), dind = config._index[ind];
+                var ldat = config.data[dind];
+                if (ldat.leaf === "false" || ldat.leaf === false) {
+                    _thisGrid.jqGrid('collapseRow', ldat);
+                    _thisGrid.jqGrid('collapseNode', ldat);
+                }
+            });
+        },
+        expandAllNode : function() {
+        	var _thisGrid = this;
+            var ids = _thisGrid.jqGrid('getDataIDs');
+            var config = _thisGrid.jqGrid('getGridParam');
+            $.each(ids, function(i){
+                var ind = $.jgrid.stripPref(config.idPrefix, ids[i]), dind = config._index[ind];
+                var ldat = config.data[dind];
+                if (ldat.leaf === "false" || ldat.leaf === false) {
+                    _thisGrid.jqGrid('expandRow', ldat);
+                    _thisGrid.jqGrid('expandNode', ldat);
+                }
+            });
+        },
+        resetCheck : function() {
+            var config = this.jqGrid('getGridParam');
+            config.selarrrow = [];
+            var _checkboxs = $(this).find('input[type="checkbox"]:checked');
+            $.each(_checkboxs, function(index, id) {
+                $(_checkboxs[index]).prop('checked', false);
+            });
+        },
+        destroyGrid : function () {
+	        var id = this.attr('id');
+	        $.jgrid.gridUnload(id);
+	        var name = "resize." + id;
+	        $(window).unbind(name);
+        }
+    
+    };
+    // 私有方法集合
+    var privateMethods = {
+        // 支持自定义工具栏
+        _navSupport : function(options) {
+            if (options.navGridBtns instanceof Array) {
+                for ( var i in options.navGridBtns) {
+                    this.navGrid('#pager', {
+                        edit : false,
+                        add : false,
+                        del : false,
+                        search : false,
+                        refresh : false
+                    }).navButtonAdd('#pager', {
+                        caption : options.navGridBtns[i].name,
+                        buttonicon : options.navGridBtns[i].icon,
+                        onClickButton : options.navGridBtns[i].click,
+                        position : "last"
+                    });
+                }
+            }
+        },
+        _init : function(options) {
+            $.proxy(privateMethods._headWithCheckbox,this)(options);
+        },
+        // 列头添加一个checkbox
+        _headWithCheckbox : function(__options) {
+            var _id = this.attr('id');
+            for ( var i in __options.colModel) {
+                var _column = __options.colModel[i];
+                if (_column.checkbox != null && _column.checkbox) {
+                    if (!_column.formatter) {
+                        _column.formatter = privateMethods._appendCheckbox;
+                    }
+                    if (!_column.unformat) {
+                        _column.unformat = function(cellvalue, options, cell){
+                            if ($(cell).find(':checkbox').is(':checked')){
+                                return cellvalue.trim();
+                            } else {
+                                return null;
+                            }
+                        }
+                    }
+                    var _headCheckboxId = _id + '_cbox_' + _column.name;
+                    _column.header = '<label><input type="checkbox" class="cbox" id="' + _headCheckboxId + '" />&nbsp;'
+                        + _column.header + '</label>';
+                    var headCheckboxHandle = function(_column) {
+                        return function(event) {
+                            var _grid = $('#' + _id);
+                            var config = _grid.jqGrid('getGridParam');
+
+                            var _checked = $(this)[0].checked;
+
+                            if (_column.checkedRow) {
+                                _grid.find(":checkbox").not(":disabled").prop('checked', _checked);
+                                $(this).closest('table').find(":checkbox").not(":disabled").prop('checked', _checked);
+                            } else {
+                                _grid.find('td[aria-describedby="' + _id + '_' + _column.name + '"]').find(":checkbox").not(":disabled").prop('checked',
+                                    _checked);
+                            }
+
+                            var _ids = _grid.jqGrid("getDataIDs");
+                            if (_checked) {
+                                for (var i = 0; i < _ids.length; i++) {
+                                    if ($.inArray(_ids[i], config.selarrrow) < 0) {
+                                        config.selarrrow.push(_ids[i]);
+                                    }
+                                }
+                            } else {
+                                for (var i = 0; i < _ids.length; i++) {
+                                    config.selarrrow.splice($.inArray(_ids[i], config.selarrrow), 1);
+                                }
+                            }
+                            if (__options.relaSelect) {
+                                echoToSelect(_id, config.relaNoneSelectedText); // 回显到下拉框
+                            }
+                        }
+                    };
+
+                    $('.jqGrid_wrapper').delegate('#' + _headCheckboxId, 'click', headCheckboxHandle(_column));
+                }
+            }
+        },
+        // 数据表格添加checkbox
+        _appendCheckbox : function(cellvalue, options, cell) {
+            var rowid = cell.id;
+            var _columnName = options.colModel.name;
+            var _className = 'tableColumnCheckbox';
+            if (options.colModel.checkedRow) {
+                _className = 'tableRowCheckbox';
+            }
+            var checkbox = '<input type="checkbox" class="cbox ' + _className + '" rowid="' + rowid + '" name="'
+                + _columnName + '" value="' + cellvalue + '"/>&nbsp;' + cellvalue;
+            return checkbox;
+        },
+        _checkboxHanler : function(options) {
+            // 为每行的checkbox实现默认选中当前行的功能
+            $(this).find('.tableRowCheckbox').on('change', function() {
+                var _tr = $(this).closest('tr');
+                var _grid = _tr.closest('table');
+                var _id = _tr.attr('id');
+                var _isChecked = $(this).is(":checked");
+                _checkChildren(_tr, _grid, _id, _isChecked);
+                if (options.relaSelect) {
+                    echoToSelect(_grid, options.relaNoneSelectedText); // 回显到下拉框
+                }
+            });
+            $(this).find('.tableColumnCheckbox').on('change', function() {
+                // var _tr = $(this).closest('tr');
+                // var _grid = _tr.closest('table').attr("id");
+                // var _columnName = $(this).attr("name");
+                // var _gridView = _tr.closest('.ui-jqgrid-view');
+                // var _headCheckbox = _gridView.find('#' + _grid + '_cbox_' + _columnName);
+                // var _isChecked = $(this).is(":checked");
+                // _headCheckbox.prop('checked', _isChecked);
+                var _tr = $(this).closest('tr');
+                var _id = _tr.attr('id');
+                var _grid = _tr.closest('table');
+                var config = _grid.jqGrid('getGridParam');
+                var _isChecked = $(this).is(":checked");
+                if (_isChecked) {
+                    if ($.inArray(_id, config.selarrrow) < 0) {
+                        config.selarrrow.push(_id);
+                    }
+                } else {
+                    config.selarrrow.splice($.inArray(_id, config.selarrrow), 1);
+                }
+            });
+
+            // 递归选中子节点
+            function _checkChildren(_tr, _grid, _id, _isChecked) {
+                var config = _grid.jqGrid('getGridParam');
+                if (_tr.is(":hidden")) { // 如果该行隐藏则跳过不选中
+                    return;
+                }
+                _tr.find(":checkbox").not(":disabled").prop('checked', _isChecked);// .trigger('change');
+                if (_isChecked) {
+                    // _tr.addClass('success');
+                    if ($.inArray(_id, config.selarrrow) < 0) {
+                        config.selarrrow.push(_id);
+                    }
+                } else {
+                    // _tr.removeClass('success');
+                    config.selarrrow.splice($.inArray(_id, config.selarrrow), 1);
+                }
+                var data = _grid.jqGrid('getLocalRow', _id);
+                if (data.leaf || !data.expanded) {
+                    return;
+                }
+                var records = _grid.jqGrid('getNodeChildren', data);
+                if (records.length > 0) {
+                    for (var i = 0; i < records.length; i++) {
+                        _checkChildren($('#' + records[i].id), _grid, records[i].id, _isChecked);
+                    }
+                }
+            }
+        },
+        _flash : function(target, total, speed) {
+            total--;
+            if (total >= 0) {
+                target.animate({
+                    backgroundColor : "#f2dede"
+                }, speed, function() {
+                    target.animate({
+                        backgroundColor : "white"
+                    }, speed, function() {
+                        privateMethods._flash(target, total, speed);
+                    });
+                });
+            }
+        },
+        _initButtonStatus : function(rowid, effectSet) {
+            var target = $(this).closest(Common.getConstant('WEBPLUS_CONTAINER')).find(Common.getConstant('HEADER')).find(Common.getConstant('BTN_TAG'));
+            Common.setButtonStatus({btns:['ALL'],target: target,status:true,effectSet:effectSet});
+            var editID = $(this).jqGrid('getGridParam', 'currentEditId');
+            if (editID != null && editID == rowid) {
+                Common.setButtonStatus({btns:['ALL'],target: target,status:false,effectSet:effectSet});
+                return;
+            }
+            // 处理没有审核字段导致的set界面的保存按钮没有被置灰，单独拎出来
+            Common.setButtonStatus({btns:['btn-save'],target: target,status:false,effectSet:effectSet});
+            var rowData = $(this).jqGrid("getRowData", rowid);
+            if (rowData.n_STATE == "0" || rowData.auditState == "0") { // 未审核
+            	Common.setButtonStatus({btns:['btn-uncheck','btn-sync'],target: target,status:false,effectSet:effectSet});
+            } else if (rowData.n_STATE == "1" || rowData.auditState == "1") { // 审核
+            	Common.setButtonStatus({btns:['btn-edit','btn-delete','btn-check'],target: target,status:false,effectSet:effectSet});
+            } else if (rowData.n_STATE == "2" || rowData.auditState == "2") { // 同步 （同步允许反审核）
+            	Common.setButtonStatus({btns:['btn-edit','btn-delete','btn-check', 'btn-sync'],target: target,status:false,effectSet:effectSet});
+            }
+        },
+        _getFormData : function(formId) {
+            var parameter = {};
+            parameter.param = Common.getFormData("#" + formId).formData;
+            if (!parameter.operate) {
+                parameter.operate = "query";
+            }
+            return parameter;
+        },
+        // 根据名称获得指定函数
+        _getFunc : function(name) {
+            var fun = null;
+            switch (name) {
+                case 'Add':
+                    fun = privateMethods._event.rowAddEvent;
+                    break;
+                case 'Delete':
+                    fun = privateMethods._event.rowDeleteEvent;
+                    break;
+                case 'Update':
+                    fun = privateMethods._event.rowUpdateEvent;
+                    break;
+                case 'Up':
+                    fun = privateMethods._event.rowUpEvent;
+                    break;
+                case 'Down':
+                    fun = privateMethods._event.rowDownEvent;
+                    break;
+                case 'Save':
+                    fun = privateMethods._event.rowSaveEvent;
+                    break;
+                default:
+                    break;
+            }
+            return fun;
+        },
+        _event : {
+            rowAddEvent : function(e) { // 行增加事件
+            	var _this = e.data ? e.data.grid : "#" + $(this).attr('id');
+                $(_this).exAddRow({
+                    position : "last",
+                    addRowParams : {
+                        keys : true
+                    }
+                });
+            },
+            rowUpdateEvent : function(e) { // 行编辑事件
+            	var _this = e.data ? e.data.grid : "#" + $(this).attr('id');
+                var rowid = $(_this).jqGrid('getGridParam', 'selrow');
+                if (rowid != null) {
+                    $(_this).exEditRow(rowid);
+                } else {
+                    YssLayer.messageAlter("请选择记录", 2);
+                }
+            },
+            rowDeleteEvent : function(e) { // 行删除事件
+            	var _this = e.data ? e.data.grid : "#" + $(this).attr('id');
+                var rowid = $(_this).jqGrid('getGridParam', 'selrow');
+                if (rowid != null) {
+                    $(_this).exDelRow(rowid);
+                } else {
+                    YssLayer.messageAlter("请选择记录", 2);
+                }
+            },
+            rowUpEvent : function(e) { // 行上移事件
+                var _this = e.data ? e.data.grid : "#" + $(this).attr('id');
+                var rowid = $(_this).jqGrid('getGridParam', 'selrow');
+                $.proxy(privateMethods._sort, $(_this), 'up', rowid)();
+            },
+            rowDownEvent : function(e) { // 行下移事件
+            	var _this = e.data ? e.data.grid : "#" + $(this).attr('id');
+                var rowid = $(_this).jqGrid('getGridParam', 'selrow');
+                $.proxy(privateMethods._sort, $(_this), 'down', rowid)();
+            },
+            rowSaveEvent : function(e) { // 行保存事件
+            	var _this = e.data ? e.data.grid : "#" + $(this).attr('id');
+                var ids = $(_this).jqGrid("getDataIDs");
+                for (var i = 0; i < ids.length; i++) {
+                    $(_this).jqGrid('saveRow', ids[i]);
+                }
+            }
+        },
+        _sort: function(type, rowid) {
+            // TODO
+        },
+        _calculateHeight : function(id) {
+            var height = $("#gbox_" + id).parent().height(); // 最外层高度
+            var minHeight = parseInt($("#gbox_" + id).parent().css('min-height').slice(0, -2)); // 最外层最小高度
+            var maxHeight = parseInt($("#gbox_" + id).parent().css('max-height').slice(0, -2)); // 最外层最大高度
+            if (height < minHeight) {
+                height = minHeight;
+            }
+            if (height > maxHeight) {
+                height = maxHeight;
+            }
+            if (height != 0) {
+                var _bh = $('#gbox_' + id).outerHeight() - $('#gbox_' + id).innerHeight();
+                $('#gbox_' + id).height(height - _bh);
+                var ph =$($(this).getGridParam('pager')).outerHeight(); // 分页高度
+                var _h = height - ph;
+                var view = $('#gview_' + id);
+                view.height(_h);
+                var hh = $(view.find('.ui-jqgrid-hdiv')[0]).height();// 标题高度
+                $(view.find('.ui-jqgrid-bdiv')[0]).height(_h - hh);
+            }
+        },
+        _initCustomToolBar : function(){
+            var config = this.jqGrid('getGridParam');
+            var loc = config.customToolBarLoc;
+            var btns = config.customToolBarBtns;
+            var id = this.attr('id');
+            if (btns instanceof Array) {
+                $(this).navGrid(config.pager, {
+                    edit : false,
+                    add : false,
+                    del : false,
+                    search : false,
+                    refresh : false
+                });
+                if ("right" == loc) {
+                    var id = this.attr('id');
+                    $("#gbox_" + id).addClass("navbar-header")
+                    $("#gbox_" + id).wrap("<div class='flot-chart-content'></div>");
+                    $("#gbox_" + id).after(
+                        "<div class='navbar-header' style='width: 25px;padding-left: 5px;'><table id='" + id
+                        + "_toolbar'></table></div>");
+                }
+                for (var i = 0; i < btns.length; i++) {
+                    if ("bottom" == loc) { // 底部
+                        $(this).jqGrid('navButtonAdd', config.pager, {
+                            caption : "",
+                            title : btns[i].title,
+                            buttonicon : btns[i].icon,
+                            id : id + "_il" + btns[i].name,
+                            onClickButton : btns[i].click != null ? btns[i].click : privateMethods._getFunc(btns[i].name)
+                        });
+                    } else if ("right" == loc) { // 右侧
+                        var html = '<tr><td class="ui-pg-button" style="cursor:pointer;" id="' + id + '_il' + btns[i].name
+                            + '" title="' + btns[i].title + '">';
+                        html += '<div class="ui-pg-div"><span class="glyphicon ' + btns[i].icon + '"></span></div></td></tr>';
+                        var table = $("#" + id + "_toolbar");
+                        table.append(html);
+                        // 绑定事件
+                        $('#' + id + '_il' + btns[i].name).click({grid: $(this)}, btns[i].click != null ? btns[i].click : privateMethods._getFunc(btns[i].name));
+                    }
+                }
+            }
+        }
+    };
+    $.fn.YssDataGrid = function(options) {
+        var _this = this;
+        var element = null; // 当前表格
+        // 初始化前预处理
+        if (options.searchForm === undefined) {
+            options.searchForm = $("#searchForm")
+        }
+        if (options.pager === undefined) {
+            options.pager = _this.attr('id') + "Page";
+        }
+        if (options.url === undefined) {
+            options.url = options.searchForm.attr('action');
+        }
+        if (options.postData === undefined) {
+        	var basicSearchObj = $.proxy(privateMethods._getFormData, _this, options.searchForm.attr('id'))();
+        	var advancedSearch = {}; // 高级查询
+        	if ($.isFunction(options.advancedSearch)) {
+        		advancedSearch = options.advancedSearch.call(this);
+        	}
+        	basicSearchObj = $.extend(true, {}, basicSearchObj, advancedSearch);
+            options.postData = { parameter : JSON.stringify(basicSearchObj)}
+        }
+        if (options.gridComplete != undefined) {
+            options.exGridComplete = options.gridComplete;
+            options.gridComplete = undefined;
+        }
+        
+        if (options.onSelectRow != undefined) {
+            options.exOnSelectRow = options.onSelectRow;
+            options.onSelectRow = undefined;
+        }
+        
+        if (options.onSortCol != undefined) {
+          options.exonSortCol = options.onSortCol;
+          options.onSortCol = undefined;
+        }
+        
+        if (options.ondblClickRow != undefined) {
+            options.exOndblClickRow = options.ondblClickRow;
+            options.ondblClickRow = undefined;
+        }
+
+        if (options.customCheckedButtonStatus == undefined && options.customSelectButtonStatus != undefined) {
+        	options.customCheckedButtonStatus = options.customSelectButtonStatus;
+        }
+        
+        if (options.customDbClickButtonStatus == undefined && options.customSelectButtonStatus != undefined) {
+        	options.customDbClickButtonStatus = options.customSelectButtonStatus;
+        }
+        
+        _this._options = $.extend(true, {}, defaultOptions, options);
+
+        // 如果是树结构表格
+        if (_this._options.treeGrid) {
+            _this._options.rownumbers = false; // 不显示行号
+            // _this._options.showCheckbox = false; // 是否显示复选框
+            _this._options.multiselect = false; // 不显示多选复选框
+            if (_this._options.treeGrid_bigData) { // 树表格分页模式
+            	_this._options.beforeProcessing = function (data, st, xhr) {
+            		$(this).jqGrid('getGridParam').rowNum = data.datas.length;
+            	}
+            }
+        }
+
+        // 如果是本地数据
+        if (_this._options.datatype == 'local' && _this._options.rowNum == -1) {
+            _this._options.rowNum = 1000; // 设置一个最大行数为1000，否则会显示数据不全
+        }
+
+        // 是否懒加载Grid数据（仅对url远程请求数据有效），调用 dataGrid.refresh()时再进行加载
+        if (_this._options.lazyLoad && !_this._options.treeGrid) {
+            _this._options.datatype_bak = _this._options.datatype;
+            _this._options.datatype = 'local';
+        }
+
+        // 如果设置了多级表头或冻结列
+        if (_this._options.groupHeaders || _this._options.frozenCols || !_this._options.shrinkToFit) {
+            _this._options.shrinkToFit = false;// 不按百分比自适应列宽
+        } else {
+            _this._options.shrinkToFit = true; // 按百分比自适应列宽
+        }
+
+        // 是否显示合计行
+        if (_this._options.showFooter) {
+            _this._options.footerrow = true; // 显示底部合计行
+            _this._options.userDataOnFooter = true; // 使用json数据中的otherData作为合计行数据。
+        }
+
+        $.proxy(privateMethods._init, _this)(_this._options);
+        
+        // 获取列标题
+        _this._options.colNames = [];
+        for (var i = 0; i < _this._options.colModel.length; i++) {
+            var _column = _this._options.colModel[i];
+            // 如果是树结构表格
+            if (_this._options.treeGrid || !_this._options.sortableColumn) {
+                _column.sortable = false; // 是否排序列
+            }
+            // 处理表头由于有了排序后导致的全选功能失效
+            if (_column.checkbox) {
+                /*  定义排序列的外观跟行为。数据格式：[false,'vertical',true].
+                    第一个参数是说，是否都要显示排序列的图标，false就是只显示 当前排序列的图标；
+                    第二个参数是指图标如何显示，vertical：排序图标垂直放置，horizontal：排序图标水平放置；
+                    第三个参数指单击功 能，true：单击列可排序，false：单击图标排序。
+                    说明：如果第三个参数为false则第一个参数必须为true否则不能排序
+                */
+                _this._options.viewsortcols = [false,'vertical',false];
+            }
+            _this._options.colNames.push(_column.header);
+        }
+
+        // 如果selectOnCheck为false，选择行将不选中复选框。
+        if (!_this._options.selectOnCheck) {
+            if (_this._options.onSelectAll != undefined) {
+                _this._options.exOnSelectAll = options.onSelectAll;
+                _this._options.onSelectAll = undefined;
+            }
+            _this._options.onSelectAll = function(aRowids, status){
+                var config = $(this).jqGrid('getGridParam');
+                if ($.isFunction(config.exOnSelectAll)) {
+                    config.exOnSelectAll.call(this, aRowids, status);
+                }
+                config.selrow = config.lastSelectRow;
+                // 拿到这一行 点击
+                var dom = $(this).getInd(config.selrow, true);
+                $(dom).click();
+            }
+        }
+        
+        // 如果selectOnCheck为false，选择行将不选中复选框。
+        if (!_this._options.selectOnCheck) {
+            // 表格整体绑定一个事件
+            _this.click(function(e){
+                var target = $(e.target);
+                // 针对异常点击情况做处理
+                if (target.is('tbody') || target.is('table')) {
+                    return;
+                }
+                var tr = target.closest("tr");
+                var t = tr.parent();
+                var other = t.find('tr').not(tr);
+                if (other.hasClass('success')) {
+                    other.removeClass('success');
+                }
+                // BUG #190904 账户管理A区控制父节点行不可选中 by huangjunxiong 2018-01-31
+                var config = $(this).jqGrid('getGridParam');
+                if (!config.parentClick) { // 配置了父节点不可点击
+                	var data = $(this).jqGrid("getRowData", $(tr).attr('id'));
+                	if (data.leaf == 'false') { // 如果当前点击是父节点
+                		return;
+                	}
+                }                	
+                tr.addClass('success');
+            })
+        }
+
+        element = _this.jqGrid(_this._options);
+
+        // 绑定查询按钮
+        if (_this._options.btnSearch) {
+            $(_this._options.btnSearch).on('click', function(event) {
+                $.proxy(publicMethods.reload, element)();
+                event.preventDefault();
+            });
+        }
+
+        //列头，绑定鼠标右键事件
+        if(_this._options.colSetting == true){
+        	//序号列头
+        	$(this).closest('.ui-jqgrid-view').find('#'+element[0].id+'_rn').contextmenu(function(event) {
+	        	//去掉默认的contextmenu事件，否则会和右键事件同时出。
+	        		Common.colSetModalDialog(_this._options.colModel , element[0].id , options);
+	        		event.preventDefault();
+	            
+	        }); 
+        	
+        	//数据列头
+        	$(this).closest('.ui-jqgrid-view').find('.ui-jqgrid-hdiv').find(".ui-jqgrid-sortable").each(function(){
+	        	//去掉默认的contextmenu事件，否则会和右键事件同时出现。	        	
+	        	$(this).contextmenu(function(event) {
+	        		Common.colSetModalDialog(_this._options.colModel , element[0].id , options);
+	        		event.preventDefault();
+	            });	
+	        }); 
+        }
+        
+        // 绑定按钮事件
+        if (_this._options.toolbar) {
+            $.each(_this._options.toolbar, function(index, button) {
+                $("#" + button.id).on('click', {
+                    dataGrid : _this,
+                    index : index
+                }, button.eventMethod);
+            });
+        }
+
+        // 如果设置了多级表头
+        if (_this._options.groupHeaders && _this._options.groupHeaders.twoLevel) {
+            if (_this._options.groupHeaders.threeLevel) { // 设置三级表头
+                element.jqGrid('setComplexHeaders', {
+                    complexHeaders : {
+                        defaultStyle : true,
+                        twoLevel : _this._options.groupHeaders.twoLevel,
+                        threeLevel : _this._options.groupHeaders.threeLevel
+                    }
+                });
+            } else { // 设置二级表头
+                element.jqGrid('setGroupHeaders', {
+                    useColSpanStyle : true,
+                    groupHeaders : _this._options.groupHeaders.twoLevel
+                });
+            }
+        }
+
+        // 是否冻结列
+        if (_this._options.frozenCols) {
+            element.jqGrid('setFrozenColumns'); // 冻结列，在colModel指定frozen: true
+        }
+
+        // 是否有自定义toolbar
+        if (_this._options.customToolBar) {
+            $.proxy(privateMethods._initCustomToolBar, element)();
+        }
+        //是否显示列排序按钮
+        if (_this._options.lineSort) {
+        	_this.jqGrid('navGrid', '#'+_this._options.pager, {add:false,edit:false,del:false,search:false,refresh:false});
+        	_this.jqGrid('navButtonAdd','#'+_this._options.pager,{
+            caption: "设置",
+            title: "列选择",
+            onClickButton : function (){
+            	_this.jqGrid('columnChooser');
+            }
+        });
+      }
+
+//        // 重置大小
+//        $(window).bind('resize', function() {
+//            if (_this._options.relaSelect) {
+//                return false;
+//            }
+//            var id = _this.attr('id');
+//            var width = $("#gbox_" + id).parent().width();
+//            _this.setGridWidth(width); // 重置宽度
+//            // 重置高度
+//            if (_this._options.resetHeight) {
+//                if ($.isFunction(_this._options.resizeGridWrapper)) {
+//                	_this._options.resizeGridWrapper.call(_this);
+//                }
+//            	$.proxy(privateMethods._calculateHeight, _this, id)();
+//            }
+//            if (_this.getGridParam('customToolBar')) {
+//                var width = $("#gbox_" + id).parent().width() - $("#" + id + "_toolbar").parent().outerWidth();
+//                _this.setGridWidth(width); // 重置宽度
+//            }
+//        });
+        var name = "resize." + _this.attr("id");
+        $(window).bind(name, this, publicMethods.resizeDataGrid);
+
+        $.jgrid.extend(publicMethods);
+
+        // 重置大小
+        $.proxy(publicMethods.resizeDataGrid, element)();
+         
+        return element;
+    }
+})(jQuery, window, document);

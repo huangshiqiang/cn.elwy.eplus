@@ -1,0 +1,141 @@
+var YssGlobal = {
+    dayParts: /SS?|ss?|hh?|qq?|dd?|DD?|mm?|MM?|YYYY?|yy(?:yy)?/g,
+    decimalPattern :/[$￥€#0.,]*/,
+    booleanPattern : /(?=.*?)(?=.*:)^.*$/,
+    parseFormat: function(format){
+        // IE treats \0 as a string end in inputs (truncating the value),
+        // so it's a bad format delimiter, anyway
+        var separators = format.replace(this.dayParts, '\0').split('\0'),
+            parts = format.match(this.dayParts);
+        if (!separators || !separators.length || !parts || parts.length === 0){
+            throw new Error("Invalid date format.");
+        }
+        return {separators: separators, parts: parts};
+    }
+}
+
+var YssGlobalVal = {
+    zn: {
+        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+        daysShort: ["日", "一", "二", "三", "四", "五", "六", "日"],
+        daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthsShort: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+        dayStr: "日",
+        monthStr : "月",
+        yearStr : "年"
+    }
+}
+
+Date.prototype.format = function(format){
+    if (typeof format === 'string')
+        format = YssGlobal.parseFormat(format);
+    var val = {
+        dd : this.getDate(), //day
+        D : this.getDate() + YssGlobalVal['zn'].dayStr,
+        hh : this.getHours(), //hour
+        mm : this.getMinutes(), //minute
+        MM : (this.getMonth()+1), //month
+        M : (this.getMonth()+1) + YssGlobalVal['zn'].monthStr, //month
+        ss : this.getSeconds(), //second
+        SS : this.getMilliseconds(), //millisecond
+        qq : Math.floor((this.getMonth()+3)/3), //quarter
+        yy : this.getUTCFullYear().toString().substring(2),
+        yyyy: this.getUTCFullYear(),
+        YYYY: this.getUTCFullYear()+ YssGlobalVal['zn'].yearStr
+    }
+    val.dd = (val.dd < 10 ? '0' : '') + val.dd;
+    val.mm = (val.mm < 10 ? '0' : '') + val.mm;
+    val.MM = (val.MM < 10 ? '0' : '') + val.MM;
+    val.hh = (val.hh < 10 ? '0' : '') + val.hh;
+    val.ss = (val.ss < 10 ? '0' : '') + val.ss;
+    var date = [];
+    var seps = $.extend([], format.separators);
+    for (var i=0, cnt = format.parts.length; i <= cnt; i++){
+        if (seps.length)
+            date.push(seps.shift());
+        date.push(val[format.parts[i]]);
+    }
+    return date.join('');
+}
+
+function Decimal(value){
+    this.value = parseFloat(value);
+    if (isNaN(value)) {
+       console.warn(value + "数值转换失败");
+    }
+}
+
+Decimal.isNaN = function(v) {
+    return (v!= v);
+}
+
+Decimal.prototype.DecimalValue = function(){
+    return this.value;
+}
+
+Decimal.prototype.format = function(format){
+    var symbol = ""; // 符号
+    var decimal = "."; // 小数点
+    var thousand = ","; // 千分位
+    var decimalpart = ""; // 小数部分
+    var integerpart = ""; // 整数部分
+    if (typeof format === 'string'){
+        var matcher = format.match(/([$￥€])+([#0,.]*)/);
+        if (matcher != null) {
+            symbol = matcher[1];
+            format = matcher[2];
+        }
+    } else {
+        return this.value;
+    }
+    if (isNaN(this.value)) {
+        return this.value;
+    }
+    var strNum = new String(this.value);
+    var numNum = new Number(this.value);
+    var isNegative = false;
+    if (this.value<0) {
+        isNegative = true;
+    }
+    if (isNegative) {
+        strNum = strNum.substring(1,strNum.length);
+    }
+    var formatArr = format.split(decimal);
+    var valArr = strNum.split(decimal);
+    if (formatArr.length > 2 || valArr.length > 2){
+        console.warn("小数点个数不能超过1");
+        return this.value;
+    }
+    // 处理整数部分
+    // 对整数部分只有一个#占位符的特殊处理
+    if (formatArr[0].length == 1 && formatArr[0] == "#" && valArr[0] == "0") {
+        integerpart = "";
+    } else if (formatArr[0].indexOf(thousand) >= 0) { // 处理千分位
+        var str = valArr[0];
+        while (str.length > 3) {
+            integerpart = "," + str.slice(-3) + integerpart;
+            str = str.slice(0, str.length-3);
+        }
+        if (str.length > 0) {
+            integerpart = str + integerpart;
+        }
+    } else {
+        integerpart = valArr[0];
+    }
+    // 处理小数部分
+    var subFormat = formatArr[1];
+    var snbFixed = numNum.toFixed(subFormat.length);
+    var snbFixedStr = new String(snbFixed);
+    for (var i = subFormat.length; i>0; i--) {
+        if (subFormat.charAt(subFormat.length-1)  == "#" && snbFixedStr.charAt(snbFixedStr.length-1) == "0") {
+            snbFixedStr = snbFixedStr.substring(0,snbFixedStr.length-1);
+            subFormat = subFormat.substring(0,i-1);
+        }
+    }
+    var arr = snbFixedStr.split(decimal);
+    decimalpart = arr.length > 1 ? arr[1] : "";
+    return symbol + (isNegative ? "-" : "") + integerpart + (decimalpart.length != 0 ? (decimal + decimalpart): "");
+}
+
+

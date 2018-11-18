@@ -1,0 +1,185 @@
+if (FastMenu == null) var FastMenu = {};
+
+// 展示顶部菜单
+FastMenu.topSideMenuShow = function(flag){
+	if (flag == false) { // 清空顶部菜单
+		$('.header_menu').empty();
+		return;
+	}
+    if (FastMenu.menu == null) {
+		layer.alert('获取菜单失败，请稍后重试！！！', {
+			icon : 0,
+			title : '警告'
+		});
+    }
+    FastMenu.addTopMenu($(".header_menu"), FastMenu.menu);
+}
+
+// 展示左侧菜单
+FastMenu.leftSideMenuShow = function(module){
+    if (module) {
+        var funCode = (module.indexOf("/") >= 0 ? module.split("/")[1]: module);
+        $('.header_menu .menu_select').removeClass("menu_select");
+        $('#menu_'+funCode).addClass("menu_select");
+    }
+    var ulObj = $(".sidebar-menu");
+    ulObj.empty();
+    var json = FastMenu.getDataByModule(module);
+    var domStr = "";
+    if (json) {
+        if (module) {
+            for (var i = 0; i< json.menu.length; i++) {
+                domStr += FastMenu.addLeftMenu(json.menu[i]);
+            }
+        } else {
+            for (var i = 0; i< json.length; i++) {
+                domStr += FastMenu.addLeftMenu(json[i]);
+            }
+        }
+    }
+    ulObj.html(domStr);
+}
+
+FastMenu.addTopMenu = function(dom, json){
+    var htmlStr = '<a id="menu_homepage" href="javascript:void(0)" onclick=FastMenu.leftSideMenuShow(\'homepage\')><i class="fa fa-tachometer"></i>首页</a>';
+    for (var i = 0; i < json.length; i++) {
+        var funCode = (json[i].funCode.indexOf("/") >= 0 ? json[i].funCode.split("/")[1]: json[i].funCode);
+        var href = (json[i].href == "" ? "javascript:void(0)": json[i].href);
+        htmlStr += '<a id="menu_'+funCode+'" href="'+href+'" target="'+json[i].target+'" onclick=FastMenu.leftSideMenuShow(\''+json[i].funCode+'\')><i class="fa '+json[i].icon+'"></i>'+json[i].title+'</a>';
+    }
+    dom.html(htmlStr);
+}
+
+FastMenu.addLeftMenu = function(json){
+    if (!json){
+        return "";
+    }
+    var html = "<li class='treeview'>";
+    if (!json.menu || json.menu.length == 0) {
+        html += "<li><a class='J_menuItem' href='" + json.href + "' target='"+json.target+"' data-index='" + json.funCode + "'> <i class='fa " + json.icon + "'></i> <span>" + json.title + "</span></a></li>";
+    } else {
+        html += "<a href='#'>";
+        html += "<i class='fa " + json.icon + "'></i> <span>" + json.title + "</span>";
+        html += "<span class='pull-right-container'><i class='fa fa-angle-left pull-right'></i></span>";
+        html +="</a>";
+        html +="<ul class='treeview-menu'>";
+        for (var i = 0; i < json.menu.length;i++) {
+            html += FastMenu.addLeftMenu(json.menu[i]);
+        }
+        html +="</ul>";
+    }
+    html += "</li>";
+    return html;
+}
+
+FastMenu.getDataByModule = function(module) {
+    if (FastMenu.menu.length == 0) {
+        return {};
+    } else if (module == undefined) {
+        return FastMenu.menu;
+    } else {
+        for (var i = 0; i < FastMenu.menu.length; i++) {
+            if (FastMenu.menu[i].funCode == module) {
+                return FastMenu.menu[i];
+            }
+        }
+    }
+}
+
+//获取列表所有节点title
+FastMenu.getMenuTextList = function() {
+	var textArr = [];
+	var targetText = $('.sidebar-menu').find("a.J_menuItem");
+	targetText.each(function() {
+		var $a = $.trim($(this).text());
+		textArr.push($a);
+	});
+	return textArr;
+}
+
+//转换列表文字为拼音和字母首写
+FastMenu.changerTextTopinyin = function() {
+	var textArry = FastMenu.getMenuTextList();
+	var content = {};
+	var pinyinAll, pinyinFirst;
+	for (var i = 0; i < textArry.length; i++) {
+		pinyinAll = pinyinUtil.getPinyin(textArry[i], ' ', false, false).trim();
+		pinyinFirst = pinyinUtil.getFirstLetter(textArry[i], false);
+		content[i] = {
+			hangziAll : textArry[i],
+			pinyinAll : pinyinAll,
+			pinyinFirst : pinyinFirst
+		}
+	}
+	return content;
+}
+
+FastMenu.menu = null;
+
+FastMenu.pingyinList = null;
+
+/**
+ * 切换菜单方案
+ */
+FastMenu.changeMenuPlan = function(planCode, model){
+	if (planCode == '') {
+		return;
+	}
+    App.blockUI({
+        message: "业务管家应用中...",
+        baseZ: 1000,
+        css: {
+            border: '0',
+            padding: '0',
+            backgroundColor: 'none'
+        },
+        overlayCSS: {
+            backgroundColor:'#555',
+            opacity: 0.05 ,
+            cursor: 'wait'
+        }
+    });
+	// 根据方案代码到后台查出菜单（经权限过滤）
+    var parameter = {};
+    parameter.planCode = planCode;
+    parameter.operate = "getAllSysMenuTreeByPlanCode";
+    $.ajax({
+        type : "post",
+        contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+        url : ctx + "/webplus/sysMenu",
+        data : {
+            "parameter" : JSON.stringify(parameter)
+        }, 
+        dataType : 'json',
+		success : function(result) { // 回调函数，result，返回值
+			if (result && result.success) {
+				FastMenu.menu = result.datas;
+				// 根据视图选择是否采用顶部菜单栏
+				if ("top" == model) {
+			        FastMenu.topSideMenuShow(); // 展示顶部菜单
+			        FastMenu.leftSideMenuShow('homepage'); // 默认选中首页
+				} else {
+					FastMenu.topSideMenuShow(false); // 展示顶部菜单
+					FastMenu.leftSideMenuShow();
+				}
+		        // 关闭所有tab页
+		        $('.J_tabCloseAll').click();
+		        FastMenu.pingyinList = FastMenu.changerTextTopinyin();
+			}
+		},
+		complete : function(XMLHttpRequest, status) {
+			App.unblockUI();
+			if (status == 'timeout') {
+				layer.alert('获取数据超时，请稍后重试', {
+					icon : 0,
+					title : '警告'
+				});
+			} else if (status == 'error') {
+				layer.alert('访问出错，请检查服务器状态', {
+					icon : 0,
+					title : '警告'
+				});
+			}
+		}
+    });
+}

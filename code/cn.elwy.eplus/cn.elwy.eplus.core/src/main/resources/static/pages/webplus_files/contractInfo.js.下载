@@ -1,0 +1,530 @@
+var layerIndex = 0;// 是否打开了layer弹窗。
+var tableHeadList = [];
+var formStartNameList = [ "data" ];
+var GMJJType = "ASS_ZQTZJJ";
+var ZHCPType = "ASS_ZCGLJH";
+
+$(function() {
+	tableHeadList = loadListHead();// 获取表头信息
+
+	loadTablePanels(tableHeadList);// 初始化当前上下文以及表格
+
+	validate($("#" + getCurrentFormStartName() + "Form"));// 验证表单
+
+	loadSelectDataByForm($("#" + getCurrentFormStartName() + "SearchForm"));// 加载查询表单下拉框
+	loadSelectDataByForm($("#" + getCurrentFormStartName() + "Form"));// 加载set表单下拉框
+
+	
+	/* 初始化富文本标签 */
+	$("script").each(function(i){
+		var id = $(this).attr("id");
+		if(id!=null&&id!=undefined){
+			UE.getEditor(id);
+		}
+	});
+	
+
+});
+
+function loadListHead() {
+	var jqListHead = [];
+	for (var i = 0; i < headList.length; i++) {
+		var singleHead = headList[i];
+		var key = singleHead.key;
+		var text = singleHead.text;
+		var isShow = singleHead.isShow == 0;
+		var alignSer = singleHead.align;
+		var align = "left";
+		if (alignSer == "C") {
+			align = "center";
+		} else if (alignSer == "R") {
+			align = "right";
+		}
+		var element = {
+			header : text,
+			name : key,
+			width : 150,
+			hidden : isShow,
+			align : align
+		};
+//		if (key == "n_CHECK_STATE") {
+//			element["formatter"] = function(cellvalue, options, rowObject) {
+//				var sta = rowObject.n_STATE === undefined ? rowObject.auditState
+//						: rowObject.n_STATE;
+//				var showSta = "";
+//				if (sta == "0") {
+//					showSta = "未审核";
+//				} else if (sta == "1") {
+//					showSta = "已审核";
+//				} else if (sta == "2") {
+//					showSta = "已同步";
+//				}
+//				return showSta;
+//			};
+//		}
+		jqListHead.push(element);
+	}
+	return jqListHead;
+}
+
+function initDataGrid(tableHeadList) {
+	var searchForm = $("#" + getCurrentGridStartName() + "SearchForm");
+	var options = {
+		shrinkToFit : false,
+		tabPageId : getCurrentGridStartName() + "_div",
+		searchForm : searchForm,
+		url : bundlePath + "/pub/" + funcCode + "?formCode=" + funcCode,
+		colModel : tableHeadList,
+		altRows : true,
+		altclass : 'someClass',
+		advancedSearch : function() {
+			var parameter = {};
+			var param = Common.getFormData(searchForm).formData;
+			if (param.C_PORT_NAME != undefined && param.C_PORT_NAME != "") {
+				param.C_PORT_NAME = "%" + param.C_PORT_NAME + "%";
+			}
+			if (param.C_ASS_CODE != undefined && param.C_ASS_CODE != "") {
+				param.C_ASS_CODE = "%" + param.C_ASS_CODE + "%";
+			}
+			var ids = $("#AZone_dataGrid").getCheckedRows();
+			if (ids != null && ids.length > 0) {
+				param.ARRAY_C_PORT_CODE = ids.join(",");
+			}
+			parameter.param = param;
+			return parameter;
+		},
+		loadComplete : function(data) {// 数据请求完成调用方法
+			// 如果有消息，则显示提示消息
+			if (data.success === undefined) { // 针对本地数据过滤
+
+			} else if (data && !data.success) {
+				layer.alert(data.message, {
+					icon : 0,
+					title : '查询失败'
+				});
+			}
+			var config = $(this).jqGrid('getGridParam');
+			config.currentEditId = null;
+			if (config.relaAzone || config.relaForm || config.relaSelect) {
+				return;
+			}
+			var target = $(this).closest(
+					Common.getConstant('WEBPLUS_CONTAINER')).find(
+					Common.getConstant('HEADER')).find(
+					Common.getConstant('BTN_TAG'));
+			Common.setButtonStatus({
+				btns : [ 'ALL' ],
+				target : target,
+				status : true,
+				effectSet : false
+			});
+			/*
+			 * var _context = Common.getContext(); var _currentPanel =
+			 * _context.currentPanel; if (_currentPanel != null) { if
+			 * (_currentPanel.lastRow != null && _currentPanel.lastRow != "") {
+			 * $(this).jqGrid('setSelection', _currentPanel.lastRow); } else { //
+			 * 默认选中第一个 var rowData = $(this).jqGrid("getRowData"); if
+			 * (rowData.length > 0) { $(this).jqGrid('setSelection',
+			 * rowData[0].id); } } }
+			 */
+		},
+		pager : getCurrentGridStartName() + "GridPage"
+	};
+
+	return options;
+}
+
+function loadTablePanels(tableHeadList) {
+	var tablePanels = new Array();
+	var tp = new TablePanel(getCurrentGridStartName(),
+			initDataGrid(tableHeadList));// tab页与表格绑定
+	tp.name = getCurrentFormStartName();// 绑定set表单界面
+	tablePanels.push(tp);
+
+	// 设置默认活动选项卡
+	Common.getContext().defaultTablePanel = getCurrentGridStartName();
+	// 重置默认选项卡表格大小
+	Common.resizeGridWrapper(Common.getContext().defaultTablePanel + "_div");
+	// 绑定选项卡到上下文，初始化所有绑定表格
+	initTablePanel(tablePanels);
+	// 绑定选项卡切换事件
+	initTabEvent();
+}
+
+// 获取当前set界面表单id的Form之前的字符串
+function getCurrentFormStartName() {
+	return formStartNameList[0];
+}
+
+function getCurrentGridStartName() {
+	return getCurrentFormStartName();
+}
+
+function validate(_form) {
+	// 表单验证
+	_form.validate({
+		messages : {
+			c_PORT_CODE : {
+				required : "请输入组合代码"
+			}
+		},
+		errorClass : "error",
+		success : 'valid',
+		unhighlight : function(element, errorClass, validClass) { // 验证通过
+			$(element).tooltip('destroy').removeClass(errorClass);
+		},
+		errorPlacement : function(error, element) {
+			if ($(element).next("div").hasClass("tooltip")) {
+				$(element).attr("data-original-title", $(error).text())
+						.tooltip("show");
+			} else {
+				$(element).attr("title", $(error).text()).tooltip("show");
+			}
+		},
+		submitHandler : function(form) {
+			alert('验证通过');
+		}
+	});
+}
+
+function validateForm(_form) {
+	return _form.valid();
+}
+
+function loadSelectDataByForm(_form) {
+	_form
+			.find("select[dataUrl]")
+			.each(
+					function() {
+						var url = $(this).attr("dataUrl");
+						var name = $(this).attr("name");
+						var optionsLen = _form.find("select[name='" + name
+								+ "'] option").length;
+						if (optionsLen < 1) {
+							if (url != null && url != "") {
+								postAjax(
+										url,
+										function(result, status) {
+											var data = result.datas;
+											var options = '';
+											if (name == "c_PORT_CODE") {
+												options = '<option value="">--请选择产品全称--</option>';
+											} else if (name == "C_DV_TRUSTEE") {
+												options = '<option value="">--请选择托管人--</option>';
+											}
+											if (data != null && data.length > 0) {
+												$
+														.each(
+																data,
+																function(index,
+																		value) {
+																	options += "<option value='"
+																			+ value.c_DV_CODE
+																			+ "'>"
+																			+ value.c_DV_NAME
+																			+ "</option>";
+																});
+												_form.find(
+														"select[name='" + name
+																+ "']").append(
+														options);
+												refreshSelPicker(_form, name);
+											}
+										});
+							}
+						}
+					});
+}
+
+function getDefaultValue(_form, name) {
+	var resValue = "";
+	return resValue;
+}
+
+function refreshSelPicker(_form, name) {
+	var isLiveSearch = typeof (_form.find("select[name='" + name
+			+ "'].selectpicker").attr("data-live-search"));
+	if (isLiveSearch != "undefined") {
+		$("select[name='" + name + "']").selectpicker('refresh');
+	}
+}
+
+function initForm(rowData, _form) {
+	
+	// 默认只显示公募基金的set界面控件，隐藏专户产品的控件
+	setGMJJIsHidden(_form, false);
+	setZHCPIsHidden(_form, true);
+	
+	/*投资比例限制赋值*/
+//	UE.getEditor('c_INVEST_RATIO_LIMIT').setContent(rowData.c_INVEST_RATIO_LIMIT);
+	
+	$("div.ueditor").each(function(i){
+		var ueditorId = $(this).attr("id");
+		if(ueditorId!=null&&ueditorId!=undefined){
+			UE.getEditor(ueditorId).setContent(rowData[ueditorId]);
+		}
+	});
+	
+	$.each(rowData, function(name, value) {
+		var _this = _form.find("[name='" + name + "']");
+		if (_this.attr("multiple") == "multiple") {
+			var arr = value.split(",");
+			_this.selectpicker('val', arr);
+		} else {
+			_this.val(value);
+		}
+		refreshSelPicker(_form, name);
+	});
+	isModified = false;
+
+	var datCode = _form.find("[name='c_DAT_CODE']").val();
+	if (datCode == GMJJType) {
+		setGMJJIsHidden(_form, false);
+		setZHCPIsHidden(_form, true);
+	} else if (datCode == ZHCPType) {
+		setGMJJIsHidden(_form, true);
+		setZHCPIsHidden(_form, false);
+	}
+
+	removeValidate();
+}
+
+function getEmptyRowData(_form) {
+	var rowData = {};
+	$.each(tableHeadList, function(index, value) {
+		var name = value.name;
+		rowData[name] = getDefaultValue(_form, name);
+	});
+	return rowData;
+}
+
+function setReadonly(_form, readonly) {
+	if (readonly) {
+		isreadonly(_form);
+		setViewTitle();
+	} else {
+		unreadonly(_form);
+		setEditTitle();
+	}
+}
+
+function isreadonly(_form) {
+	_form.find('input, textarea').not('.layer-date').attr('readonly', true);
+	_form.find('.layer-date').attr("disabled", "disabled");
+	_form.find('select').each(function() {
+		var thisButton = $(this).prev().prev().get(0);
+		$(thisButton).addClass("disabled");
+		$(this).attr("disabled", "disabled");
+		$(thisButton).removeClass("btn-white");
+	});
+	
+	$("div.ueditor").each(function(i){
+		var ueditorId = $(this).attr("id");
+		if(ueditorId!=null&&ueditorId!=undefined){
+			UE.getEditor(ueditorId).setDisabled('fullscreen');
+		}
+	});
+	
+}
+
+function unreadonly(_form) {
+	_form.find('input, textarea').not('.layer-date').not("[name='c_ASS_CODE']")
+			.not("[name='c_DAT_NAME']").attr('readonly', false);
+	_form.find('.layer-date').removeAttr("disabled");
+	_form.find('select').each(
+			function() {
+				var thisButton = $(this).prev().prev().get(0);
+				$(thisButton).removeClass("disabled");
+				$(this).removeAttr("disabled");
+				$(thisButton).addClass("btn-white");
+				var _searchInput = $(this).prev("div").children("div")
+						.children("input");
+				_searchInput.attr('readonly', false);
+			});
+	$("div.ueditor").each(function(i){
+		var ueditorId = $(this).attr("id");
+		if(ueditorId!=null&&ueditorId!=undefined){
+			UE.getEditor(ueditorId).setEnabled();
+		}
+	});
+}
+
+// 设置专户产品独有控件是否隐藏
+function setZHCPIsHidden(_form, flag) {
+	if (flag) {
+		_form.find(".ZHCP").hide();
+		setZHCPEmpty(_form);
+	} else {
+		_form.find(".ZHCP").show();
+	}
+}
+
+// 设置公募基金独有控件是否隐藏
+function setGMJJIsHidden(_form, flag) {
+	if (flag) {
+		_form.find(".GMJJ").hide();
+		setGMJJEmpty(_form);
+	} else {
+		_form.find(".GMJJ").show();
+	}
+}
+
+// 专户产品独有控件值置为空
+function setZHCPEmpty(_form) {
+	_form.find(".ZHCP").val("");
+}
+
+// 设置公募独有控件值置为空
+function setGMJJEmpty(_form) {
+	_form.find(".GMJJ").val("");
+}
+
+$("select[name='c_PORT_CODE']").change(function() {
+	var formName = getCurrentFormStartName() + "Form";
+	var _form = $("#" + formName);
+	if ($(this).parents("form").attr("id") == formName) {
+		var portCode = $(this).val();
+		if (portCode == null || portCode == "")
+			return false;
+		var url = bundlePath + "/pub/" + funcCode + "?operate=datCode";// url不能传中文
+		postAjax(url, {
+			portCode : portCode
+		}, function(result, status) {
+			if (result && !result.success) {
+				throw new Error("通过产品代码获取产品信息失败");
+			} else {
+				var data = result.data;
+				if (data != null) {
+					var datCode = data.c_DAT_CODE;
+					_form.find("[name='c_DAT_CODE']").val(datCode);
+					_form.find("[name='c_ASS_CODE']").val(data.c_ASS_CODE);
+					_form.find("[name='c_DAT_NAME']").val(data.c_DAT_NAME);
+
+					if (datCode == GMJJType) {
+						setGMJJIsHidden(_form, false);
+						setZHCPIsHidden(_form, true);
+					} else if (datCode == ZHCPType) {
+						setGMJJIsHidden(_form, true);
+						setZHCPIsHidden(_form, false);
+					} else {
+						openRemindLayer(_form);
+					}
+				}
+			}
+		});
+	}
+});
+
+function openRemindLayer(_form) {
+	var html = '<label><br/><span style="font-size: 14px;padding:10px">检测到该产品既非公募基金(证券投资基金),也不是专户产品(资产管理计划)，请选择需要维护的所属产品类型</span></label>';
+	var index = layer.open({
+		type : 1,
+		title : "提醒",
+		content : html,
+		area : [ "300px", "200px" ],
+		btn : [ '公募基金', '专户产品' ],
+		yes : function(index, layero) {
+			// 按钮【按钮一】的回调
+			setGMJJIsHidden(_form, false);
+			setZHCPIsHidden(_form, true);
+			layer.close(index);
+		},
+		btn2 : function(index, layero) {
+			// 按钮【按钮二】的回调
+			setGMJJIsHidden(_form, true);
+			setZHCPIsHidden(_form, false);
+			// return false 开启该代码可禁止点击该按钮关闭
+		},
+		/*
+		 * btn3 : function(index, layero) { //按钮【按钮三】的回调 alert(3) //return false
+		 * 开启该代码可禁止点击该按钮关闭 },
+		 */
+		cancel : function() {
+			// 右上角关闭回调
+			// alert(888)
+			// return false 开启该代码可禁止点击该按钮关闭
+		}
+	});
+
+	return index;
+}
+listener.save = function(_context, event, data) {
+	if (_context.isOpenState()) {
+		var _currentPanel = getCurrentPanel(event);
+		if (_currentPanel == null) {
+			return;
+		}
+
+		var _url = _currentPanel.gridConfig.url;
+
+		var row = _currentPanel.grid.jqGrid('getRowData', _currentPanel.lastRow);
+
+		var _formName = _currentPanel.name + "Form";
+		if (_context.currentForm != null) {
+			_formName = _context.currentForm;
+		} else if (row.relaForm != null) {
+			_formName = row.relaForm;
+		}
+
+		var _form = $("#" + _formName);
+
+		if ("function" == typeof validateForm) {
+			if (!validateForm(_form)) {
+				return;
+			}
+		}
+
+		var data = Common.getFormData("#" + _formName);
+		/*投资比例限制数据*/
+		//data.formData.c_INVEST_RATIO_LIMIT = UE.getEditor('c_INVEST_RATIO_LIMIT').getContent();
+		
+		$("div.ueditor").each(function(i){
+			var ueditorId = $(this).attr("id");
+			if(ueditorId!=null&&ueditorId!=undefined){
+				data.formExtend[ueditorId] = UE.getEditor(ueditorId).getContent();
+			}
+		});
+		
+		var formData = data.formData;
+		var dataExtend = data.formExtend;
+		var parameter = {};
+		parameter.form = formData;
+		parameter.formExtend = dataExtend;
+		parameter.id = _form.find('#id').val();
+		parameter.operate = _context.operate;
+		$.ajax({
+			type : "post", // 访问WebService使用Post方式请求
+			contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+			// contentType : "application/json", // WebService 会返回Json类型
+			url : _url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+			data : {
+				"parameter" : JSON.stringify(parameter)
+			}, // 这里是要传递的参数，格式为 data: "{paraNamearaValue}",下面将会看到
+			dataType : 'json',
+			success : function(result) { // 回调函数，result，返回值
+				if (result && !result.success) {
+					/* loadMSG(result.message, result.detailMessage); */
+					loadMSG("保存失败", result.detailMessage);
+					return false;
+				} else {
+					_context.currentState = "query"; // 保存成功才改变状态
+					$('#id').val(result.id);
+					setReadonly(_form, true);
+					_currentPanel.grid.reload();
+					Common.resetSetBtnStatus();
+					isModified = false;
+					/* loadMSG(result.message); */
+					loadMSG("保存成功");
+				}
+			},
+			complete : function(XMLHttpRequest, status) {
+				if (status == 'timeout') {
+					loadErrorMSG(i18n.COMMON_AJAX_TIMEOUT);
+				} else if (status == 'error') {
+					loadErrorMSG(i18n.COMMON_AJAX_STATUS_ERROR);
+				}
+			}
+		});
+	}
+	return false;
+}

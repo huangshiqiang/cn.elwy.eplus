@@ -1,0 +1,2180 @@
+var setForm = null;
+var layerIndex1 = 0;//风险等级弹出层是否打开 0 未打开；1打开
+var layerIndex2 = 0;//产品转型弹出层是否打开  0 未打开；1打开
+var layerIndex3 = 0;//主体信息弹出层是否打开  0 未打开；1打开
+$(function() {
+	
+	//异步加载原界面加载执行的代码
+	asyncLoadFrame();
+	
+});
+
+
+//异步加载原界面加载执行的代码
+function asyncLoadFrame(){
+	var asyncLoad = function(){
+		var ga = document.createElement('script'); 
+		ga.type = 'text/javascript'; 
+		ga.async = true;
+		ga.src = bundlePath + "/resource/js/module/productsInfo/asyncLoadProductsInfo.js?v=" + _v; 
+		var s = document.getElementsByTagName('script')[0]; 
+		s.parentNode.insertBefore(ga, s);
+	};
+
+	if(window.attachEvent){
+		window.attachEvent("load", asyncLoad);
+	}else{
+		window.addEventListener("load", asyncLoad);
+	}
+}
+
+$(window).bind('resize', function() {
+	var currentPanel = Common.getContext().currentPanel.id;
+	Common.resizeGridWrapper(currentPanel + "_tab");
+});
+
+//function resizeGrid(){
+//	/*var currentPageId = Common.getContext().currentPanel.id;
+//	$("#" + currentPageId + "_div").height($(document.body).height() - $('#header').height() - $('.nav-tabs').height()-50);
+//	var width = $(".tab-form").width();
+//	$("#" + currentPageId + "_div").setGridWidth(width);*/
+//	var currentPanel = Common.getContext().currentPanel.id;
+//	Common.resizeGridWrapper(currentPanel + "_tab");
+//}
+
+function validate(currentForm){
+	setForm = currentForm;
+	//表单验证
+	currentForm.validate({
+		messages : {
+			c_PORT_NAME : {
+				required : "请输入产品全称"
+			},
+			c_PORT_NAME_ST : "请输入产品简称",
+			c_ASS_CODE : {
+				required : "请输入产品代码"
+			},
+			c_DV_MANAGER : {
+				required : "请选择管理人"
+			},
+			c_DAT_CODE : {
+				required : "请选择资产类型"
+			},
+			/*c_INVEST_CODE : {
+				required : "请选择产品类型"
+			},
+			c_COLLECT_CODE : {
+				required : "请选择管理类型"
+			},*/
+			c_DV_TRUSTEE : {
+				required : "请选择托管人"
+			},
+			c_PORT_CODE : {
+				required : "请输入组合代码"
+			},
+			c_DC_CODE : {
+				required : "请输入组合币种"
+			},
+			c_DV_PORT_CODE : {
+				required : "请输入组合级别"
+			},
+			c_HDAY_CODE : {
+				required : "请输入节假日群"
+			},
+			c_DAT_CLS : {
+				required : "请输入资产代码"
+			},
+			c_DV_PROD_STATE : {
+				required : "请选中产品状态"
+			},
+			d_BUILD : {
+				required : "请选择成立日期"
+			}
+		},
+		errorClass : "error",
+		success : 'valid',
+		unhighlight : function(element, errorClass, validClass) { //验证通过
+			$(element).tooltip('destroy').removeClass(errorClass);
+		},
+		errorPlacement : function(error, element) {
+			if ($(element).next("div").hasClass("tooltip")) {
+				$(element).attr("data-original-title", $(error).text())
+						.tooltip("show");
+			} else {
+				$(element).attr("title", $(error).text()).tooltip(
+						"show");
+			}
+		},
+		submitHandler : function(form) {
+			alert('验证通过');
+		}
+	});
+}
+
+function validateForm(currentForm){
+	return currentForm.valid();
+}
+
+//绑定选项卡切换事件
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (event){
+	//var activeTab = $(event.target).attr('name');
+	var _context = Common.getContext();
+	var _currentPanel = _context.currentPanel;
+	_currentPanel.grid.reload();
+});
+
+//添加缺省值
+function setDefaultPortCode(){
+	$("#c_ASS_CODE").blur(function(){
+		$("#c_PORT_CODE").val( $("#c_ASS_CODE").val());
+	});
+}
+
+function loadSelectData(){
+	$('select[urlServlet]').each(function(){
+		var url = $(this).attr("urlServlet");
+		var name = $(this).attr("name");
+		
+		var strParam = $(this).attr("strParam");
+		var parameter = {};
+		if(strParam != undefined && strParam != null){
+			var arrParam = new Array();
+			arrParam = strParam.split(",");
+			$.each(arrParam, function(index, value){
+				var arrElement = value.split(":");
+				var strKey = $.trim(arrElement[0]);
+				var strValue = $.trim(arrElement[1]);
+				
+				parameter[strKey] = strValue;
+			});
+		}
+		
+		$.getJSON(url, parameter, function(result, textStatus){//第一个为服务器返回的数据，第二个参数为服务器的状态，是可选参数。
+			var data = result.datas;
+			if(data == null){
+				return false;
+			}
+			var options;
+			options = "<option value=''>--请选择--</option>";
+			if(name=="c_FUND_LAUNCH_MKT"){
+				options = options + "<option value='wu'>无</option>";
+			}
+			for(var i = 0; i < data.length; i++){
+				options = options + "<option value='" + data[i].c_DV_CODE + "'>" + data[i].c_DV_NAME + "</option>";
+			}
+			$("select[name='"+name+"']").append(options);
+			
+			refreshSelPicker(name);
+		});
+		
+	});
+}
+
+/*function loadDefaultValue(name){
+	if(name == "c_WHE_GRADE" || name == "c_WHE_NEW_SHARES" || name == "c_WHE_INTER_BANK" || name == "c_WHE_DEFER"){
+		$("#"+name).val("0");
+	} else if(name == "c_WHE_OPEN" || name == "c_WHE_VALUE"){
+		$("#"+name).val("1");
+	} else if(name == "c_NETVALUE_ACC"){
+		$("#"+name).val("4");
+	} else if(name != "c_DV_TRUSTEE"){
+		$("select[name=" + name + "]").get(0).selectedIndex=1 ;//获取默认值为第一个
+	}
+}*/
+
+function getDefaultValue(name){
+	var resValue = "";
+	if(name == "c_WHE_GRADE" || name == "c_WHE_NEW_SHARES" || name == "c_WHE_INTER_BANK" || name == "c_WHE_INV_ADVISER"){
+		resValue = "0";
+	} else if(name == "c_WHE_OPEN"){
+		//resValue = "1";
+	} else if(name == "c_NETVALUE_ACC"){
+		resValue = "4";
+	} else if(name == "c_DAT_CODE"){
+		resValue = "ASS_ZQTZJJ";
+	} else if(name == "d_BUILD" || name == "d_COLLECT_START"){
+		resValue = laydate.now();
+	} else if(name == "c_DV_PROD_STATE"){
+		resValue = "PS3";
+	}else if(name=='c_INVEST_SECOND_CODE'){
+		resValue = $("select[name='" + name + "'] option:first").val();
+	} 
+	
+	else if(name != "c_DV_TRUSTEE" && name != "c_REGIS_ORG" && name != "c_RISK_LEVEL" 
+				&& name != "c_CORP_ORG_CODE" && name != "c_INVEST_CODE" && name != "c_CLEAR_MODE" && name != "c_PRODUCT_AFFI"&&name!="c_INVEST_SECOND_CODE"){
+		var eleType = $("[name='"+name+"']").prop("type");
+		if(eleType == "select-one"){
+			/*var isLiveSearch = typeof($("select[name='"+name+"']").attr("data-live-search"));
+			if(isLiveSearch != "undefined"){
+				//resValue = $("select[name='" + name + "'] option:first").val();
+				resValue = $("select[name='" + name + "'] option:eq(1)").val();
+			} else {
+				resValue = $("select[name='" + name + "'] option:first").val();
+			}*/
+			resValue = $("select[name='" + name + "'] option:eq(1)").val();
+		}
+		/*if(typeof($("select[name='" + name + "']")) != "undefined"){
+			resValue = $("select[name='" + name + "'] option:first").val();
+			//resValue = $("#"+name+" option:first").val(); 
+		}*/
+	}
+	return resValue;
+}
+
+function refreshSelPicker(name){
+	var isLiveSearch = typeof($("select[name='"+name+"']").attr("data-live-search"));
+	if(isLiveSearch != "undefined"){
+		$("select[name='"+name+"']").selectpicker('refresh');
+	}
+}
+
+function initForm(rowData, _form) {
+	$.each(rowData, function(key, value){
+		var type = $("#signupForm [name='" + key + "']").attr('type');
+		if(type == "checkbox"){
+			setCheckBoxVal(key, value);
+		} else {
+			_form.find("[name='"+key+"']").val(value);
+			refreshSelPicker(key);
+		}
+		//页面需要控制的显示与不显示
+		controlDisplay(key,value);
+		
+	});
+	
+	if(Common.getContext().operate == "save"){
+		_form.find("#id").val("");
+	}
+	
+	removeValidate();//清除验证
+	
+	loadOrQueryRiskTransGrid();
+	
+	//加载分级组合表格数据
+	$("#productClsInfoGrid").setGridParam( //G,P要大写
+		    {
+			    url : ctx + "/fast-plm/productsInfo?operate=portCls&c_IDEN="+rowData.id,
+			    datatype : "json",
+			    postData:{key:"value",key:"value"},
+		    }
+		).trigger("reloadGrid");
+	
+	isModified = false;
+}
+
+/**
+ * 控制页面控件显示不显示，可编辑与不可编辑
+ * @param key
+ * @param value
+ */
+function controlDisplay(key,value){
+	//判断二级分类可编辑与不可编辑
+	if(key=="c_INVEST_CODE"){
+		if(value=="HH_JJ"){
+			$("[name='c_INVEST_SECOND_CODE']").removeAttr("disabled");
+		}else{
+			$("[name='c_INVEST_SECOND_CODE']").attr("disabled","disabled");
+		}
+	}
+}
+
+
+function getEmptyRowData(_form) {
+	var rowData = {};
+	var listHead = tableHeadMap["productsInfo"];
+	$.each(listHead, function(index, value){
+		var name = value.name;
+		rowData[name] = getDefaultValue(name);
+	});
+	return rowData;
+}
+
+listener.save = function(_context, event, data){
+	var vd = $("#signupForm").valid();
+	if(!vd){
+		return false;
+	}
+	var currentGrid = Common.getContext().currentPanel.grid;
+	//var currentGrid = $("#"+currentPanelId+"Grid");
+	var data = Common.getFormData("#signupForm").formData;
+	var dataExtend = Common.getFormData("#signupForm").formExtend;
+	dataExtend["c_SALE_MODE"] = getCheckBoxVal("c_SALE_MODE");
+	dataExtend["c_TRADE_INFO"] = getCheckBoxVal("c_TRADE_INFO");
+	dataExtend["c_PUB_MEDIA"] = getCheckBoxVal("c_PUB_MEDIA");
+	dataExtend["c_RISK_LEVEL"] = $("#signupForm").find("#c_RISK_LEVEL").val();
+	var parameter = {};
+	parameter.form = data;
+	parameter.formExtend = dataExtend;
+	parameter.id = $('#id').val();
+	parameter.operate = Common.getContext().operate;
+	parameter.formCode = funcCode;
+	
+	var flag1 = rowSaveEvent_risk();
+	var flag2 = rowSaveEvent_trans();
+	var flag3 = rowSaveEvent_portCls();
+	if(!flag1 || !flag2 || !flag3){
+		return false;
+	}
+	
+	var riskList = $("#risk_level_Grid").jqGrid('getRowData');
+	var transList = $("#pro_trans_Grid").jqGrid('getRowData');
+	var portClsList = $("#productClsInfoGrid").jqGrid('getRowData');
+	
+	parameter.riskList = riskList;
+	parameter.transList = transList;
+	parameter.portClsList = portClsList;
+	
+	$.ajax({
+		type : "post", // 访问WebService使用Post方式请求
+		contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+		url : bundlePath + "/productsInfo", 
+		data : {
+			"parameter" : JSON.stringify(parameter)
+		},
+		dataType : 'json',
+		success : function(result) { // 回调函数，result，返回值
+			if (result && !result.success) {
+				loadMSG(result.message, result.detailMessage);
+				return false;
+			} else {
+				$('#id').val(result.id);
+				setReadonly($("#signupForm"), true);
+				currentGrid.reload();// reloadGrid有延迟，用setSelection定位的时候，新增数据还没有刷新加载出来。
+				isModified = false;
+				loadMSG(result.message);
+				Common.resetSetBtnStatus();//重置按钮状态
+				Common.getContext().operate = "query";
+			}
+		},
+		complete : function(XMLHttpRequest, status) {
+			if (status == 'timeout') {
+				loadMSG("获取数据超时，请稍后重试");
+			} else if (status == 'error') {
+				loadMSG("访问出错，请检查服务器状态");
+			}
+		}
+	});
+};
+
+//审核
+function checkBtn(){
+	changeState(event, "审核", "check");
+}
+
+//反审核
+function uncheckBtn(){
+	changeState(event, "反审核", "uncheck");
+}
+
+
+function changeState(event, label, _operate) {
+//	var currentPageId = Common.getContext().currentPanel.id;
+//	var gd = $('#'+currentPageId+'Grid');
+	var gd = Common.getContext().currentPanel.grid;
+	if (!Common.checkSelectMulti(gd)) {
+		return;
+	}
+	var ids = gd.jqGrid('getGridParam', 'selarrrow');
+	var actualIds = new Array();
+	var rowDatas = [];
+	var len = ids.length;
+	for (var i = 0; i < len; i++) {
+		var singleData = gd.jqGrid('getRowData', ids[i]);
+		var checkStatus = singleData.n_STATE;
+		
+		if ((_operate == "check" && checkStatus == "0") || (_operate == "uncheck" && (checkStatus == "1" || checkStatus == "2"))) {
+			actualIds.push(ids[i]);
+			rowDatas.push(singleData);
+		}
+	}
+	if(actualIds == null || actualIds.length == 0){
+		YssLayer.messageAlter("没有选择待"+label+"数据", 2);
+		return false;
+	}
+	var index = YssLayer.showConfirm("确定"+label+"选中的数据吗？", function() {
+		var parameter = {};
+		parameter.datas = rowDatas;
+		parameter.ids = actualIds;
+		parameter.operate = _operate;
+		parameter.formCode = funcCode;
+		$.ajax({
+			type : "post", // 访问WebService使用Post方式请求
+			contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+			url : bundlePath + "/productsInfo", // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+			data : {
+				"parameter" : JSON.stringify(parameter)
+			}, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
+			dataType : 'json',
+			success : function(result) { // 回调函数，result，返回值
+				if (result && !result.success) {
+					YssLayer.messageAlter(label + "失败！", 2);
+					return false;
+				} else {
+					gd.reload();
+					YssLayer.messageDialogOnRightDown(label + "成功！", 2000);
+					YssLayer.closeLayer(index);
+				}
+			}
+		});
+	});
+	
+}
+
+//同步
+/*function _sync(){
+	var _context = Common.getContext();
+	var currentPageId = _context.currentPanel.id;
+	_context.operate = "sync";
+	var dg = $('#'+currentPageId+'Grid');
+	if (!Common.checkSelectOne(dg)) {
+		return;
+	}
+	var id = dg.jqGrid('getGridParam', 'selrow');
+	var data = dg.jqGrid('getRowData', id);
+	var relaStatus = data.n_STATE;
+	if(relaStatus != '1'){
+		YssLayer.messageAlter("未选择已审核数据，请重新选择！", 2);
+		return false;
+	}
+	clearMSG();//清除错误提示信息
+	initForm(data, $('#signupForm'));//表单赋值
+	$('#id').val(id);
+	sideSwitch(true);//打开表单界面
+	setReadonly($('#signupForm'), false);//设置界面可编辑
+	resizeRightSideContent();//重置表单界面大小
+}*/
+
+
+function getCheckBoxVal(name){
+	var strValue = "";
+	var currentObj = $("input[name='"+name+"']:checkbox");
+	for(var j = 0; j < currentObj.length; j++){
+		if(currentObj[j].checked){
+			strValue = strValue + currentObj[j].value + ",";
+		}
+	}
+	if(strValue != null && strValue.length > 0){
+		strValue = strValue.substring(0, strValue.length-1);
+	}
+	return strValue;
+}
+
+function clearCheckBoxVal(name){
+	$("input[name='"+name+"']:checkbox").each(function() {  
+        $(this).prop("checked", false); 
+    });
+}
+
+function setCheckBoxVal(name, value){
+	$("input[name='"+name+"_REVERSE']:checkbox").prop("checked",false);//取消反选框
+	var flag = true;
+	if(value == null || value == ""){
+		clearCheckBoxVal(name);
+		flag = false;
+	} else {
+		//clearCheckBoxVal(name);
+		var arrValue = value.split(',');
+		$("#signupForm input[name='" + name + "']:checkbox").each(function(){
+			var thisValue = $(this).val();
+			if($.inArray(thisValue, arrValue) >= 0){
+				$(this).prop("checked",true);//只能用prop选中，attr不起作用
+			} else {
+				$(this).prop("checked",false);
+				flag = false;
+			}
+		});
+		
+		/*for(var i = 0; i < arrValue.length; i++){
+			//只能用prop选中，attr不起作用
+			$("#signupForm input[name='" + name + "'][value='"+arrValue[i]+"']:checkbox").prop("checked","checked");
+		}*/
+	}
+	
+	if(flag){
+		$("input[name='"+name+"_ALL']:checkbox").prop("checked",true);//取消全选框
+	} else {
+		$("input[name='"+name+"_ALL']:checkbox").prop("checked",false);//选中全选框
+	}
+}
+
+//全选
+$("#signupForm").delegate(".selectAll", "click", function(event){
+	var isChecked = $(this).prop("checked");//attr无效
+	var allName = $(this).prop("name");
+	var name = allName.replace("_ALL", "");
+	$("[name='"+name+"']:checkbox").each(function(){
+		 $(this).prop("checked", isChecked);
+	});
+	var flag = $("#signupForm input[name='c_TRADE_INFO'][value='QT_JYZGXX']:checkbox").prop("checked");
+	if(!flag){
+		$("#c_NO_DESC").val("");
+	}
+	$("#c_NO_DESC").prop("readonly",!flag);
+});
+
+//反选
+$("#signupForm").delegate(".selectReverse", "click", function(event){
+	//var isChecked = $(this).attr("checked");
+	var reverseName = $(this).prop("name");
+	var name = reverseName.replace("_REVERSE", "");
+	var isExistNone = false;
+	$("[name='"+name+"']:checkbox").each(function(){
+		$(this).prop("checked", !$(this).prop("checked"));
+		if(!$(this).prop("checked")){
+			isExistNone = true;
+		}
+	});
+	var flag = $("#signupForm input[name='c_TRADE_INFO'][value='QT_JYZGXX']:checkbox").prop("checked");
+	if(!flag){
+		$("#c_NO_DESC").val("");
+	}
+	$("#c_NO_DESC").prop("readonly",!flag);
+	$("#signupForm input[name='"+name+"_ALL']").prop("checked", !isExistNone);
+});
+
+$("#signupForm").delegate("input:checkbox", "click", function(event){
+	var name = $(this).prop("name");
+	if(!name.endsWith("_ALL") && !name.endsWith("_REVERSE")){
+		var selAll = true;
+		$("#signupForm input[name='"+name+"']:checkbox").each(function(){
+			if(!$(this).prop("checked")){
+				selAll = false;
+			}
+		});
+		var isExist = typeof($("#signupForm input[name='"+name+"_ALL']").attr("name"));
+		if(isExist != "undefined"){
+			$("#signupForm input[name='"+name+"_ALL']").prop("checked", selAll);
+		}
+	}
+});
+
+function loadAllCheckBox(){
+	$("#signupForm div[checkurl]").each(function(){
+		var url = $(this).attr("checkurl");
+		var id = $(this).attr("id");
+		if(url != null && url != "" && id != null && id != ""){
+			$.getJSON(url, function(result, textStatus){//第一个为服务器返回的数据，第二个参数为服务器的状态，是可选参数。
+				var data = result.datas;
+				var length = data.length;
+				var options = "";
+				var eleName = id.replace("checkbox_", "");
+				var selectAll = eleName + "_ALL";
+				var reverse = eleName + "_REVERSE";
+				if(length >= 5){
+					options += '<div>'
+					            	+'<label class="">'
+			                            +'<input type="checkbox" class="selectAll formExtend" value="" name="'+selectAll+'" id="'+selectAll+'">全选</label>&nbsp;&nbsp;'
+			                        +'<label class="">'
+			                            +'<input type="checkbox" class="selectReverse formExtend" value="" name="'+reverse+'" id="'+reverse+'">反选</label>'
+					          +'</div>';
+				}
+				for(var i = 1; i <= length; i++){
+					if(eleName=="c_SALE_MODE" && data[i-1].c_DV_CODE == "ALL_XSWD"){
+						
+					} else {
+						options += '<label class=""><input type="checkbox" class="formExtend" value="'+ data[i-1].c_DV_CODE +'" name="'+eleName+'" id="'+eleName+i+'">'+ data[i-1].c_DV_NAME +'</label>&nbsp;&nbsp;';
+				
+					}
+				}
+				if(id == "checkbox_c_TRADE_INFO"){
+					options += '<input type = "text" class = "form-control formExtend" name="c_NO_DESC" id = "c_NO_DESC" title="其他业务资格说明" maxlength="100"></input>';
+				}
+				
+				$("#"+id).append(options);
+				
+			});
+		}
+	});
+}
+
+function removeValidate(){
+	$('*[required]').each(function(){
+		var element = this;
+		var errorClass = "error";
+		/*if($(element).hasClass("error") && $(element).next("div").hasClass("tooltip")){
+			$(element).tooltip('destroy').removeClass(errorClass);
+		}*/
+		if($(element).next("div").hasClass("tooltip")){
+			$(element).tooltip('destroy');
+		}
+		if($(element).hasClass("error")){
+			$(element).removeClass(errorClass);
+		}
+	});
+}
+
+function setReadonly(_form, readonly) {
+	if(readonly){
+		isreadonly();
+		setViewTitle();
+	} else {
+		unreadonly();
+		setEditTitle();
+	}
+	
+	//风险等级不可编辑，只能设置
+	setRiskLevelReadOnly();
+}
+
+//风险等级不可编辑，只能设置
+function setRiskLevelReadOnly(){
+	var buttonId = "c_RISK_LEVEL";
+	$("button[data-id='"+buttonId+"']").addClass("disabled");
+	$(this).attr("disabled", "disabled");
+	$("button[data-id='"+buttonId+"']").removeClass("btn-white");
+}
+
+function isreadonly() {
+	$('#signupForm').find('input, textarea').not('.layer-date, input:checkbox').attr('readonly', true);
+	$('#signupForm').find('input:checkbox').attr("disabled", "disabled");
+	
+	$('#signupForm').find('.layer-date').attr("disabled", "disabled");
+	$('#signupForm').find('select').each(function() {
+		var buttonId = $(this).get(0).id;
+		$("button[data-id='"+buttonId+"']").addClass("disabled");
+		$(this).attr("disabled", "disabled");
+		$("button[data-id='"+buttonId+"']").removeClass("btn-white");
+	});
+	
+	$("#btn_RISK_LEVEL").attr("disabled", "disabled");
+	$("#btn_PRO_TRANS").attr("disabled", "disabled");
+	$("#btn_DV_TRUSTEE").attr("disabled", "disabled");
+}
+
+function unreadonly() {
+	$('#signupForm').find('input, textarea').attr('readonly', false);
+	var flag = $("input[name='c_TRADE_INFO'][value='QT_JYZGXX']:checkbox").prop("checked");
+//	var flag = $("input[name='c_TRADE_INFO']:checkbox:last").prop("checked");
+	if(!flag){
+		$("#c_NO_DESC").attr('readonly', true);
+	}
+	$("#c_PORT_CODE").attr('readonly', true);
+	$("#c_PRO_TRANS").attr('readonly', true);
+	$('#signupForm').find('input:checkbox').removeAttr("disabled");
+	$('#signupForm').find('.layer-date').removeAttr("disabled");
+	$('#signupForm').find('select').each(function() {
+		var buttonId = $(this).get(0).id;
+		$("button[data-id='"+buttonId+"']").removeClass("disabled");
+		$(this).removeAttr("disabled");
+		$("button[data-id='"+buttonId+"']").addClass("btn-white");
+	});
+	$("#btn_RISK_LEVEL").removeAttr("disabled");
+	$("#btn_PRO_TRANS").removeAttr("disabled");
+	$("#btn_DV_TRUSTEE").removeAttr("disabled");
+
+	/**
+	 * 判断产品二级分类是否可读
+	 */
+	if($("[name='c_INVEST_CODE']").val()=="HH_JJ"){
+		$("[name='c_INVEST_SECOND_CODE']").removeAttr("disabled");
+	}else{
+		$("[name='c_INVEST_SECOND_CODE']").attr("disabled","disabled");
+	}
+}
+
+function setNoDescReadonly(){
+	$("#signupForm").delegate("input[name='c_TRADE_INFO'][value='QT_JYZGXX']:checkbox", "click", function(e){
+		//var flag = $("#signupForm input[name='c_TRADE_INFO'][value='QT_JYZGXX']:checkbox").prop("checked");
+		if($(this).prop("checked")){
+			$("#c_NO_DESC").prop("readonly",false);
+		}else{
+			$("#c_NO_DESC").val("");
+			$("#c_NO_DESC").prop("readonly",true);
+		}
+	});
+}
+
+function print() {
+	var currentGridId = Common.getContext().currentPanel.id + "Grid";
+	$("#"+currentGridId).print({
+		globalStyles : false, // 是否包含父文档的样式，默认为true
+		mediaPrint : true, // 是否包含media='print'的链接标签。会被globalStyles选项覆盖，默认为false
+		stylesheet : null, // 外部样式表的URL地址，默认为null
+		noPrintSelector : ".no-print", // 不想打印的元素的jQuery选择器，默认为".no-print"
+		iframe : true, // 是否使用一个iframe来替代打印表单的弹出窗口，true为在本页面进行打印，false就是说新开一个页面打印，默认为true
+		append : null, // 将内容添加到打印内容的后面
+		prepend : null, // 将内容添加到打印内容的前面，可以用来作为要打印内容
+		deferred : $.Deferred()
+	// 回调函数
+	});
+}
+
+
+//成立日期
+var d_BUILD = {
+	elem : '#d_BUILD',
+	format : 'YYYY-MM-DD',
+	min : '1900-01-01', // 设定最小日期为当前日期
+	max : '2099-06-16', // 最大日期
+	istime : true,
+	istoday : true,
+	choose : function(datas) {
+		// if (laydate.now() < datas) {
+		// end.min = datas; // 开始日选好后，重置结束日的最小日期
+		// end.start = datas; // 将结束日的初始值设定为开始日
+		// } else {
+		// end.min = laydate.now();
+		// end.start = laydate.now(); // 将结束日的初始值设定为开始日
+		// }
+	}
+};
+
+//提前结束募集日
+var d_RAISE_END = {
+	elem : '#d_RAISE_END',
+	format : 'YYYY-MM-DD',
+	// min: laydate.now(),
+	max : '2099-06-16',
+	istime : true,
+	istoday : false,
+	choose : function(datas) {
+		//d_BUILD.min = '1900-01-01'; // 结束日选好后，重置开始日的最小日期
+	}
+};
+
+//募集开始日
+var d_COLLECT_START = {
+	elem : '#d_COLLECT_START',
+	format : 'YYYY-MM-DD',
+	min : '1900-01-01', // 设定最小日期为当前日期
+	max : '2099-06-16', // 最大日期
+	istime : true,
+	istoday : true,
+	choose : function(datas) {
+		// if (laydate.now() < datas) {
+		// end.min = datas; // 开始日选好后，重置结束日的最小日期
+		// end.start = datas; // 将结束日的初始值设定为开始日
+		// } else {
+		// end.min = laydate.now();
+		// end.start = laydate.now(); // 将结束日的初始值设定为开始日
+		// }
+	}
+};
+
+//募集截止日
+var d_COLLECT_END = {
+	elem : '#d_COLLECT_END',
+	format : 'YYYY-MM-DD',
+	// min: laydate.now(),
+	max : '2099-06-16',
+	istime : true,
+	istoday : false,
+	choose : function(datas) {
+		//d_BUILD.min = '1900-01-01'; // 结束日选好后，重置开始日的最小日期
+	}
+};
+
+//上市日期
+var d_LAUNCH_DATE = {
+	elem : '#d_LAUNCH_DATE',
+	format : 'YYYY-MM-DD',
+	// min: laydate.now(),
+	max : '2099-06-16',
+	istime : true,
+	istoday : false,
+	choose : function(datas) {
+		//d_BUILD.min = '1900-01-01'; // 结束日选好后，重置开始日的最小日期
+	}
+};
+
+//合同生效日期
+var d_CONTRACT_START = {
+	elem : '#d_CONTRACT_START',
+	format : 'YYYY-MM-DD',
+	// min: laydate.now(),
+	max : '2099-06-16',
+	istime : true,
+	istoday : false,
+	choose : function(datas) {
+		//d_BUILD.min = '1900-01-01'; // 结束日选好后，重置开始日的最小日期
+	}
+};
+
+laydate(d_BUILD);
+laydate(d_RAISE_END);
+laydate(d_COLLECT_START);
+laydate(d_COLLECT_END);
+laydate(d_LAUNCH_DATE);
+laydate(d_CONTRACT_START);
+
+// 数字框
+$.fn.onlyNum = function() {
+	$(this).keypress(function(event) {
+		var eventObj = event || e;
+		var keyCode = eventObj.keyCode || eventObj.which;
+		if (keyCode >= 48 && keyCode <= 57 || keyCode == 46)
+			return true;
+		else
+			return false;
+	}).focus(function() {
+		// 禁用输入法
+	}).bind("paste", function() {
+		// 获取剪切板的内容
+		var clipboard = window.clipboardData.getData("Text");
+		if (/^\d+$/.test(clipboard))
+			return true;
+		else
+			return false;
+	});
+};
+
+// 整数框
+$.fn.onlyIntNum = function() {
+	$(this).keypress(function(event) {
+		var eventObj = event || e;
+		var keyCode = eventObj.keyCode || eventObj.which;
+		if (keyCode >= 48 && keyCode <= 57)
+			return true;
+		else
+			return false;
+	}).focus(function() {
+		// 禁用输入法
+	}).bind("paste", function() {
+		// 获取剪切板的内容
+		var clipboard = window.clipboardData.getData("Text");
+		if (/^\d+$/.test(clipboard))
+			return true;
+		else
+			return false;
+	});
+};
+
+// 金额
+$.fn.onlyMoney = function() {
+	$(this).keypress(
+			function(event) {
+				var eventObj = event || e;
+				var keyCode = eventObj.keyCode || eventObj.which;
+				var b = event.currentTarget.value;
+				var point = b.indexOf(".") + 1;
+				var l = b.length;
+				var le = b.length - point;
+				if (keyCode >= 48 && keyCode <= 57 || keyCode == 46
+						&& b.split(".").length < 2) {
+					if (point > 0 && le < 2)
+						return true;
+					else if (point > 0 && le <= 2)
+						return false;
+					return true;
+				} else
+					return false;
+			}).focus(function() {
+		// 禁用输入法
+	}).bind("paste", function() {
+		// 获取剪切板的内容
+		var clipboard = window.clipboardData.getData("Text");
+		if (/^\d+$/.test(clipboard))
+			return true;
+		else
+			return false;
+	});
+};
+$(".onlyNum").onlyNum();
+$(".onlyMoney").onlyMoney();
+$(".onlyIntNum").onlyIntNum();
+
+// 金额加分隔符
+function onKeyPrice(t) {
+	var stmp = "";
+	if (t.value == stmp)
+		return;
+	var ms = t.value.replace(/[^\d\.]/g, "").replace(/(\.\d{2}).+$/, "$1")
+			.replace(/^0+([1-9])/, "$1").replace(/^0+$/, "0");
+	var txt = ms.split(".");
+	while (/\d{4}(,|$)/.test(txt[0]))
+		txt[0] = txt[0].replace(/(\d)(\d{3}(,|$))/, "$1,$2");
+	t.value = stmp = txt[0] + (txt.length > 1 ? "." + txt[1] : "");
+	
+	if(t.value.length > 26){
+		t.value = t.value.replace(t.value.substring(26), "");
+	}
+}
+
+// 将中文字符替换为空
+function replaceChinese(ch) {
+	ch.value = ch.value.replace(/[^\d\.]/g, "");
+}
+
+/*$("#c_INI_SCALE").on("input", function(){
+	var val = $(this).val();
+	if(val.length > 26){
+		$(this).val(val.substring(26));
+	}
+});*/
+
+$("#c_INI_SCALE").blur(function(){
+	
+	var val = $(this).val();
+	if(val == null || val == "")
+		return false;
+	var len = val.split(".").length;
+	if(len == 1){
+		$(this).val(val + ".00");
+	} else if(len == 2){
+		var dVal = val.split(".")[1];
+		if(dVal === ""){
+			$(this).val(val + "00");
+		} else {
+			var dLen = dVal.length;
+			if(dLen == 1){
+				$(this).val(val + "0");
+			}
+		}
+	}
+});
+
+
+//select 下拉数据源支持远程和本地数据
+function getSelectData(){
+ var str = "";
+// $.ajax({
+//     type:"get",
+//     url:"test.json",
+//     async:false,
+//     success:function (data) {
+//         $.each(data, function (i) {
+//             str += data[i].key+":"+data[i].value+";";
+//         });
+//         str = str.substring(0,str.length-1);
+//     }
+// });
+
+	for(var index in riskLevelList){//风险等级下拉框
+		str += riskLevelList[index].c_DV_CODE+":"+riskLevelList[index].c_DV_NAME+";";
+	}
+	str = str.substring(0,str.length-1);
+ return str;
+}
+
+//以下为风险等级产品转型功能
+var riskGrid = null;
+var transGrid = null;
+var currentUserInfo = {};
+//var allUserList = [];
+function loadRiskGrid(){
+	//var listHead = riskTransListHeadMap["productsRiskLevel"];
+	riskGrid = $("#risk_level_Grid").YssDataGrid(
+			{
+				// 当前页签编号
+				shrinkToFit : false,
+				url : bundlePath + "/productsInfo?formCode=productsInfo&operate=risk_level_query",
+				// 设置数据表格列
+				//colModel : listHead,
+				colModel : [{
+								header : 'ID',
+								name : 'id',
+								hidden : true
+							},
+							{
+								header : "风险等级",
+								name : "c_RISK_TRANS",
+								width : 120,
+								editable : true,
+			                    edittype:"select",
+			                    editrules : {required:true},
+			                    editoptions:{value:getSelectData()
+			                    },// 异步加载下拉框
+			                    formatter:'select'
+							},
+							{
+								header : "创建人",
+								name : "c_CREATE_BY",
+								hidden : true
+							},
+							{
+								header : "创建人",
+								name : "c_CREATE_BY_NAME",
+								width : 120
+								/*formatter : function(cellvalue, options, rowObject){
+									var length = allUserList.length;
+									for(var i = 0; i < length; i++){
+										if(allUserList[i].c_USER_CODE == rowObject.c_CREATE_BY){
+											return allUserList[i].c_USER_NAME;
+										}
+									}
+									return "";
+								}*/
+							},
+							{
+								header : "开始时间",
+								name : "c_START_TIME",
+								editable : true,
+								edittype : "text",
+								editrules : {required:true,date:true},
+								width : 120
+							},
+							{
+								header : "结束时间",
+								name : "c_END_TIME",
+								editable : true,
+								edittype : "text",
+								//editrules : {date:true},
+								width : 120
+							}],
+				
+				multiselect : false,
+				cellEdit: true,
+				loadComplete : function(data) {// 数据请求完成调用方法
+					// 如果有消息，则显示提示消息
+					if (data.success === undefined) { // 针对本地数据过滤
+
+					} else if (data && !data.success) {
+						layer.alert(data.message, {
+							icon : 0,
+							title : '查询失败'
+						});
+					}
+					else {
+						//YssLayer.messageDialog("操作成功！！！",'rb',1000);
+						currentUserInfo = data.currentUserInfo;
+						//allUserList = data.allUserList;
+					}
+				},
+				cellsubmit: "clientArray", //当单元格发生变化后不直接发送请求、"remote"默认直接发送请求
+				altRows : true,
+				altclass : 'someClass',
+				getFormData : _getFormData,
+				postData : {parameter : JSON.stringify({
+									relaId : $("#c_PORT_CODE").val(),
+									operate : "risk_level_query"
+								})
+				
+				},
+				multiselect :false,
+			    ondblClickRow : gridOndblClickRow,
+			    gridComplete :gridComplete_risk,
+			    customToolBar : true,
+			    relaForm : true,
+			    customToolBarBtns : [{
+			                            name:'Add',
+			                            title:'添加新纪录',
+			                            icon:'fa fa-plus',
+			                            click:rowAddEvent_risk
+			                        },
+			                        {
+			                            name:'Delete',
+			                            title:'删除所选纪录',
+			                            icon:'fa fa-minus',
+			                        },
+	                                {
+	                                    name:'Save',
+	                                    title:'保存所有纪录',
+	                                    icon:'fa fa-floppy-o',
+	                                    click:rowSaveEvent_risk
+	                                }],
+			    customToolBarLoc:'right' // bottom right
+		});
+}
+
+//双击事件
+function gridOndblClickRow(rowid, iRow, iCol, e) {
+	//var gd = $(e.currentTarget);
+	//var gd = $("#"+e.currentTarget.id);
+	
+	var gd = null;
+	if(e.currentTarget.id == "risk_level_Grid"){
+		gd = riskGrid;
+	} else if(e.currentTarget.id == "pro_trans_Grid"){
+		gd = transGrid;
+	}
+	var currentEditId = gd.getCurrentEditId();
+	if (currentEditId == rowid) { // 如果该行还在编辑状态，跳过
+	    return false;
+	} else {  // 保存上一次修改的行
+	    gd.exSaveRow(currentEditId);
+	}
+	if (gd.getCurrentEditId() === null) {
+	    gd.exEditRow(rowid, true, initWidget);
+	}
+}
+
+//初始化拖拽
+function gridComplete_risk() {
+$( "#_empty" , "#risk_level_Grid" ).addClass( "nodrag nodrop" ); //样式
+$( "#risk_level_Grid" ).tableDnDUpdate(); //更新jquery.tablednd.js插件的方法。
+}
+
+//行添加事件
+function rowAddEvent_risk() {
+	var falg = rowSaveEvent_risk();
+	if(!falg){
+		return false;
+	}
+	riskGrid.exAddRow({
+	    position :"last",
+	    initdata:{"c_CREATE_BY":currentUserInfo.c_USER_CODE, "c_CREATE_BY_NAME":currentUserInfo.c_USER_NAME},
+	    addRowParams :{
+	        keys : true, // 是否支持回车保存
+	        oneditfunc : initWidget
+	    }
+	});
+}
+
+//初始化控件
+function initWidget(rowid){
+	// 初始化日期控件
+	$("#" + rowid + "_c_START_TIME").datepicker({
+	    autoclose: true,
+	    todayHighlight: true,
+	    dateFormat : "YYYY-MM-DD"
+	});
+	$("#" + rowid + "_c_END_TIME").datepicker({
+	    autoclose: true,
+	    todayHighlight: true,
+	    dateFormat : "YYYY-MM-DD"
+	});
+}
+
+function validateGridTime(_grid, currentEditId){
+	if(currentEditId == null){
+		return true;
+	}
+	var start = $("#"+currentEditId+"_c_START_TIME").val();
+	var end = $("#"+currentEditId+"_c_END_TIME").val();
+	
+	var startDate = new Date(start.replace("-", "/").replace("-", "/"));
+	var endDate = new Date(end.replace("-", "/").replace("-", "/"));
+	if(startDate > endDate){
+		layer.alert('开始时间不能大于结束时间，请重新维护', {
+			icon : 0,
+			title : '警告'
+		});
+		return false;
+	}
+	
+	var rows = _grid.jqGrid("getRowData");
+	var length = rows.length;
+	for(var i = 0; i < length; i++){
+		var currentId = rows[i].id;
+		if(currentId == null || currentId == "" || currentId == currentEditId){
+			continue;
+		}
+		var currentStartDate = new Date(rows[i].c_START_TIME.replace("-", "/").replace("-", "/"));
+		var currentEndDate = new Date(rows[i].c_END_TIME.replace("-", "/").replace("-", "/"));
+		if(startDate >= currentEndDate || endDate <= currentStartDate){
+			//无重复时间
+		} else {
+			//有重复时间
+			layer.alert('时间区间与原有时间区间重复，请重新维护', {
+				icon : 0,
+				title : '警告'
+			});
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+function rowSaveEvent_risk() {
+	console.info("风险等级保存");
+	var currentEditId = riskGrid.getCurrentEditId();
+	console.info("当前编辑的rowid：" + currentEditId);
+	
+	if(!validateGridTime($("#risk_level_Grid"), currentEditId)){
+		return false;
+	}
+	
+	
+	if (currentEditId != null) { // 如果还有行还在编辑状态，保存行
+		riskGrid.exSaveRow(currentEditId);
+		
+		if(riskGrid.getCurrentEditId() != null){
+			return false;
+		}
+	}
+	var rows = $("#risk_level_Grid").jqGrid('getRowData');
+	console.info(rows);
+	return true;
+	
+	/*var parameter = {};
+	parameter.datas = rows;
+	parameter.relaId = $("#id").val();
+	parameter.operate = "riskSave";
+	parameter.formCode = funcCode;
+	$.ajax({
+		type : "post", // 访问WebService使用Post方式请求
+		contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+		url : bundlePath + "/productsInfo",
+		data : {
+			"parameter" : JSON.stringify(parameter)
+		},
+		dataType : 'json',
+		success : function(result) { // 回调函数，result，返回值
+			if (result && !result.success) {
+				YssLayer.messageAlter("保存失败！", 2);
+				return false;
+			} else {
+				riskGrid.reload();
+			}
+		},
+	});*/
+}
+
+
+// 以下为产品转型功能
+function loadTransGrid(){
+	//var listHead = riskTransListHeadMap["productsProTrans"];
+	transGrid = $("#pro_trans_Grid").YssDataGrid(
+			{
+				// 当前页签编号
+				shrinkToFit : false,
+				url : bundlePath + "/productsInfo?formCode=productsInfo&operate=pro_trans_query",
+				// 设置数据表格列
+				//colModel : listHead,
+				colModel : [{
+								header : 'ID',
+								name : 'id',
+								hidden : true
+							},
+							{
+								header : "转型内容",
+								name : "c_RISK_TRANS",
+								editrules : {required:true},
+								editable : true,
+								edittype : "text",
+								width : 120
+							},
+							{
+								header : "创建人",
+								name : "c_CREATE_BY",
+								width : 120,
+								hidden : true
+							},
+							{
+								header : "创建人",
+								name : "c_CREATE_BY_NAME",
+								width : 120
+								/*formatter : function(cellvalue, options, rowObject){
+									var length = allUserList.length;
+									for(var i = 0; i < length; i++){
+										if(allUserList[i].c_USER_CODE == rowObject.c_CREATE_BY){
+											return allUserList[i].c_USER_NAME;
+										}
+									}
+									return "";
+								}*/
+							},
+							{
+								header : "开始时间",
+								name : "c_START_TIME",
+								editable : true,
+								edittype : "text",
+								editrules : {required:true,date:true},
+								width : 120
+							},
+							{
+								header : "结束时间",
+								name : "c_END_TIME",
+								editable : true,
+								edittype : "text",
+								//editrules : {date:true},
+								width : 120
+							}],
+				
+				multiselect : false,
+				cellEdit: true,
+				loadComplete : function(data) {// 数据请求完成调用方法
+					// 如果有消息，则显示提示消息
+					if (data.success === undefined) { // 针对本地数据过滤
+
+					} else if (data && !data.success) {
+						layer.alert(data.message, {
+							icon : 0,
+							title : '查询失败'
+						});
+					}
+					else {
+						//YssLayer.messageDialog("操作成功！！！",'rb',1000);
+						currentUserInfo = data.currentUserInfo;
+						//allUserList = data.allUserList;
+					}
+				},
+				cellsubmit: "clientArray", //当单元格发生变化后不直接发送请求、"remote"默认直接发送请求
+				altRows : true,
+				altclass : 'someClass',
+				multiselect :false,
+				getFormData : _getFormData,
+				postData : {parameter : JSON.stringify({
+									relaId : $("#c_PORT_CODE").val(),
+									operate : "pro_trans_query"
+								})
+				
+				},
+			    ondblClickRow : gridOndblClickRow,
+			    gridComplete :gridComplete_trans,
+			    customToolBar : true,
+			    relaForm : true,
+			    customToolBarBtns : [{
+			                            name:'Add',
+			                            title:'添加新纪录',
+			                            icon:'fa fa-plus',
+			                            click:rowAddEvent_trans
+			                        },
+			                        {
+			                            name:'Delete',
+			                            title:'删除所选纪录',
+			                            icon:'fa fa-minus',
+			                        },
+	                                {
+	                                    name:'Save',
+	                                    title:'保存所有纪录',
+	                                    icon:'fa fa-floppy-o',
+	                                    click:rowSaveEvent_trans
+	                                }],
+			    customToolBarLoc:'right' // bottom right
+		});
+}
+
+//初始化拖拽
+function gridComplete_trans() {
+$( "#_empty" , "#pro_trans_Grid" ).addClass( "nodrag nodrop" ); //样式
+$( "#pro_trans_Grid" ).tableDnDUpdate(); //更新jquery.tablednd.js插件的方法。
+}
+
+//行添加事件
+function rowAddEvent_trans() {
+	
+	var falg = rowSaveEvent_trans();
+	if(!falg){
+		return false;
+	}
+	transGrid.exAddRow({
+	    position :"last",
+	    initdata:{"c_CREATE_BY":currentUserInfo.c_USER_CODE, "c_CREATE_BY_NAME":currentUserInfo.c_USER_NAME},
+	    addRowParams :{
+	        keys : true, // 是否支持回车保存
+	        oneditfunc : initWidget
+	    }
+	});
+}
+
+function rowSaveEvent_trans() {
+	console.info("产品转型保存");
+	var currentEditId = transGrid.getCurrentEditId();
+	console.info("当前编辑的rowid：" + currentEditId);
+
+	if(!validateGridTime($("#pro_trans_Grid"), currentEditId)){
+		return false;
+	}
+	
+	if (currentEditId != null) { // 如果还有行还在编辑状态，保存行
+		transGrid.exSaveRow(currentEditId);
+		
+		if(transGrid.getCurrentEditId() != null){
+			return false;
+		}
+	}
+	var rows = $("#pro_trans_Grid").jqGrid('getRowData');
+	console.info(rows);
+	return true;
+	/*var parameter = {};
+	parameter.datas = rows;
+	parameter.relaId = $("#id").val();
+	parameter.operate = "transSave";
+	parameter.formCode = funcCode;
+	$.ajax({
+		type : "post", // 访问WebService使用Post方式请求
+		contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+		url : bundlePath + "/productsInfo",
+		data : {
+			"parameter" : JSON.stringify(parameter)
+		},
+		dataType : 'json',
+		success : function(result) { // 回调函数，result，返回值
+			if (result && !result.success) {
+				YssLayer.messageAlter("保存失败！", 2);
+				return false;
+			} else {
+				transGrid.reload();
+			}
+		},
+	});*/
+}
+
+//加载或者查询风险等级产品转型表
+function loadOrQueryRiskTransGrid(){
+	//riskTransResize("risk_level_div");
+	var colInfo = $("#risk_level_Grid").jqGrid("getGridParam", "colNames");
+	if(colInfo == null || colInfo == undefined){
+		loadRiskGrid();
+	} else {
+		var postData = {"parameter" : _getFormData};
+		riskGrid.reload(postData);
+	}
+	
+	//riskTransResize("pro_trans_div");
+	var colInfo = $("#pro_trans_Grid").jqGrid("getGridParam", "colNames");
+	if(colInfo == null || colInfo == undefined){
+		loadTransGrid();
+	} else {
+		var postData = {"parameter" : _getFormData};
+		transGrid.reload(postData);
+	}
+}
+
+var layerRiskInt = 0;//风险等级弹出层
+var layerTransInt = 0;//产品转型弹出层
+var layerOrgInfoInt = 0;//主体信息弹出层
+
+//风险等级，产品转型设置最后开始日期的值
+function setRiskTransLastData(gridId){
+	var rows = $("#"+gridId).jqGrid("getRowData");
+	var length = rows.length;
+	var maxVal = "";
+	var maxDate = null;
+	if(length > 0){
+		maxVal = rows[0].c_RISK_TRANS;
+		maxDate = new Date(rows[0].c_START_TIME.replace("-", "/").replace("-", "/"));
+		for(var i = 1; i < length; i++){
+			var currentStartTime = rows[i].c_START_TIME;
+			var currentDate = new Date(currentStartTime.replace("-", "/").replace("-", "/"));
+			if(currentDate > maxDate){
+				maxDate = currentDate;
+				maxVal = rows[i].c_RISK_TRANS;
+			}
+		}
+	}
+	if(gridId == "risk_level_Grid"){
+		$("#signupForm").find("[name='c_RISK_LEVEL']").val(maxVal);
+		refreshSelPicker("c_RISK_LEVEL");
+		//风险等级不可编辑，只能设置
+		setRiskLevelReadOnly();
+	} else if(gridId == "pro_trans_Grid"){
+		$("#signupForm").find("[name='c_PRO_TRANS']").val(maxVal);
+	}
+	
+}
+
+//风险等级开始
+var btn_RISK_LEVEL = function(){
+	//YssLayer.createDialogWithToolBar(1, "风险等级", $('#form_RISK_LEVEL'), $('#risk_toolbar').html(), "",550, 500);
+	
+	layerRiskInt = layer.open({
+		type : 1,
+		title : "风险等级",
+		content : $('#form_RISK_LEVEL'),
+		moveType: 1,
+		shade: 0,
+		area : [ "550px", "500px" ],
+		cancel : function(){//层销户事件
+			var flag = rowSaveEvent_risk();
+			if(!flag){
+				return false;//false不关闭弹出层，true关闭弹出层
+			}
+			layerIndex1 = layerIndex1-1;
+			setRiskTransLastData("risk_level_Grid");
+		},
+		success: function (layero, index) {//层打开事件
+				if(layerIndex1==0){
+					layerIndex1 = layerIndex1+1;
+				}
+				var bar = layero.find('.layui-layer-setwin');
+				bar.empty();
+				bar.append($('#risk_toolbar').html());
+		  }
+		
+	});
+	
+	riskTransResize("risk_level_div");
+};
+
+$("#btn_RISK_LEVEL").on("click", btn_RISK_LEVEL);
+
+
+//产品转型开始
+var btn_PRO_TRANS = function(){
+	//YssLayer.createDialogWithToolBar(1, "产品转型", $('#form_PRO_TRANS'), $('#trans_toolbar').html(), "",550, 500);
+	
+	layerTransInt = layer.open({
+		type : 1,
+		title : "产品转型",
+		content : $('#form_PRO_TRANS'),
+		moveType: 1,
+		shade: 0,
+		area : [ "550px", "500px" ],
+		cancel : function(){//层销户事件
+			var flag = rowSaveEvent_trans();
+			if(!flag){
+				return false;//false不关闭弹出层，true关闭弹出层
+			}
+			layerIndex2 = layerIndex2-1;
+			setRiskTransLastData("pro_trans_Grid");
+		},
+		success: function (layero, index) {//层打开事件
+				if(layerIndex2==0){
+					layerIndex2 = layerIndex2+1;
+				}
+				var bar = layero.find('.layui-layer-setwin');
+				bar.empty();
+				bar.append( $('#trans_toolbar').html());
+		  }
+		
+	});
+	
+	riskTransResize("pro_trans_div");
+};
+
+$("#btn_PRO_TRANS").on("click", btn_PRO_TRANS);
+
+function riskTransResize(gridDivId){
+	var formId = "";
+	var headId = "";
+	var gridId = "";
+	if(gridDivId == "risk_level_div"){
+		formId = "form_RISK_LEVEL";
+		headId = "risk_level_header";
+		gridId = "risk_level_Grid";
+	} else if(gridDivId == "pro_trans_div"){
+		formId = "form_PRO_TRANS";
+		headId = "pro_trans_header";
+		gridId = "pro_trans_Grid";
+	}
+	
+	$("#" + gridDivId).height($("#"+formId).height() - $("#"+headId).height());
+	var width =  $("#"+headId).width();
+	$("#" + gridDivId).setGridWidth(width);
+	$("#" + gridId).resizeDataGrid();
+}
+
+function setOrgInfoEmpty(c_dv_sum){
+	var _form = $("#addOrgInfoForm");
+	var orgInfoEle = ["id", "auditState", "c_ORG_NAME", "c_ORG_NAME_ST", "c_ORG_CODE", "c_DV_ORG_TYPE", "c_DV_SUM"];
+	for(var i = 0; i < orgInfoEle.length; i++){
+		var val = "";
+		var name = orgInfoEle[i];
+		if(name == "auditState"){
+			val = "1";
+		} else if(name == "c_DV_SUM"){
+			val = c_dv_sum;
+		}
+		
+		var _this = _form.find("[name='"+name+"']");
+		if(_this.attr("multiple") == "multiple"){
+			var arr = val.split(",");
+			_this.selectpicker('val', arr);
+		} else {
+			_this.val(val);
+		}
+		refreshSelPicker(name);
+	}
+}
+
+
+function setOrgFormReadonly(_form, flag){
+	if(flag){
+		_form.find("input").attr('readonly', true);
+		_form.find('select').each(function() {
+			var thisButton = $(this).prev().prev().get(0);
+			$(thisButton).addClass("disabled");
+			$(this).attr("disabled", "disabled");
+			$(thisButton).removeClass("btn-white");
+		});
+	} else {
+		_form.find("input").attr('readonly', false);
+		_form.find('select').each(function() {
+			var thisButton = $(this).prev().prev().get(0);
+			$(thisButton).removeClass("disabled");
+			$(this).removeAttr("disabled");
+			$(thisButton).addClass("btn-white");
+			var _searchInput = $(this).prev("div").children("div").children("input");
+			_searchInput.attr('readonly', false);
+		});
+	}
+}
+
+function removeOrgInfoValidate(){
+	$("#addOrgInfoForm").find('*[required]').each(function(){
+		var element = this;
+		var errorClass = "error";
+		/*if($(element).hasClass("error") && $(element).next("div").hasClass("tooltip")){
+			$(element).tooltip('destroy').removeClass(errorClass);
+		}*/
+		if($(element).next("div").hasClass("tooltip")){
+			$(element).tooltip('destroy');
+		}
+		if($(element).hasClass("error")){
+			$(element).removeClass(errorClass);
+		}
+	});
+}
+
+$("#btn_DV_TRUSTEE").on("click", function(){
+	$(".orgInfoSave").removeClass("disabled");
+	$(".checkOrgName").attr("hidden",'true');
+	setOrgFormReadonly($("#addOrgInfoForm"), false);
+	
+	setOrgInfoEmpty("TRUSTEE");
+	
+	removeOrgInfoValidate();
+	
+	layerOrgInfoInt = layer.open({
+		type : 1,
+		title : "主体信息",
+		content : $('#addOrgInfo'),
+		moveType: 1,
+		shade: 0,
+		area : [ "550px", "400px" ],
+		cancel : function(){//层销户事件
+			layerIndex3 = layerIndex3-1;
+		},
+		success: function (layero, index) {//层打开事件
+				if(layerIndex3==0){
+					layerIndex3 = layerIndex3+1;
+				}
+				var bar = layero.find('.layui-layer-setwin');
+				bar.empty();
+				bar.append( $('#orgInfo_toolbar').html());
+		  }
+	});
+});
+
+
+function validateOrgForm(_orgForm){
+	//表单验证
+	_orgForm.validate({
+		messages : {
+			c_ORG_NAME : {
+				required : "请输入主体名称"
+			},
+			c_ORG_NAME_ST : {
+				required : "请输入主体简称"
+			},
+			c_ORG_CODE : {
+				required : "请输入主体代码"
+			},
+			c_DV_ORG_TYPE : {
+				required : "请输入主体类型"
+			},
+		},
+		errorClass : "error",
+		success : 'valid',
+		unhighlight : function(element, errorClass, validClass) { //验证通过
+			$(element).tooltip('destroy').removeClass(errorClass);
+		},
+		errorPlacement : function(error, element) {
+			if ($(element).next("div").hasClass("tooltip")) {
+				$(element).attr("data-original-title", $(error).text())
+						.tooltip("show");
+			} else {
+				$(element).attr("title", $(error).text()).tooltip("show");
+			}
+		},
+		submitHandler : function(form) {
+			alert('验证通过');
+		}
+	});
+}
+
+$("body").delegate(".orgInfoSave", "click", function(){
+
+		//校验主体信息界面主体名称是否唯一
+		 if(checkFlag){
+			 return false;
+		 }
+	
+		var _url = bundlePath+"/pub/subjectInfo?operate=save&areaType=subject";
+
+        var _formName = "addOrgInfoForm";
+
+        var _form = $("#" + _formName);
+        validateOrgForm(_form);
+        if(!_form.valid()){
+        	return false;
+        }
+        var c_ORG_CODE_P = $('#c_ORG_CODE_P').getYssSelectValue();
+		var data = Common.getFormData("#" + _formName);
+		var formData = data.formData;
+		var dataExtend = data.formExtend;
+		formData.c_ORG_CODE_P = c_ORG_CODE_P;
+		var parameter = {};
+		parameter.form = formData;
+		parameter.formExtend = dataExtend;
+		parameter.id = _form.find("[name='id']").val();
+		$.ajax({
+			type : "post", // 访问WebService使用Post方式请求
+			contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+			// contentType : "application/json", // WebService 会返回Json类型
+			url : _url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+			data : {
+				"parameter" : JSON.stringify(parameter)
+			}, // 这里是要传递的参数，格式为 data: "{paraNamearaValue}",下面将会看到
+			dataType : 'json',
+			success : function(result, status) { // 回调函数，result，返回值
+				if (result && !result.success) {
+					layer.alert(result.message, {
+						icon : 0,
+						title : '保存失败'
+					});
+                    return false;
+                } else {
+                    _form.find("[name='id']").val(result.id);
+                    setOrgFormReadonly(_form, true)
+                    var arrNameVlaue = [{name:"c_DV_TRUSTEE", value:result.data.c_ORG_CODE}];
+                    /*if(formData.c_DV_SUM.indexOf("MANAGER") >= 0){
+                    	arrNameVlaue.push({name:"c_DV_MANAGER", value:formData.c_ORG_CODE});
+                    }*/
+                    if(formData.c_DV_SUM.indexOf("MANAGER") >= 0){
+                    	arrNameVlaue.push({name:"c_DV_MANAGER", value:""});
+                    }
+                    refreshAndSelectedOrg($("#signupForm"), arrNameVlaue);
+                    YssLayer.messageDialogOnRightDown("保存成功！", 2000);
+                    $(".orgInfoSave").addClass("disabled");
+				}
+			},
+			complete : function(XMLHttpRequest, status) {
+				if (status == 'timeout') {
+					layer.alert(i18n.COMMON_AJAX_TIMEOUT, {
+						icon : 0,
+						title : '保存失败'
+					});
+					return false;
+				} else if (status == 'error') {
+					layer.alert(i18n.COMMON_AJAX_STATUS_ERROR, {
+						icon : 0,
+						title : '保存失败'
+					});
+					return false;
+				}
+			}
+		});
+	return false;
+});
+
+function refreshAndSelectedOrg(_form, arrNameVal){
+	for(var i = 0; i < arrNameVal.length; i++){
+		var _nameVal = arrNameVal[i];
+		var name = _nameVal.name;
+		var value = _nameVal.value;
+		if(value == null || value == ""){
+			value = _form.find("[name='"+name+"']").val();
+		}
+		var _this = _form.find("select[name='"+name+"']");
+		var url = _this.attr("urlServlet");
+		$.ajax({
+			type : "post", // 访问WebService使用Post方式请求
+			async : false,	//同步请求，否则name变量已经变化
+			contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+			url : url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+			data : {
+				"parameter" : JSON.stringify({})
+			}, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
+			dataType : 'json',
+			success : function(result, textStatus){//第一个为服务器返回的数据，第二个参数为服务器的状态，是可选参数。
+				var data = result.datas;
+				if(data == null){
+					return false;
+				}
+				var options = "<option value=''>--请选择--</option>";
+				for(var i = 0; i < data.length; i++){
+					options = options + "<option value='" + data[i].c_DV_CODE + "'>" + data[i].c_DV_NAME + "</option>";
+				}
+				_this.empty();
+				_this.append(options);
+				_this.val(value);
+				refreshSelPicker(name);
+			}
+		});
+	}
+}
+
+/*//控制下拉展开div的最大高度
+$("#addOrgInfoForm").find("select[name='c_DV_SUM']").on('shown.bs.select',function() {
+	if ($(this).prev().css("max-height") != "none") {//如果下拉内容太多，显示不完
+		var max_heigth = $("#addOrgInfo").outerHeight(true) - $("#addOrgInfoForm").outerHeight(true);
+		$(this).prev().css("max-height", max_heigth);
+		$(this).prev().css("max-width", $(this).closest('div').width());
+		var searchInputHeight = $(this).prev().children("div:first").outerHeight(true);
+		$(this).prev().find('ul').css("max-height", max_heigth - searchInputHeight);
+	}
+}); */
+
+
+//$("#form_RISK_LEVEL").bind('resize', riskTransResize("risk_level_div"));
+//$("#form_PRO_TRANS").bind('resize', riskTransResize("pro_trans_div"));
+
+var _getFormData = function(formId) {
+	var parameter = {};
+	if (!parameter.operate) {
+		parameter.operate = "query";
+	}
+	parameter.relaId = $("#c_PORT_CODE").val();
+	return JSON.stringify(parameter);
+};
+
+
+//下拉框切换内容调用
+function changeContent(object){
+	//是否有投顾人
+	if(object.id=="c_INVEST_CODE"){
+		if(object.value=="HH_JJ"){
+			$("[name='c_INVEST_SECOND_CODE']").removeAttr("disabled");
+		}else{
+			 $("[name='c_INVEST_SECOND_CODE']").val( $("[name='c_INVEST_SECOND_CODE'] option:first").val());
+			 $("[name='c_INVEST_SECOND_CODE']").selectpicker('refresh');
+			$("[name='c_INVEST_SECOND_CODE']").attr("disabled","disabled");
+		}
+	}
+}
+
+//上级主体代码
+var orgCodeP;
+orgCodeP = $('#c_ORG_CODE_P').YssSelect({
+    url:bundlePath + "/pub/subjectInfo?operate=subjectData",
+    width:'100%',
+    noneSelectedText:"请选择",
+    gridView : true,
+    hiddenHead:true,
+    gridOpts : {
+        ExpandColumn : 'name',
+        shrinkToFit : true,
+        selectOnCheck : true,
+        multiselect : false,
+		multiselectTree : false,
+		AllowCheckParentNode: true,
+        colModel : [
+            {
+                header : '上级机构',
+                name : 'name',
+                index:'name',
+                width:200,
+               /*  checkbox:true,
+                checkedRow:true */
+            },
+            {
+                header : '职位代码',
+                name : 'code',
+                index:'code',
+                width:100,
+                hidden:true,
+            },
+            {
+                header : 'id',
+                name : 'id',
+                index:'id',
+                width:100,
+                hidden:true,
+                key:true
+            }
+        ]
+    }
+});
+
+
+/**
+鼠标失去焦点触发事件
+*/
+
+var checkFlag = false;
+
+function onblurFun(object){
+if(object.name=="c_ORG_NAME"){
+//校验主体名称
+$.ajax({
+	type : "POST", //post请求
+	url : ctx + "/fast-plm/pub/subjectInfo?operate=checkOrgName&c_ORG_NAME="+object.value, //请求后台action 根据需求请求自己的后台数据
+	async: false,
+	data : {},
+	error : function(data) { //ajax错误的方法
+	},
+	success : function(data) {
+		if(data.data>0){
+			checkFlag = true;
+			$(".checkOrgName").removeAttr("hidden");
+		}else{
+			checkFlag = false;
+			$(".checkOrgName").attr("hidden",'true');
+		}
+	}
+});
+}
+}
+
+//定义分级产品表格对象
+var productClsInfoGrid = null;
+/**
+ * 加载分级产品表格
+ */
+function loadProductClsInfoGrid(){
+	// 自动填充
+    $('#productClsInfo_div').height("150");
+	var width = $("#ibox-content").width();
+    $('#productClsInfoGrid').width(width);
+    
+    productClsInfoGrid = $("#productClsInfoGrid").YssDataGrid({
+	        	datatype:'local',
+	            // 设置数据表格列
+	            colModel : [
+					{
+					    header : 'ID',
+					    name : 'id',
+					    key : true,
+					    hidden : true
+					},
+	                {
+	                    header : '分级名称<em style="color:red;">*</em>',
+	                    name : 'c_PORT_CLS_NAME',
+	                    editable : true,
+	                    editrules : {
+							required:true,
+							maxlength : "50"
+						},
+			            width : 120,
+			            edittype:"text" // text
+	                },
+	                {
+	                    header : '分级代码<em style="color:red;">*</em>',
+	                    name : 'c_PORT_CLS_CODE',
+	                    editable: true,
+						editrules : {
+										required:true,
+										maxlength : "10"
+									},
+	                    width : 100,
+	                    edittype:"text" // text
+	                },
+	                {
+	                    header : '级别类型<em style="color:red;">*</em>',
+	                    name : 'c_DV_PORT_CLS',
+	                    width : 100,
+	                    editable : true,
+	                    edittype:"select",
+						editrules : { required:true },
+	                    editoptions:{
+	                    	value : getPortClsTypeData()
+	                    },// 异步加载下拉框
+	                    formatter:'select'
+	                },
+	                {
+	                    header : '成立日期',
+	                    name : 'd_TO_LIST',
+	                    width : 100,
+	                    editable : true,
+	                    edittype : "text",
+						editrules : {/* date:true */}
+	                },
+	                {
+	                    header : '到期日期',
+	                    name : 'd_OFF_LIST',
+	                    width : 100,
+	                    editable : true,
+	                    edittype : "text",
+						editrules : {/* date:true */}
+	                },
+	                {
+	                    header : '清算日期',
+	                    name : 'd_LIQUID_DATE',
+	                    width : 100,
+	                    editable : true,
+	                    edittype : "text",
+						editrules : {/* date:true */}
+	                }
+	            ],
+	            // frozenCols : true, // 固定列必设
+	            // sortable : false, // 固定列必设
+	            shrinkToFit : false,
+	            multiselect :true,
+	            altRows : true,
+	            altclass : 'someClass',
+	            relaForm : true,
+	            ondblClickRow : gridOndblClickRow_portCls, //双击事件
+	            //gridComplete :gridComplete_proClsInfo, //grid加载完成后执行事件
+	            customToolBar : true,
+	            customToolBarBtns : [{
+	                                    name:'Add',
+	                                    title:'添加新纪录',
+	                                    icon:'fa fa-plus',
+	                                    click:rowAddEvent_portCls
+	                                },
+	                                {
+	                                    name:'Delete',
+	                                    title:'删除所选纪录',
+	                                    icon:'fa fa-minus',
+	                                    click:rowDeleteEvent_portCls
+	                                },
+	                                /*-
+	                                {
+	                                    name:'Save',
+	                                    title:'保存所有纪录',
+	                                    icon:'fa fa-floppy-o',
+	                                    click:rowSaveEvent_portCls
+	                                }
+	                                */
+	                                ],
+	            customToolBarLoc:'bottom', // bottom right
+    });
+    
+    $("#productClsInfoGridPage_center").css("display","none");
+}
+
+/**
+ * 加载分级产品类型下拉框数据
+ * @returns {String}
+ */
+function getPortClsTypeData(){
+	 var str = "";
+	 $.ajax({
+		 type:"get",
+		 url:bundlePath+"/select?operate=vocabulary&type=PORT_CLS",
+		 dataType : "json", 
+		 async:false,
+		 success:function (reuslt) {
+			 if(reuslt.success == null || reuslt.success){
+			     $.each(reuslt.datas, function (index, value) {
+			    	 if(value.c_DV_CODE == "PORT_A" || value.c_DV_CODE == "PORT_B" || value.c_DV_CODE == "PORT_C" || value.c_DV_CODE == "PORT_H"){
+			    		 str += value.c_DV_CODE+":"+value.c_DV_NAME+";";
+			    	 }
+			     });
+			     str = str.substring(0,str.length-1);
+			 }
+		 }
+	 });
+	 return str;
+}
+
+//分级产品表双击事件
+function gridOndblClickRow_portCls(rowid, iRow, iCol, e) {
+	if(Common.getContext().operate == "query"){
+		return false;
+	}
+	var currentEditId = productClsInfoGrid.getCurrentEditId();
+	if (currentEditId == rowid) { // 如果该行还在编辑状态，跳过
+	    return false;
+	} else {  // 保存上一次修改的行
+		productClsInfoGrid.exSaveRow(currentEditId);
+	}
+	if (productClsInfoGrid.getCurrentEditId() === null) {
+		productClsInfoGrid.exEditRow(rowid, true, initWidget_portCls);
+	}
+}
+
+//行添加事件
+function rowAddEvent_portCls() {
+	if(Common.getContext().operate == "query"){
+		return false;
+	}
+	var falg = rowSaveEvent_portCls();
+	if(!falg){
+		return false;
+	}
+	productClsInfoGrid.exAddRow({
+	    position :"last",
+	    initdata:{"c_CREATE_BY":currentUserInfo.c_USER_CODE, "c_CREATE_BY_NAME":currentUserInfo.c_USER_NAME},
+	    addRowParams :{
+	        keys : true, // 是否支持回车保存
+	        oneditfunc : initWidget_portCls
+	    }
+	});
+}
+
+//行删除事件
+function rowDeleteEvent_portCls() {
+	if(Common.getContext().operate == "query"){
+		return false;
+	}
+	var selectedId = productClsInfoGrid.jqGrid("getGridParam", "selrow");
+	if(selectedId != null){
+		productClsInfoGrid.jqGrid("delRowData", selectedId);
+		productClsInfoGrid.jqGrid('getGridParam').currentEditId=null;
+	}
+}
+
+//分级组合代码唯一性校验
+function uniqueCodeValidate(currentEditId){
+	var flag = true;
+	var rowDatas = productClsInfoGrid.jqGrid("getRowData");
+	if(rowDatas.length < 2){
+		return flag;
+	} else{
+		var currentEditCellData = $('#'+currentEditId+'_c_PORT_CLS_CODE').val();
+		$.each(rowDatas, function(index, element){
+			var cellData = null;
+			if(element.id != currentEditId){
+				cellData = productClsInfoGrid.jqGrid("getRowData")[index].c_PORT_CLS_CODE;
+				if(cellData == currentEditCellData){
+					layer.alert('已存在相同分级组合代码'+cellData+'，请重新维护', {
+						icon : 0,
+						title : '警告'
+					});
+					flag = false;
+					return false;
+				}
+			}
+		});
+	}
+	return flag;
+}
+
+//点击分级组合表保存按钮事件
+function rowSaveEvent_portCls(){
+	var currentEditId = productClsInfoGrid.getCurrentEditId();
+	
+	if(!validatePortClsGridTime($("#productClsInfoGrid"), currentEditId)){
+		return false;
+	}
+	
+	if(!uniqueCodeValidate(currentEditId)){
+		return false;
+	}
+	
+	if (currentEditId != null) { // 如果还有行还在编辑状态，保存行
+		productClsInfoGrid.exSaveRow(currentEditId);
+		
+		if(productClsInfoGrid.getCurrentEditId() != null){
+			return false;
+		}
+	}
+	
+	return true;
+}
+
+//初始化分级产品表格时间控件
+function initWidget_portCls(rowid){
+	$("#" + rowid + "_d_TO_LIST").datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        dateFormat : "YYYY-MM-DD"
+    });
+    $("#" + rowid + "_d_OFF_LIST").datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        dateFormat : "YYYY-MM-DD"
+    });
+    $("#" + rowid + "_d_LIQUID_DATE").datepicker({
+        autoclose: true,
+        todayHighlight: true,
+        dateFormat : "YYYY-MM-DD"
+    });
+}
+
+//分级产品时间校验
+function validatePortClsGridTime(_grid, currentEditId){
+	if(currentEditId == null){
+		return true;
+	}
+	var to = $("#"+currentEditId+"_d_TO_LIST").val();
+	var off = $("#"+currentEditId+"_d_OFF_LIST").val();
+	var liquid = $("#"+currentEditId+"_d_LIQUID_DATE").val();
+	
+	var toDate = new Date(to.replace("-", "/").replace("-", "/"));
+	var offDate = new Date(off.replace("-", "/").replace("-", "/"));
+	var liquidDate = new Date(liquid.replace("-", "/").replace("-", "/"));
+	if(toDate > offDate){
+		layer.alert('开始时间不能大于结束时间，请重新维护', {
+			icon : 0,
+			title : '警告'
+		});
+		return false;
+	}
+	if(toDate > liquidDate){
+		layer.alert('开始时间不能大于清算时间，请重新维护', {
+			icon : 0,
+			title : '警告'
+		});
+		return false;
+	}
+	
+	return true;
+}
+
+

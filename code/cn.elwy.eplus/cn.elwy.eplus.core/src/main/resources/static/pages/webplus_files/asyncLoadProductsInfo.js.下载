@@ -1,0 +1,46 @@
+$(function(){
+
+	//$(window).resize();
+	
+	//初始化下拉框方法
+	loadSelectData();
+	
+	//表单验证
+	validate($("#signupForm"));
+	
+	loadAllCheckBox();
+	
+	//添加组合代码缺省值
+	setDefaultPortCode();
+	
+	//设置未列事项说明的可读与否
+	setNoDescReadonly();
+	
+	//添加分级产品信息表格
+	loadProductClsInfoGrid();
+	
+});
+
+$("#c_DV_MANAGER").YssSelect({
+	url: $("#c_DV_MANAGER").data("url"),
+	keystr : $("#c_DV_MANAGER").data("keystr"),
+	valuestr : $("#c_DV_MANAGER").data("valuestr"),
+	liveSearch: true,
+	refreshbtn : true,
+	width:'100%',
+	noneSelectedText:"请选择",
+	afterRequest : function(ts, $this){//默认选中第一个
+    	
+    }
+});
+
+$("#c_DV_TRUSTEE").YssSelect({
+	url: $("#c_DV_TRUSTEE").data("url"),
+	keystr : $("#c_DV_TRUSTEE").data("keystr"),
+	valuestr : $("#c_DV_TRUSTEE").data("valuestr"),
+	liveSearch: true,
+	refreshbtn : true,
+	width:'100%',
+	noneSelectedText:"请选择",
+});
+

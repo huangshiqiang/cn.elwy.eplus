@@ -1,0 +1,32 @@
+function postAjax(url, data, isSync, callback){
+	var length = arguments.length;
+	var len = length > 4 ? 4 : length;
+	var _url, _callback, _isSync, _data;
+	for(var i = len-1; i >= 0; i--){
+		var argType = typeof(arguments[i]);
+		if(argType === "string"){
+			_url = arguments[i];
+		} else if(argType === "function"){
+			_callback = arguments[i];
+		} else if(argType === "boolean"){
+			_isSync = arguments[i];
+		} else if(argType === "object"){
+			_data = arguments[i];
+		}
+	}
+	if(_url === undefined){
+		throw new Error("url为空");
+	}
+	var _isSync = _isSync === undefined ? true : _isSync;//默认为异步加载
+	$.ajax({
+		type : "post", // 访问WebService使用Post方式请求
+		async : _isSync,
+		contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+		url : _url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+		data : {
+			"parameter" : JSON.stringify(_data)
+		}, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
+		dataType : 'json',
+		success : _callback
+	});
+}

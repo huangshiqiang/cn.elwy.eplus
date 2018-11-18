@@ -1,0 +1,56 @@
+/*
+ * Component: Products List
+ * ------------------------
+ */
+@import "bootstrap-less/mixins.less";
+@import "bootstrap-less/variables.less";
+@import "variables.less";
+@import "mixins.less";
+.products-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  > .item {
+    .border-radius(@box-border-radius);
+    .box-shadow(@box-boxshadow);
+    &:before,
+    &:after {
+      content: " "; // 1
+      display: table; // 2
+    }
+    &:after {
+      clear: both;
+    }
+    padding: 10px 0;
+    background: #fff;
+  }
+  .product-img {
+    float: left;
+    img {
+      width: 50px;
+      height: 50px;
+    }
+  }
+  .product-info {
+    margin-left: 60px;
+  }
+  .product-title {
+    font-weight: 600;
+  }
+  .product-description {
+    display: block;
+    color: #999;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+.product-list-in-box > .item {
+  .box-shadow(none);
+  .border-radius(0);
+  border-bottom: 1px solid @box-border-color;
+  &:last-of-type {
+    border-bottom-width: 0;
+  }
+}

@@ -1,0 +1,1257 @@
+function initTablePanel(tablePanels) {
+	if (tablePanels != null) {
+		var _defaultTablePanel = Common.getContext().defaultTablePanel;
+		for ( var i in tablePanels) {
+			var tp = tablePanels[i];
+			var _id = tp.id;
+			var gridConfig = tp.gridConfig;
+			if (tp.colModel != null) {
+				gridConfig.setColModel(tp.colModel);
+			}
+			if (gridConfig.onSelectRow == null) {
+				gridConfig.onSelectRow = listener.gridOnSelectRow;
+			}
+			if (gridConfig.ondblClickRow == null) {
+				gridConfig.ondblClickRow = listener.gridOndblClickRow;
+			}
+			var grid = $('#' + _id + 'Grid').YssDataGrid(gridConfig);
+
+			tp.grid = grid;
+
+			Common.getContext().tablePanels[_id] = tp;
+			if (_defaultTablePanel == _id) {
+				Common.getContext().currentPanel = tp;
+			}
+		}
+		// BUG #180199 新增和删除后界面不刷新
+		Common.getContext().currentPanel = tablePanels[0];
+	}
+
+	if (SideToolbar != null) {
+		for ( var i in SideToolbar) {
+			var _button = SideToolbar[i];
+			var _method = function(btn) {
+				return function(event) {
+					return btn.method(event, btn.names);
+				}
+			};
+			for ( var j in _button.names) {
+				$(_button.names[j]).on('click', _method(_button));
+				// $(_button.names[j]).on('click', sideToolbarListener);
+			}
+			for ( var k in _button.hotkeys) {
+				$(document).bind(_button.hotkeys[k], _method(_button));
+			}
+		}
+	}
+    
+    // 表单绑定change事件
+    $(Common.getConstant('SET_BTN_TAG') + " input,select,textarea").change(function() {
+        isModified = true;
+    })
+}
+
+function initTabEvent(handler) {
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+		Common.resizeGridWrapper($(e.target).attr('href'));
+		$(window).resize();
+		if (typeof handler === "function") {
+            handler();
+        }
+	});
+}
+
+/**
+ * 设置数据到表单控件
+ * @param rowData
+ * @param _form
+ * @returns
+ */
+function initForm(rowData, _form) {
+    if (rowData.id == null && _form.length > 0) {
+    	_form[0].reset();
+    }
+	$.each(rowData, function(name, value) {
+		_form.find(' [name="' + name + '"]').val(value);
+        var selectPicker = $("select[name='" + name + "']");
+        if (selectPicker.length > 0) {
+        	if (selectPicker.attr("multiple") == "multiple") {
+        		var arr = value.split(",");
+        		selectPicker.selectpicker('val', arr);
+        	} else {
+        		selectPicker.selectpicker('val', value);
+        	}
+//            selectPicker.selectpicker('refresh');
+        }
+	});
+	isModified = false;
+	removeValidate();
+}
+
+/**
+ * 获取空数据
+ * @param _form
+ * @returns
+ */
+function getEmptyRowData(_form) {
+	var rowData = {};
+	/*-
+	var _currentPanel = Common.getContext().currentPanel;
+	var colModel = _currentPanel.gridConfig.colModel;
+	$.each(colModel, function(index, item) {
+		var name = item.name;
+		rowData[name] = getDefaultValue(name);
+	});
+	*/
+	return rowData;
+}
+
+// 重新计算页面高度
+function resizeRightSideContent() {
+	var h = $(Common.getConstant('SET_BTN_TAG')).height() - $('.side-message-bar').height() - $('.nav-tabs').height();
+	$(Common.getConstant('SET_BTN_TAG') + ' .tab-content').height(h);
+	$(Common.getConstant('SET_BTN_TAG') + ' .tab-content').css('overflow', 'auto');
+//	$(window).resize();
+}
+
+$(window).bind('resize', function() {
+	resizeRightSideContent();
+});
+
+/**
+ * 设置表单只读
+ * @param _form
+ * @param readonly
+ * @returns
+ */
+function setReadonly(_form, readonly) {
+	_form.find('input, textarea').attr('readonly', readonly);
+	var _checkbox = _form.find(':checkbox');
+	var _radio = _form.find(':radio');
+	var _select = _form.find('.layer-date, select');
+	if (readonly) {
+		_checkbox.attr("disabled", "disabled");
+		_radio.attr("disabled", "disabled");
+		_select.each(function() {
+			var $button = $($(this).siblings()[0]);
+			if ($button !== undefined) {
+				$button.addClass("disabled");
+				$button.removeClass("btn-white");				
+			}
+			$(this).attr("disabled", "disabled");
+		});
+		_form.find('button').attr("disabled", "disabled");
+		setViewTitle();
+	} else {
+		_checkbox.removeAttr("disabled");
+		_radio.removeAttr("disabled");
+		_select.each(function() {
+			var $button = $($(this).siblings()[0]);
+			if ($button !== undefined) {
+				$button.addClass("btn-white");
+				$button.removeClass("disabled");			
+			}
+			$(this).removeAttr("disabled");
+		});
+		_form.find('button').removeAttr("disabled");
+		setEditTitle();
+	}
+}
+
+var isModified = false; // 页面是否已经被编辑
+function setViewTitle() {
+	var title = $('#right-side .nav-tabs li a');
+	title.html("<i class='fa fa-list-alt' aria-hidden='true'></i>浏览");
+}
+function setEditTitle() {
+	var title = $('#right-side .nav-tabs li a');
+	title.html("<i class='fa fa-edit' aria-hidden='true'></i>编辑");
+}
+/**
+ * 显示详细数据
+ * @param _context
+ * @returns
+ */
+function showDetail(_context, data, form) {
+	var _currentPanel = _context.currentPanel;
+	if (_currentPanel == null) {
+		return;
+	}
+
+	var row = data;
+	if (data == null) {
+		row = _currentPanel.grid.jqGrid('getRowData', _currentPanel.lastRow);
+	}
+
+	if (row.id != _currentPanel.lastRow) {
+		_currentPanel.lastRow = row.id;
+	}
+	
+    var _formName = _currentPanel.name + "Form";
+	if (row.relaForm != null) {
+        _formName = row.relaForm;
+    } else if (_context.currentForm != null) {
+        _formName = _context.currentForm;
+	}
+
+    var _form = (!form) ? $("#" + _formName) : form;
+
+	if (_context.isOpenState()) {
+		if (editType[_context.currentState]) {
+			if (isModified) {
+				var index = YssLayer.showConfirm(i18n.COMMON_SWITCH_CONFIRM, function() {
+					_context.currentState = _context.operate;
+					initForm(row, _form);
+					_form.find('#id').val(_currentPanel.lastRow);
+					setReadonly(_form, _context.operate == "query");
+                    sideSwitch(true, _form);
+					YssLayer.closeLayer(index);
+				}, function(){
+					var idstr = _form.find('#id').val();
+					if (idstr != '') {						
+						_context.operate = "update";					
+					} else {						
+						_context.operate = "save";
+					}
+					Common.resetSetBtnStatus2();
+					YssLayer.closeLayer(index);
+				});
+				return;
+			}
+		}
+	}
+	_context.currentState = _context.operate;
+	initForm(row, _form);
+	if (_context.operate != "save") {
+		_form.find('#id').val(_currentPanel.lastRow);
+	}
+	setReadonly(_form, _context.operate == "query");
+    sideSwitch(true, _form);
+
+    return _form.attr('id');
+}
+
+// 装载提示信息
+var loadErrorMSG = function(title) {
+	clearMSG();
+	$('#msg').html(title);
+	$('#msg').addClass('msg-error');
+}
+
+var loadMSG = function(title, detail) {
+	clearMSG();
+	$('#detail-message-box').removeClass("hide")
+	$('#msg').html(title);
+	$(document).on('click','#side-message-close', function(){
+		$("#detail-message-box").addClass("hide");
+	})
+	if (arguments.length > 1) {
+		$('#msg').addClass('msg-error');
+		$('#detail').html(detail);
+		$('#detailChanger').html(detail+'$("<span id="detail-slider-clost" class="fa fa-angle-double-down"></span>")');
+		$('#detailBtn').on('click', open);
+		$('#detailBtnChanger').on('click', open);
+		$('#detail-slider-clost').on('click', open);	
+		$('#detailBtn').css("cursor", "pointer");
+		$('#detailBtnChanger').css("cursor", "pointer");
+		$('#detailBtn').html("详细信息...");
+		$('#detailBtnChanger').html("查看");
+		$("#detail-message-box").css("background-color","#FF0000");
+	}else{
+		$("#detail-message-box").css("background-color","#008000");
+		$("#detailBtnChanger").css("background-color","#008000");
+	}
+}
+
+
+// 清空提示信息
+var clearMSG = function() {
+	if($('#detail') .length >0){
+		$('#detail-message-box').addClass("hide")
+		if (!$('#detail').hasClass("hide")) {
+			$('#detail').addClass("hide");
+		}
+		$('#msg').removeClass('msg-error');
+		$('#msg').html("");
+		$('#detail').html("");
+		$('#detailBtn').off('click');
+		$('#detailBtn').html("");
+	}else{
+		if (!$('#detailChanger').hasClass("hide")) {
+			$('#detailChanger').addClass("hide");
+		}
+		$('#detailChanger').html("");
+		$('#detailBtnChanger').off('click');
+	/*	$("#detailBtnChanger").css("background-color","#fff").removeClass("hide");
+		$('#detailBtnChanger').html("");*/
+	}
+}
+
+//未修改过的set界面提示
+function open() {
+	if($('#detail').length >0){
+		if ($('#detail').hasClass("hide")) {
+			$('#detail').removeClass("hide");
+			var h = $(Common.getConstant('SET_BTN_TAG')).height() / 2;
+			if ($('#detail').height() > h) {
+				$('#detail').height(h - $('#detail').prev().height());
+				$('#detail').width($('#detail').prev().width());
+				$('#detail').css("overflow-y", "auto");
+			}
+		} else {
+			$('#detail').addClass("hide");
+		}
+	}else{
+		if ($('#detailChanger').hasClass("hide")) {
+			$('#detailChanger').removeClass("hide");
+			/*$("#detailBtnChanger").addClass("hide");*/
+			var h = $(Common.getConstant('SET_BTN_TAG')).height() / 2;
+			if ($('#detailChanger').height() > h) {
+				$('#detailChanger').height(h - $('#detail').prev().height());
+				$('#detailChanger').width($('#detail').prev().width());
+				$('#detailChanger').css("overflow-y", "auto");
+			}
+		} else {
+			$('#detailChanger').addClass("hide");
+		}
+	}
+	
+}
+
+/**
+ * 右侧边显示隐藏功能
+ */
+var sideSwitch = function(isOpenState, _formName) {
+	$(Common.getConstant('SET_BTN_TAG')).find('.btn-save i').attr("class", "fa fa-save");
+	var _context = Common.getContext();
+    var _currentPanel = _context.currentPanel;
+    if (_currentPanel == null) {
+        return;
+    }
+
+    var formName = (!_formName) ? _currentPanel.name + "Form" : _formName.attr('id');
+
+    if (_context.openState == isOpenState) {
+        if (_context.openState) {
+            if (_context.currentForm == formName) {
+                return;
+            }
+        } else {
+            return;
+        }
+    }
+    _context.openState = isOpenState;
+    if (isOpenState) {
+		$('#tab-form form').hide();
+		var _form = $("#" + formName);
+		_form.show();
+        _context.currentForm = formName;
+        var maxWidth=$("#right-side").css("max-width");
+		$(Common.getConstant('SET_BTN_TAG')).removeClass('sidebar-open').animate({"right":"-"+maxWidth,opacity:'0'},0,function(){
+			$(Common.getConstant('SET_BTN_TAG')).animate({"right":"0px",opacity:'1'},500);
+		});		
+		$('.suspend dt').removeClass('sidebar-open');
+	} else {
+		var maxWidth=$("#right-side").css("max-width");
+		$(Common.getConstant('SET_BTN_TAG')).animate({"right":"-"+maxWidth,opacity:'0'},500,function(){
+			$(Common.getConstant('SET_BTN_TAG')).addClass('sidebar-open')
+		});	
+		$("#detail-message-box").addClass("hide");
+		$('.suspend dt').addClass('sidebar-open');
+	}
+    
+//    resizeRightSideContent();
+    $(window).resize();
+};
+
+/**
+ * 获取当前表格面板
+ */
+var getCurrentPanel = function(event) {
+	var _context = Common.getContext();
+    var tablePanelId = $(event.currentTarget).closest(Common.getConstant('WEBPLUS_CONTAINER')).find('ul.nav-tabs>li.active>a[data-toggle="tab"]').attr('name');
+    // 如果点击事件源是set界面,直接返回currentPanel
+    if ($(event.currentTarget).closest(Common.getConstant('SET_BTN_TAG')).length > 0) {
+    	return _context.currentPanel;
+    }
+    var _tablePanel = null;
+    var _tablePanels = _context.tablePanels;
+    if (tablePanelId === undefined) {
+    	_tablePanel = _tablePanels[Object.keys(_tablePanels)[0]]
+    } else {    	
+    	_tablePanel = _tablePanels[tablePanelId];
+    }
+	if (_tablePanel && _context.currentPanel != _tablePanel) {
+		_context.currentPanel = _tablePanel;
+	}
+    return _context.currentPanel;
+};
+
+var editType = {
+	add : true,
+	save : true,
+	update : true,
+	edit : true,
+	copy : true
+};
+
+var listener = {
+
+	/**
+	 * 单击表格事件
+	 * @param rowid
+	 * @param status
+	 * @param e
+	 * @returns
+	 */
+	gridOnSelectRow : function(rowid, status, e) {
+		var _context = Common.getContext();
+		_context.operate = "query";
+
+		if ( e === undefined) {
+			return false;
+		}
+		var _currentPanel = getCurrentPanel(e);
+        var gridId = e.currentTarget.id;
+        try {
+            var tablePanelId = gridId.substring(0, gridId.indexOf("Grid"));
+            if (tablePanelId != null) {
+                _currentPanel = _context.tablePanels[tablePanelId];
+            }
+            if (_currentPanel != null) {
+                _context.currentPanel = _currentPanel;
+            }
+        } catch (e) {
+            console.warn(gridId + "表格名称不正确，必须以Grid结尾");
+        }
+
+		_currentPanel.lastRow = rowid;
+		if (!_context.isOpenState()) {
+			return false;
+		}
+        clearMSG();
+        showDetail(_context, null, $("#"+_currentPanel.name+"Form"));
+	},
+
+	/**
+	 * 双击表格事件
+	 * @param rowid
+	 * @param iRow
+	 * @param iCol
+	 * @param e
+	 * @returns
+	 */
+	gridOndblClickRow : function(rowid, iRow, iCol, e) {
+		var _context = Common.getContext();
+		_context.operate = "query";
+
+		var _currentPanel = getCurrentPanel(e);
+		_currentPanel.lastRow = rowid;
+
+        clearMSG();
+        showDetail(_context, null, $("#"+_currentPanel.name+"Form"));
+	},
+	query : function(_context, event, data) {
+    var _currentPanel = getCurrentPanel(event);
+		if (_currentPanel == null) {
+			return;
+		}
+
+		_currentPanel.grid.reload();
+		return false;
+	},
+	add : function(_context, event, data) {
+        var _currentPanel = getCurrentPanel(event);
+		if (_currentPanel == null) {
+			return;
+		}
+
+		if (_currentPanel.name != null &&  _currentPanel.name != "") {
+            var _form = $("#" + _currentPanel.name + "Form");
+            var data = getEmptyRowData(_form);
+            clearMSG();
+            showDetail(_context, data, _form);
+            setReadonly(_form, false);
+        }
+		return false;
+	},
+	edit : function(_context, event, data) {
+		var _currentPanel = getCurrentPanel(event);
+		if (_currentPanel == null) {
+			return;
+		}
+		// 处理当新增保存后再想编辑数据不对应的bug
+		if ($(event.currentTarget).closest(Common.getConstant('SET_BTN_TAG')).length > 0) {
+			clearMSG();
+			setReadonly($("#"+_currentPanel.name+"Form"), false);
+			return false;
+		}
+
+		if (!Common.checkSelectOne("#" + _currentPanel.id + "Grid")) {
+			return;
+		}
+        var id = _currentPanel.grid.jqGrid('getGridParam', "selrow");
+        var rowData = _currentPanel.grid.jqGrid('getRowData', id);
+		clearMSG();
+		var form = showDetail(_context, rowData, $("#"+_currentPanel.name+"Form"));
+		setReadonly($('#'+form), false);
+		return false;
+	},
+	copy : function(_context, event, data) {
+		var _currentPanel = getCurrentPanel(event);
+		if (_currentPanel == null) {
+			return;
+		}
+
+		if (!Common.checkSelectOne("#" + _currentPanel.id + "Grid")) {
+			return;
+		}
+        var id = _currentPanel.grid.jqGrid('getGridParam', "selrow");
+        var rowData = _currentPanel.grid.jqGrid('getRowData', id);
+
+		clearMSG();
+        var form = showDetail(_context, rowData, $("#"+_currentPanel.name+"Form"));
+		setReadonly($('#'+form), false);
+		return false;
+	},
+	beforeSave : function(_context, event, data) {
+		var _this=this;
+		_this.save(_context, event, data);
+	},
+	save:function(_context, event, data){
+		var _this=this;
+		if (_context.isOpenState()) {
+			var _currentPanel = getCurrentPanel(event);
+			if (_currentPanel == null) {
+				return;
+			}
+
+			var _url = _currentPanel.gridConfig.url;
+
+            var row = _currentPanel.grid.jqGrid('getRowData', _currentPanel.lastRow);
+
+            var _formName = _currentPanel.name + "Form";
+            if (_context.currentForm != null) {
+                _formName = _context.currentForm;
+            } else if (row.relaForm != null) {
+                _formName = row.relaForm;
+            }
+
+            var _form = $("#" + _formName);
+
+			if ("function" == typeof validateForm) {
+				if (!validateForm(_form)) {
+					return;
+				}
+			}
+
+			var data = Common.getFormData("#" + _formName);
+			var formData = data.formData;
+			var dataExtend = data.formExtend;
+			var parameter = {};
+			parameter.form = formData;
+			parameter.formExtend = dataExtend;
+			parameter.id = _form.find('#id').val();
+			parameter.operate = _context.operate;
+			$.ajax({
+				type : "post", // 访问WebService使用Post方式请求
+				contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+				// contentType : "application/json", // WebService 会返回Json类型
+				url : _url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+				data : {
+					"parameter" : JSON.stringify(parameter)
+				}, // 这里是要传递的参数，格式为 data: "{paraNamearaValue}",下面将会看到
+				dataType : 'json',
+				success : function(result) { // 回调函数，result，返回值
+					_this.afterSave(_context,_form,_currentPanel,result);
+
+				},
+				complete : function(XMLHttpRequest, status) {
+					if (status == 'timeout') {
+						loadErrorMSG(i18n.COMMON_AJAX_TIMEOUT);
+					} else if (status == 'error') {
+						loadErrorMSG(i18n.COMMON_AJAX_STATUS_ERROR);
+					}
+				}
+			});
+		}
+		return false;
+
+	},
+	afterSave:function(_context,_form,_currentPanel,result){
+		if (result && !result.success) {
+      /*loadMSG(result.message, result.detailMessage);*/
+        loadMSG("保存失败", result.detailMessage);
+      return false;
+    } else {
+      _context.currentState = "query"; // 保存成功才改变状态
+      if (_context.operate != "update") {    	  
+    	  $('#id').val(result.id); // 只有新增才需要返回id
+      }
+      setReadonly(_form, true);
+      _currentPanel.grid.reload();
+      Common.resetSetBtnStatus();
+      isModified = false;
+      /*loadMSG(result.message);*/
+      loadMSG("保存成功");
+    }
+	},
+	_delete : function(_context, event, data) {
+		var _this=this;
+		var _currentPanel = getCurrentPanel(event);
+		var grid = _currentPanel.grid;
+		if (!Common.checkSelectMulti(grid)) {
+			return;
+		}
+		var ids = grid.getSelectRows();
+		var rowDatas = [];
+		var len = ids.length;
+		for (var i = 0; i < len; i++) {
+			var singleData = grid.getRowDataById(ids[i]);
+			var checkStatus = singleData.n_STATE == undefined ? singleData.auditState : singleData.n_STATE;
+			if (checkStatus != "0") {
+				YssLayer.messageAlter(i18n.COMMON_AUDIT_CHECK_ERROR, 2);
+				return false;
+			}
+			rowDatas.push(singleData);
+		}
+		var index = YssLayer.showConfirm(i18n.COMMON_DELETE_CONFIRM, function() {
+			var parameter = {};
+			parameter.datas = rowDatas;
+			parameter.ids = ids;
+			parameter.operate = _context.operate;
+			parameter.formCode = funcCode;
+			$.ajax({
+				type : "post", // 访问WebService使用Post方式请求
+				contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+				url : _currentPanel.gridConfig.url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+				data : {
+					"parameter" : JSON.stringify(parameter)
+				}, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
+				dataType : 'json',
+				success : function(result) { // 回调函数，result，返回值
+					_this.afterDelete(result,index,_context,grid,_currentPanel)
+				}
+			});
+		});
+
+		return false;
+	},
+	afterDelete:function(result,index,_context,grid,_currentPanel){
+		if (result && !result.success) {
+      YssLayer.closeLayer(index);
+      YssLayer.messageAlter(i18n.COMMON_F_DELETE_OPERATION_FAIL, 2);
+      return false;
+    } else {
+      YssLayer.closeLayer(index);
+      YssLayer.messageDialogOnRightDown(i18n.COMMON_F_DELETE_OPERATION_SUCC, 2000);
+      _currentPanel.lastRow = null;
+      grid.reload();// .trigger("reloadGrid");
+    }
+      _context.currentState = "query"; // 删除操作执行后才改变状态		
+	},
+	check : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (typeof checkBtn == 'function') {
+			checkBtn();
+		}
+		return false;
+	},
+	afterCheck:function(grid,label,result){
+    if (result && !result.success) {
+      YssLayer.messageAlter(label + "失败！", 2);
+      return false;
+    } else {
+      YssLayer.messageDialogOnRightDown(label + "成功！", 2000);
+      grid.reload();
+    }		
+	},
+	uncheck : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (typeof uncheckBtn == 'function') {
+			uncheckBtn();
+		}
+		return false;
+	},
+	afterUncheck:function(grid,label,result){
+    if (result && !result.success) {
+      YssLayer.messageAlter(label + "失败！", 2);
+      return false;
+    } else {
+      YssLayer.messageDialogOnRightDown(label + "成功！", 2000);
+      grid.reload();
+    }
+	},
+	_sync : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (typeof _sync == 'function') {
+			_sync();
+		}
+		return false;
+	},
+	_export : function(_context, event, data) {
+		var _currentPanel = getCurrentPanel(event);
+		if (typeof exportBtn == 'function') {
+			var title = $(event.currentTarget).data("exportfile");
+			exportBtn($(event.currentTarget), _currentPanel, "xlsx", title);
+		}
+		return false;
+	},
+	_import : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (typeof importBtn == 'function') {
+			importBtn();
+		}
+		return false;
+	},
+	print : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (typeof printBtn == 'function') {
+			printBtn();
+		}
+		return false;
+	},
+	up : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (Common.getContext().isOpenState()) {
+			console.log("up button");
+		}
+		return false;
+	},
+	down : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (Common.getContext().isOpenState()) {
+			console.log("down button");
+		}
+		return false;
+	},
+	undo : function(_context, event, data) {
+		getCurrentPanel(event);
+		if (Common.getContext().isOpenState()) {
+			console.log("undo button");
+		}
+		return false;
+	},
+	help : function(_context, event, data) {
+		var _currentPanel = getCurrentPanel(event);
+		// 拿到url
+		var _url = _currentPanel.gridConfig.url;
+		var param = "?operate=" + _context.operate + "&_helpfile=" + getHelpFileName(_currentPanel);
+		// 直接弹窗
+		YssLayer.openDialogNoBtn("帮助", _url + param, 500, 500);
+		return false;
+	},
+}
+
+var SideToolbar = [ {
+	names : [ '.btn-search' ],
+	hotkeys : [ 'keydown.Ctrl_q' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "query";
+		listener.query(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-add' ],
+	hotkeys : [],
+	method : function(event, data) {
+    	var _context = Common.getContext();
+    	_context.operate = "save";
+    	
+    	listener.add(_context, event, data);
+        var target = $(Common.getConstant('SET_BTN_TAG'));
+        Common.setButtonStatus({btns:['ALL'],target:target,status:false,effectSet:true});
+        Common.setButtonStatus({btns:['btn-save','btn-help','btn-close-side'],target:target,status:true,effectSet:true});
+		return false;
+	}
+}, {
+	names : [ '.btn-edit' ],
+	hotkeys : [ 'keydown.Ctrl_m' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "update";
+		
+		listener.edit(_context, event, data);
+        var target = $(Common.getConstant('SET_BTN_TAG'));
+        Common.setButtonStatus({btns:['ALL'],target:target,status:false,effectSet:true});
+        Common.setButtonStatus({btns:['btn-save','btn-help','btn-close-side'],target:target,status:true,effectSet:true});
+		return false;
+	}
+}, {
+	names : [ '.btn-copy' ],
+	hotkeys : [],
+	method : function(event, data) {		
+		var _context = Common.getContext();
+		_context.operate = "save";
+		
+		listener.copy(_context, event, data);
+        var target = $(Common.getConstant('SET_BTN_TAG'));
+        Common.setButtonStatus({btns:['ALL'],target:target,status:false,effectSet:true});
+        Common.setButtonStatus({btns:['btn-save', 'btn-help', 'btn-close-side'],target:target,status:true,effectSet:true});
+		return false;
+	}
+}, {
+	names : [ '.btn-save' ],
+	hotkeys : [ 'keydown.Ctrl_Alt_s' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		$(event.currentTarget).addClass("disabled");
+		listener.beforeSave(_context, event, data);
+		$(event.currentTarget).removeClass("disabled");
+		return false;
+	}
+}, {
+	names : [ '.btn-delete' ],
+	hotkeys : [ 'keydown.Ctrl_Alt_d' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "del";	
+		listener._delete(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-check' ],
+	hotkeys : [],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "check";		
+		listener.check(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-uncheck' ],
+	hotkeys : [ 'keydown.Ctrl_Alt_c' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "uncheck";
+		listener.uncheck(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-sync' ],
+	hotkeys : [],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "sync";
+		
+		listener._sync(_context, event, data);
+        var target = $(Common.getConstant('SET_BTN_TAG'));
+        Common.setButtonStatus({btns:['ALL'],target:target,status:false,effectSet:true});
+        Common.setButtonStatus({btns:['btn-save', 'btn-help', 'btn-close-side'],target:target,status:true,effectSet:true});
+        // 将保存按钮图标临时改成同步，易于辨识
+        $(Common.getConstant('SET_BTN_TAG')).find('.btn-save i').attr("class", "fa fa-cloud");
+		return false;
+	}
+}, {
+	names : [ '.btn-export' ],
+	hotkeys : [ 'keydown.Ctrl_Alt_e' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "export";			
+		listener._export(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-import' ],
+	hotkeys : [ 'keydown.Ctrl_i' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "import";
+		listener._import(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ 'undo-btn' ],
+	hotkeys : [ 'keydown.Ctrl_z' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "undo";
+		listener.undo(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-up' ],
+	hotkeys : [ 'keydown.Ctrl_up' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "up";
+
+		listener.up(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-down' ],
+	hotkeys : [ 'keydown.Ctrl_down' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "up";
+
+		listener.down(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-print' ],
+	hotkeys : [ 'keydown.Ctrl_Alt_p' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "print";
+
+		listener.print(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.btn-help' ],
+	hotkeys : [ 'keydown.Ctrl_Alt_h' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "help";
+
+		listener.help(_context, event, data);
+		return false;
+	}
+}, {
+	names : [ '.tab-manage-list' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "query";
+
+        var tablePanelId = $(event.currentTarget).attr('tablePanelId');
+        if (tablePanelId == null) {
+            tablePanelId = $(event.currentTarget).attr('name');
+        }
+        var _tablePanel = _context.tablePanels[tablePanelId];
+		var _result = true;
+		if (_context.currentPanel != _tablePanel) {
+			_context.currentPanel = _tablePanel;
+
+			if (editType[_context.currentState]) {
+				_result = false;
+				if (isModified) {
+					var index = YssLayer.showConfirm("切换状态正在编辑的内容将丢失，确定继续吗？", function() {
+						_result = true;
+						_context.currentState = _context.operate;
+						console.log(_context.currentState + ":" + _context.operate);
+						YssLayer.closeLayer(index);
+						sideSwitch(false);
+					},function(){
+						var idstr = $('#'+_context.currentForm).find('#id').val();
+						if (idstr != '') {						
+							_context.operate = "update";					
+						} else {						
+							_context.operate = "save";
+						}
+						Common.resetSetBtnStatus2();
+						YssLayer.closeLayer(index);
+					});
+				} else {
+					_result = true;
+				}
+			}
+			if (_result) {
+				sideSwitch(false);
+			}
+		}
+		return _result;
+	}
+}, {
+	names : [ '.btn-close-side', '.btn-side-open' ],
+	hotkeys : [ 'keydown.Ctrl_o', 'keydown.Alt_c' ],
+	method : function(event, data) {
+		var _context = Common.getContext();
+		_context.operate = "query";
+
+		if (_context.isOpenState()) {
+			var _result = true;
+			if (editType[_context.currentState]) {
+				_result = false;
+				if (isModified) {
+					var index = YssLayer.showConfirm(i18n.COMMON_SWITCH_CONFIRM, function() {
+						_result = true;
+						_context.currentState = _context.operate;
+						console.log(_context.currentState + ":" + _context.operate);
+						YssLayer.closeLayer(index);
+						sideSwitch(false);
+					},function(){
+						var idstr = $('#'+_context.currentForm).find('#id').val();
+						if (idstr != '') {						
+							_context.operate = "update";					
+						} else {						
+							_context.operate = "save";
+						}
+						Common.resetSetBtnStatus2();
+						YssLayer.closeLayer(index);
+					});
+				} else {
+					_result = true;
+				}
+			}
+			if (_result) {
+				sideSwitch(false);
+			}
+		} else {
+			showDetail(_context);
+			sideSwitch(!_context.isOpenState());
+		}
+		$(Common.getConstant('SET_BTN_TAG')).find('.btn-save i').attr("class", "fa fa-save");
+		return false;
+	}
+}, {
+	names : [ '.btn-fullscreen' ],
+	hotkeys : [ 'keydown.Ctrl_f11' ],
+	method : function(event, data) {
+		console.log("fullscreen button");
+		return false;
+	}
+} ];
+
+//同步
+function _sync(){
+    var _context = Common.getContext();
+    _context.currentState = _context.operate;
+    var _currentPanel = _context.currentPanel;
+    var grid = _currentPanel.grid;
+    if (!Common.checkSelectMulti(grid)) {
+        return;
+    }
+
+    var ids = grid.getSelectRows();
+    var notfit = [];
+    var rowDatas = [];
+    var len = ids.length;
+    for (var i = 0; i < len; i++) {
+        var singleData = grid.getRowDataById(ids[i]);
+        var checkStatus = singleData.n_STATE;
+        if (checkStatus != '1') {
+        	notfit.push(ids[i]);
+        } else {
+            rowDatas.push(singleData);
+		}
+    }
+
+    if (len > 1) {
+    	var msg = "确定同步选中的数据吗？";
+    	if (notfit.length > 0) {
+    		msg = i18n.COMMON_AUDIT_CONFIRM;
+    	}
+    	// 多条数据直接同步
+        var index = YssLayer.showConfirm(msg, function() {
+        	if (rowDatas.length == 0) {
+        		return false;
+        	}
+        	var actualIds = [];
+        	for (var i = 0; i < rowDatas.length; i++) {
+        		actualIds.push(rowDatas[i].id);
+        	}
+            var parameter = {};
+            parameter.ids = actualIds;
+            parameter.operate = "sync";
+            parameter.formCode = funcCode;
+            $.ajax({
+                type : "post", // 访问WebService使用Post方式请求
+                contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+                url : _currentPanel.gridConfig.url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+                data : {
+                    "parameter" : JSON.stringify(parameter)
+                }, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
+                dataType : 'json',
+                success : function(result) { // 回调函数，result，返回值
+                    if (result && !result.success) {
+                        YssLayer.messageAlter(label + "失败！", 2);
+                        return false;
+                    } else {
+                        YssLayer.closeLayer(index);
+                        YssLayer.messageDialogOnRightDown(label + "成功！", 2000);
+                        gd.reload();
+                    }
+                    _context.currentState = "query"; // 审核操作执行后才改变状态
+                }
+            });
+        });
+	} else if (len == 1) {
+        clearMSG();
+        var form = showDetail(_context, rowDatas[0], $("#"+_currentPanel.name+"Form"));
+        setReadonly($('#'+form), true);
+	}
+}
+
+//审核
+function checkBtn(){
+    changeState(event, i18n.COMMON_M_CHECK, "check");
+}
+
+//反审核
+function uncheckBtn(){
+    changeState(event, i18n.COMMON_M_UNCHECK, "uncheck");
+}
+
+function changeState(event, label, _operate) {
+	var _context = Common.getContext();
+    var _currentPanel = _context.currentPanel;
+    var grid = _currentPanel.grid;
+    if (!Common.checkSelectMulti(grid)) {
+        return;
+    }
+
+    var ids = grid.getSelectRows();
+    var rowDatas = [];
+    var actualIds = [];
+    var len = ids.length;
+    for (var i = 0; i < len; i++) {
+        var singleData = grid.getRowDataById(ids[i]);
+        var checkStatus = singleData.n_STATE == undefined ? singleData.auditState : singleData.n_STATE;
+        if ((_operate == "check" && checkStatus == "0") || (_operate == "uncheck" && checkStatus == "1")) {
+            actualIds.push(ids[i]);
+            rowDatas.push(singleData);
+        }
+    }
+
+    // 执行操作前的数据校验
+    if (!operDataCheck(rowDatas, _operate)) {
+    	return false;
+    }
+    
+    var index = YssLayer.showConfirm("确定"+label+"选中的数据吗？", function() {
+    	YssLayer.closeLayer(index);
+        var parameter = {};
+        parameter.datas = rowDatas;
+        parameter.ids = actualIds;
+        parameter.operate = _operate;
+        parameter.formCode = funcCode;
+        $.ajax({
+            type : "post", // 访问WebService使用Post方式请求
+            contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+            url : _currentPanel.gridConfig.url, // 调用WebService的地址和方法名称组合 ---- WsURL/方法名
+            data : {
+                "parameter" : JSON.stringify(parameter)
+            }, // 这里是要传递的参数，格式为 data: "{paraName:paraValue}",下面将会看到
+            dataType : 'json',
+            success : function(result) { // 回调函数，result，返回值
+              switch (_operate){
+            	case "check":
+            		listener.afterCheck(grid,label,result);
+            		break;
+            	case "uncheck":
+            		listener.afterUncheck(grid,label,result);
+            		break;            		
+            	default:
+            		break;
+            }
+                _context.currentState = "query"; // 审核操作执行后才改变状态
+            }
+        });
+    });
+}
+
+var exportBtn = function(currentTarget, currentPanel, type, title){
+	// 拿到最近表的表头
+	var grid = currentPanel.grid;
+	var colModel = grid.jqGrid('getGridParam', "colModel");
+	var coldatas = [];
+	if (colModel.length > 0) {
+		for (var i = 0; i<colModel.length; i++) {
+			if (colModel[i].hidden == false && colModel[i].header) {
+				var data = {};
+				data['header'] = colModel[i].header;
+				data['name'] = colModel[i].name;
+				data['format'] = colModel[i].format;
+				coldatas.push(data);
+			}
+		}
+	}
+	if (coldatas.length == 0) {
+		YssLayer.messageAlter("导出失败！请检查表头数据是否完整", 2);
+		return false;
+	}
+	// 拿到查询条件
+	var param = {};
+	param.param = Common.getFormData("#" + grid.jqGrid('getGridParam','searchForm').attr('id')).formData;
+	var advancedSearch = {};
+	if ($.isFunction(grid.jqGrid('getGridParam').advancedSearch)) {
+		advancedSearch = grid.jqGrid('getGridParam').advancedSearch.call(this);
+	}
+	var queryParams = $.extend(true, {}, param, advancedSearch);
+	
+	// 目前不支持勾选数据导出
+	
+	// 拿到导出的excel的标题，如果没有，默认取菜单+当前tab页的标题
+	if (title === undefined) {
+		var maintitle = $(".J_menuTabs .active",parent.document).text();
+		var subTab = $(event.currentTarget).closest(Common.getConstant('WEBPLUS_CONTAINER')).find('.nav-tabs').find('a[name="'+currentPanel.id+'"]');
+		var subtitle = "";
+		if (subTab){
+			subtitle = subTab.text();
+		}
+		title = maintitle + (subtitle == "" ? "" : ("_"+subtitle));
+	}
+	// 传到后台开始导出。。。
+	// 动态创建表单并提交
+	// 创建前先判断是否已经存在
+	if($('#export_submitForm')[0] == null){
+		var _formhtml = "<form id='export_submitForm' method='get' action ='"+currentPanel.gridConfig.url+"' class='hide' target='export_download_iframe'>" +
+        "<input type='hidden' name='parameter'/>"+
+        "<button type='submit'></button></form>"+
+        "<iframe id='export_download_iframe' name='export_download_iframe' class='hide'></iframe>";
+        $(currentTarget).parent().append(_formhtml);
+		
+		$('#export_download_iframe').load(function(){
+    		var jsonstr = $('#export_download_iframe').contents().find("body").html();
+    		jsonstr = jsonstr.replace(/<.*?>/ig,"");
+    		if ("" != jsonstr) {	
+    			var msg = eval('(' + jsonstr + ')');
+    			YssLayer.messageAlter(msg.message,2);
+    		}
+    		$('#export_download_iframe').contents().find("body").empty();
+        });
+	} else {
+		$('#export_submitForm').attr("action", currentPanel.gridConfig.url)
+	}
+    var parameter = {};
+    parameter.coldatas = JSON.stringify(coldatas);
+    parameter.fileName = title;
+    parameter.param = {};
+    parameter.operate = "export";
+    parameter.type = type;
+	$('#export_submitForm input[name=parameter]').val(JSON.stringify($.extend({}, parameter, queryParams)));
+	//提交表单
+	$('#export_submitForm button').click();
+}
+
+// 执行操作前的数据校验
+function operDataCheck(rowDatas, operate){
+	if (rowDatas == null || rowDatas.length == 0) {
+	  YssLayer.messageAlter("请至少选择一条数据", 2);
+	  return false;
+	}
+	
+    if (fun.n_CHECK == 1) {
+        if (operate == "check" || operate == "uncheck") {
+            // 自审核校验
+            if (fun.n_USER == 0 && !chkSelfAuditMVC(rowDatas)) {
+                // 提示不允许自审
+            	YssLayer.messageAlter("当前模块自行复核功能已关闭！不可审核或反审核本人新建的数据", 2);
+                return false;
+            }
+        }
+    }
+    
+    return true;
+}
+
+// 自审核的校验功能
+function chkSelfAuditMVC(rowDatas) {
+    if (rowDatas != null && rowDatas.length > 0) {
+    	for (var i = 0; i < rowDatas.length; i++) {
+    		if (currentLoginUserCode == rowDatas[i].modifier) {
+    			return false;
+    		}
+    	}
+    }
+    return true;
+}
+
+// 获取帮助文档的名称
+function getHelpFileName(currentPanel){
+	// 默认使用funcCode
+	return funcCode+"_help";
+}

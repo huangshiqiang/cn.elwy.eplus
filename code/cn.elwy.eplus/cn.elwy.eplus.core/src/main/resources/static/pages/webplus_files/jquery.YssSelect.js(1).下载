@@ -1,0 +1,706 @@
+(function($) {
+    $.YssSelect = $.YssSelect || {};
+    $.extend($.YssSelect, {
+        getAccessor: function (obj, expr) {
+            var ret, p, prm = [], i;
+            if (typeof expr === 'function') {
+                return expr(obj);
+            }
+            ret = obj[expr];
+            if (ret === undefined) {
+                try {
+                    if (typeof expr === 'string') {
+                        prm = expr.split('.');
+                    }
+                    i = prm.length;
+                    if (i) {
+                        ret = obj;
+                        while (ret && i--) {
+                            p = prm.shift();
+                            ret = ret[p];
+                        }
+                    }
+                } catch (e) {
+                }
+            }
+            return ret;
+        },
+        getMethod: function (name) {
+            return this.getAccessor($.fn.YssSelect, name);
+        },
+        extend : function(methods) {
+            $.extend($.fn.YssSelect, methods);
+            if (!this.no_legacy_api) {
+                $.fn.extend(methods);
+            }
+        }
+    });
+    $.fn.YssSelect = function(options){
+        if (typeof options === 'string') {
+            var fn = $.YssSelect.getMethod(options);
+            if (!fn) {
+                throw ("jqGrid - No such method: " + options);
+            }
+            var args = $.makeArray(arguments).slice(1);
+            return fn.apply(this, args);
+        }
+        return this.each(function () {
+            var _this = this,
+                $this = $(_this),
+                defaults = {
+                    liveSearch: true, // 搜索框
+                    size: 20,
+                    width: '100%',
+                    dropdownMaxHeight: "300",
+                    dataType: "json",
+                    mtype: "POST",
+                    keystr: "key",
+                    valuestr: "value",
+                    multiselect: true,
+                    hiddenHead: true,
+                    gridView: false,
+                    dropupAuto: false,
+                    deleteicon: true,//是否显示删除按钮
+                    refreshbtn: true,
+                    setvalue: '',
+                    gridOpts: {},
+                    data: {},
+                    async : true,
+                    lazyLoad: false, // 延时加载
+                    loading: false, //
+                    // loadComplete:function(data, ts, xhr, st){ // 加载完成事件，可自定义组合option
+                    // },
+                    beforeProcess : function(ts, $this){
+                        var flag = true;
+                        if ($.isFunction(ts.p.beforeRequest)) {
+                            flag = ts.p.beforeRequest.call(ts, ts, $this);
+                        }
+                        return flag;
+                    },
+                    loadHandler: function(ts, $this){
+                        $.ajax({
+                            url: ts.p.url,
+                            type: ts.p.mtype,
+                            dataType: ts.p.dataType,
+                            data: ts.p.postData,
+                            async: ts.p.async,
+                            success: function (result, st, xhr) {
+                                $this.empty();
+                                if ($.isFunction(ts.p.loadComplete)) {
+                                    ts.p.loadComplete.call(ts, result, ts, $this, xhr, st);
+                                } else {
+                                    var data = result.datas;
+                                    if (data !== null && data !== undefined) {
+                                        $.each(data, function (i) {
+                                            $this.append("<option value='" + data[i][ts.p.keystr] + "'>" + data[i][ts.p.valuestr] + "</option>");
+                                        });
+                                    }
+                                    $this.selectpicker('refresh');
+                                    $this.selectpicker('render');
+                                }
+                                ts.p.loading = false;
+                                ts.p.loadfirst = false;
+                            },
+                            error: function (xhr, st, err) {
+                                if ($.isFunction(ts.p.loadError)) {
+                                    ts.p.loadError.call(_this, xhr, st, err);
+                                }
+                                xhr = null;
+                            }
+                        }, ts.p.ajaxGridOptions);
+                    },
+                    loadLocalHandler: function(ts, $this, data){
+                        $this.empty();
+                        $.each(data, function (i) {
+                            $this.append("<option value='" + data[i][ts.p.keystr] + "'>" + data[i][ts.p.valuestr] + "</option>");
+                        });
+                        $this.selectpicker('refresh');
+                        $this.selectpicker('render');
+                    },
+                    afterRequest : function(ts, $this){
+                    	$this.YssSelect("setYssSelectValue",['']);
+                    },
+                    loadError: function (xhr, st, err) {
+                        YssLayer.tip("获取数据出错，请稍后重试", _this);
+                    },
+                    ajaxGridOptions :{}
+                },
+                addJsonData = function (ts) {
+                    if (!ts.p.beforeProcess(ts, $this)) {
+                        return;
+                    }
+                    if ($.isFunction(ts.p.loadHandler)) {
+                        ts.p.loadHandler.call(ts, ts, $this);
+                    }
+                    if ($.isFunction(ts.p.afterRequest)) {
+                        ts.p.afterRequest.call(ts, ts, $this);
+                    }
+                },
+                addLocalData = function (ts, data) {
+                    if ($.isFunction(ts.p.loadLocalHandler)) {
+                        ts.p.loadLocalHandler.call(ts, ts, $this, data);
+                    }
+                },
+                initYssSelectDataGrid = function(ts, id){
+                    var defaultsGridConfig = {
+                        url : ts.p.url,
+//                        ajaxGridOptions:{async: false}, // 设置默认值ajax要设置成同步
+                        treeGrid : true,
+                        treeGridModel : 'adjacency',//nested
+                        rownumbers: false,
+                        ExpandColClick: false,
+                        pager: "false",
+                        multiselect : true,
+                        multiselectTree : true,
+                        shrinkToFit : false,
+                        AllowCheckParentNode: false,
+                        treeIcons:{
+                            plus:'fa fa-plus-square',
+                            minus:'fa fa-minus-square',
+                            leaf:''
+                        },
+                        relaSelect:true,
+                        relaNoneSelectedText: ts.p.noneSelectedText,
+                        hiddenHead: ts.p.hiddenHead
+                    };
+
+                    var options = $.extend(true, {}, defaultsGridConfig, ts.p.gridOpts);
+                    if (options.multiselect) {
+                        options.onCheckedRow = function(rowid, status){
+                            echoToSelect(id, options.relaNoneSelectedText);
+                        }
+                    } else {
+                        options.onSelectRow = function(rowid, status){
+                            echoToSelect(id, options.relaNoneSelectedText);
+                        }
+                    }
+
+                    var dataGrid = $("#"+id).YssDataGrid(options);
+
+                    // 整理样式
+                    $('#gview_'+id).css("margin-bottom","0px");
+                    $('#gbox_'+id).css("border","none");
+                    $('#'+id+'_div').css("border-top","1px solid #ddd");
+                    $('#'+id+'_div').css("border-bottom","1px solid #ddd");
+
+                    return dataGrid;
+                },
+                initYssSelectEvent = function(ts, id, grid) {
+                    var $msg = $('#'+id+'_msg');
+
+                    var $headCheckboxId = $('#'+ id + '_cbox_' + ts.p.gridOpts.ExpandColumn);
+
+                    $('#'+id+'_div').on('click',function(e){
+                        e.stopPropagation();
+                    });
+
+//                    // 全选checkbox绑定事件
+//                    $('#'+id+'_ck').bind('click', function(){
+//                        $headCheckboxId.click();
+//                        echoToSelect(id, ts.p.noneSelectedText);
+//                    });
+
+//                    // 刷新按钮事件
+//                    $('#'+id+'_refresh').on('click', function(){
+//                        $('#'+id).reload.call($('#'+id));
+//                        $('#'+id+'_ck').prop("checked",false);
+//                        $headCheckboxId.prop("checked",false);
+//                        var e = window.event || arguments.callee.caller.arguments[0];
+//                        e.stopPropagation();
+//                    });
+
+                    // 下拉展开事件
+                    $this.on('shown.bs.select',function(){
+                        if (grid) {
+                            $('#'+id+' tr').removeAttr("style");
+                            // 收起未选择的节点
+                            var config = grid.jqGrid('getGridParam');
+                            if (config.treeGrid){
+                                if (config.closeAllNode) {
+                                    grid.closeAllNode.call(grid);
+                                } else {
+                                    grid.expandAllNode.call(grid);
+                                }
+                            }
+                            $msg.empty();
+                            $msg.hide();
+                            $('#'+id+'_div .jqGrid_wrapper').height(400);
+                            grid.resizeDataGrid.call(grid);
+                        }
+                    });
+
+                    if (ts.p.liveSearch){
+                        var that = $this.prev().data('this');
+                        // 解除input输入框的原有的绑定事件
+                        that.$searchbox.off('input propertychange');
+                        // 绑定自己的事件
+                        that.$searchbox.on('input propertychange', function () {
+                            var $hideItems = []; // 需要隐藏的项
+                            $msg.empty();
+                            $msg.hide();
+                            var config = $('#'+id).jqGrid('getGridParam');
+                            var name = config.ExpandColumn;
+                            var $allData = $('#'+id).jqGrid("getRowData"); // 表格所有数据
+
+                            for (var i in $allData) {
+                                var temp = $allData[i];
+                                $('#'+id).setRowData(temp.id, null,{display: ''});
+                            }
+
+                            if (that.$searchbox.val()) {
+                                var _searchText = that.$searchbox.val();
+                                var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");
+                                var htmlreg = /<[^>]+>/g;
+                                if (reg.test(_searchText)) {
+
+                                }
+                                if ("contains" == that.options.liveSearchStyle) { // 模糊查询
+                                    if (reg.test(_searchText)) {
+                                        for (var i in $allData) {
+                                            if ($allData[i]['id'].indexOf(htmlUnescape(_searchText)) < 0 ) {
+                                                var value = $allData[i][name];
+                                                if (htmlreg.test(value)) {
+                                                    value = $(value).val();
+                                                }
+                                                if (value.indexOf(htmlUnescape(_searchText)) < 0) {
+                                                    $hideItems.push($allData[i]);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (var i in $allData) {
+                                            if ($allData[i]['id'].toUpperCase().indexOf(htmlUnescape(_searchText).toUpperCase()) < 0 ) {
+                                                var value = $allData[i][name];
+                                                if (htmlreg.test(value)) {
+                                                    value = $(value).val();
+                                                }
+                                                if (value.toUpperCase().indexOf(htmlUnescape(_searchText).toUpperCase()) < 0) {
+                                                    $hideItems.push($allData[i]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else if ("startsWith" == that.options.liveSearchStyle) { // 以XX开头
+                                    if (reg.test(_searchText)) {
+                                        for (var i in $allData) {
+                                            if ($allData[i]['id'].indexOf(htmlUnescape(_searchText)) != 0){
+                                                var value = $allData[i][name];
+                                                if (htmlreg.test(value)) {
+                                                    value = $(value).val();
+                                                }
+                                                if (value.indexOf(htmlUnescape(_searchText)) != 0) {
+                                                    $hideItems.push($allData[i]);
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        for (var i in $allData) {
+                                            if ($allData[i]['id'].toUpperCase().indexOf(htmlUnescape(_searchText).toUpperCase()) != 0){
+                                                var value = $allData[i][name];
+                                                if (htmlreg.test(value)) {
+                                                    value = $(value).val();
+                                                }
+                                                if (value.toUpperCase().indexOf(htmlUnescape(_searchText).toUpperCase()) != 0) {
+                                                    $hideItems.push($allData[i]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if ($hideItems.length === $allData.length) {
+                                    $msg.html(that.options.noneResultsText.replace('{0}', '"' + htmlEscape(that.$searchbox.val()) + '"'));
+                                    $msg.show();
+                                }
+
+                                // 循环隐藏
+                                for (var i in $hideItems) {
+                                    var temp = $hideItems[i];
+                                    $('#'+id).setRowData(temp.id, null,{display: 'none'});
+                                }
+                            }
+                        });
+                }
+            },
+            render = function(ts){
+                if (ts.p.gridView) { // 表格模式
+                	// 为保持刷新前后数据一致性 使用postData环境下reload
+                	ts.relaGrid.reload.call(ts.relaGrid, ts.relaGrid.jqGrid('getParam', 'postData'));
+                } else { // 非表格模式
+                	if ("json" == ts.p.dataType) {
+                        ts.addJsonData();
+                    } else {
+                        ts.addLocalData(ts.p.data);
+                    }
+                }
+            },
+            opts = $.extend(true, {}, defaults, options || {});
+            if ("local" == opts.dataType && opts.data.length == undefined) { // 本地数据不显示刷新按钮
+                opts.refreshbtn = false;
+            }
+            this.p = opts;
+            this.p.loadfirst = true;
+            this.select = $this.selectpicker(opts);
+            this.p.id = $this.attr('id');
+            this.addJsonData = function(){
+                this.p.loading = true;
+                addJsonData(this);
+            };
+            this.addLocalData = function (data) {
+                addLocalData(this, data);
+            };
+            this.initYssSelectDataGrid = function (id) {
+                return initYssSelectDataGrid(this, id);
+            };
+            this.initYssSelectEvent = function(gridId, grid){
+                initYssSelectEvent(this, gridId, grid);
+            };
+            this.render = function(){
+                render(this);
+            };
+            this.removeBtn = $this.siblings("button").find(".removeBtnMore");
+            this.refreshBtn = $this.siblings("button").find(".selectRefresh");
+
+            if ($.isEmptyObject(this.p.gridOpts)) {   // 非表格展开有个最大高度控制
+                $this.on('shown.bs.select',function(){
+                    if ($this.prev().css("max-height") != "none") {
+                        $this.prev().css("max-height", this.p.dropdownMaxHeight+"px");
+                        $this.prev().css("max-width", $this.closest('div').width());
+                        $this.prev().find('ul').css("max-height", this.p.dropdownMaxHeight+"px");
+                    }
+                });
+            }
+
+            // 加载数据
+            if ("json" == this.p.dataType) { // 远程
+                if (this.p.gridView) { // 表格模式
+                    $this.empty();
+                    var gridId = this.p.id+"_grid";
+                    $this.prev().find('ul').remove();
+                    $this.prev().append("<div id='"+gridId+"_div'><div class='jqGrid_wrapper' style='max-height: 500px;'><table id='"+gridId+"'></table></div></div>");
+                    $this.prev().append("<div id='"+gridId+"_toolbar' style='padding:2px 8px 0px 8px;'>");
+//                    if (this.p.multiselect) {
+//                        $this.prev().append("<input type='checkbox' id='"+gridId+"_ck' class='cbox'/><label>全选</label>");
+//                    }
+//                    $this.prev().append("<a id='"+gridId+"_refresh' href='javascript:;' style='float:right;line-height:34px;'><i class='fa fa-refresh' aria-hidden='true' style='color:#555;font-size:15px;'></i></a></div>");
+                    $this.prev().append("<div id='"+gridId+"_msg' style='display:none;padding:3px 3px 3px 3px; margin-left:5px;margin-right:5px;background-color:rgb(245, 245, 245)'></div>");
+                    this.relaGrid = this.initYssSelectDataGrid(gridId);
+                    this.initYssSelectEvent(gridId, this.relaGrid);
+                } else { // 普通模式
+                    if (this.p.lazyLoad) {// 懒加载
+                        $this.on('show.bs.select',function(){
+                            if (!this.p.loading && this.p.loadfirst) {
+                                this.addJsonData();
+                            }
+                        });
+                    } else { // 正常模式
+                        this.p.loading = true;
+                        this.addJsonData();
+                    }
+                }
+            } else { // 本地
+            	if (this.p.data && this.p.data.length > 0) {            		
+            		this.addLocalData(this.p.data);
+            	}
+            }
+
+            // 移除按钮
+            this.removeBtn.on('click',function(event){
+                event.stopPropagation();
+                if ($this[0].multiple) {
+                    $this[0].select.selectpicker('deselectAll');
+                } else {
+                    $this.setYssSelectValue([""]);
+                }
+                $(this).hide();
+            });
+            this.removeBtn.hide();
+
+            // 刷新按钮
+            this.refreshBtn.on("click",function(event){
+                event.stopPropagation();
+                if ($this.prop("disabled")) { // 如果下拉处于disable状态，刷新按钮点击无效
+                    return false;
+                }
+                $this[0].render();
+                $this[0].removeBtn.hide();
+            });
+
+            // 下拉change事件
+            if ($.isFunction(this.p.change)) {
+                $this.on('changed.bs.select', this.p.change);
+            }
+        });
+    }
+
+    $.YssSelect.extend({
+        setYssSelectValue : function(data){
+            var ts = this[0];
+            var callback = function(){
+                if (!ts.p.loading) {
+                    if (ts.p.gridView) {
+                        if (typeof data[0] === "object") {
+                            ts.relaGrid.setCheckedData(data);
+                        } else if (typeof data[0] === "string") {
+                            var datas = [];
+                            var config = ts.relaGrid.jqGrid('getGridParam');
+                            var name = config.ExpandColumn;
+                            if (config.treeGrid) {
+                                // 需要一个重置勾选的方法
+                                ts.relaGrid.resetCheck();
+                                for (var i = 0; i< data.length ;i++) {
+                                    var rowData = ts.relaGrid.getRowDataById(data[i]);
+                                    if (rowData.id === undefined) {
+                                        continue;
+                                    }
+                                    var obj = new Object();
+                                    obj['id'] = data[i];
+                                    if (!config.multiselectTree) {
+                                        obj[name] = rowData[name].trim();
+                                    } else {
+                                        obj[name] = $(rowData[name]).val().trim();
+                                    }
+                                    datas.push(obj);
+                                }
+                                if (!config.multiselectTree) {
+                                    ts.relaGrid.jqGrid('resetSelection');
+                                    for (var i = 0; i< datas.length ;i++) {
+                                        ts.relaGrid.jqGrid('setSelection',datas[i].id);
+                                    }
+                                } else {
+                                    ts.relaGrid.setCheckedData(datas);
+                                }
+                            } else {
+                                ts.relaGrid.jqGrid('resetSelection');
+                                for (var i = 0; i< data.length ;i++) {
+                                    ts.relaGrid.jqGrid('setSelection',data[i]);
+                                }
+                            }
+                        }
+                        echoToSelect(ts.relaGrid, ts.p.noneSelectedText);
+                    } else {
+                        ts.select.selectpicker('val', data);
+                    }
+                    // 判断值
+                    if (data && data[0] != "") {
+                        ts.removeBtn.show();
+                    }
+                    // 触发选中事件
+                    ts.select.trigger('changed.bs.select');
+                } else {
+                    setTimeout(function(){callback()},100);
+                }
+            };
+            if (!ts.p.loading) {
+                callback();
+            } else {
+                setTimeout(function(){callback()},100);
+            }
+        },
+        getYssSelectValue : function(){
+            var ts = this[0];
+            var result = "";
+            if (!ts.p.loading) {
+                if (ts.p.gridView) {
+                    var gridId = ts.p.id + "_grid";
+                    if (!gridId.startsWith("#")) {
+                        gridId = "#" + gridId;
+                    }
+                    if ($(gridId).length > 0 ) {
+                        var config = $(gridId).jqGrid('getGridParam');
+                        var flag = config.AllowCheckParentNode;
+                        var rowsData = [];
+                        if (config.treeGrid){
+                            if (!config.multiselectTree) {
+                                var index = $(gridId).jqGrid('getGridParam', "selrow");
+                                if ($(gridId).jqGrid("getRowData", index)[config.dataId]) {
+                                    rowsData.push($(gridId).jqGrid("getRowData", index));
+                                }
+                            } else {
+                                rowsData = $(gridId).getCheckedRowsData();
+                            }
+                        } else {
+                            if (!config.multiselect) {
+                                var index = $(gridId).jqGrid('getGridParam', "selrow");
+                                if ($(gridId).jqGrid("getRowData", index)[config.dataId]) {
+                                    rowsData.push($(gridId).jqGrid("getRowData", index));
+                                }
+                            } else {
+                                $.each($(gridId).jqGrid('getGridParam', "selarrrow"), function(index, id) {
+                                    if ($(gridId).jqGrid("getRowData", id)[config.dataId]) {
+                                        rowsData.push($(gridId).jqGrid("getRowData", id));
+                                    }
+                                });
+                            }
+                        }
+                        var chk_value =[]; // 选中的值
+                        for (var i = 0 ;i<rowsData.length;i++) {
+                            if (config.treeGrid){
+                                if (rowsData[i].leaf ==='true' || flag) {
+                                    chk_value.push(rowsData[i][config.dataId]);
+                                }
+                            } else {
+                                chk_value.push(rowsData[i][config.dataId]);
+                            }
+                        }
+                        if (chk_value.length != 0) {
+                            for (var i in chk_value) {
+                                result += chk_value[i] + ",";
+                            }
+                            result = result.substring(0, result.length-1);
+                        } else {
+                            result = null;
+                        }
+                    }
+                } else {
+                    result = ts.select.val();
+                }
+                return result;
+            };
+            return result;
+        },
+        render :  function(){
+            var ts = this[0];
+            if (ts.p.gridView) { // 表格模式
+            	// 为保持刷新前后数据一致性 使用postData环境下reload
+            	ts.relaGrid.reload.call(ts.relaGrid, ts.relaGrid.jqGrid('getParam', postData));
+            } else { // 非表格模式
+            	if ("json" == ts.p.dataType) {
+                    ts.addJsonData();
+                } else {
+                    ts.addLocalData(this.p.data);
+                }
+            }
+            return this;
+        },
+        getRelaGrid : function(){
+        	return this[0].relaGrid;
+        }
+    });
+
+    // HTML方式初始化控件
+	$(".selectyss").each(function () {
+        var $selectpicker = $(this);
+        var options=$(this).data();
+        $selectpicker.YssSelect(options);
+        if(options.setvalue != undefined && options.setvalue !=""){
+            var setValue = options.setvalue.split(",");
+            $selectpicker.YssSelect("setYssSelectValue", setValue);
+        }
+  })
+})(jQuery);
+
+// List of HTML entities for escaping.
+var escapeMap = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#x27;',
+    '`': '&#x60;'
+};
+
+var unescapeMap = {
+    '&amp;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#x27;': "'",
+    '&#x60;': '`'
+};
+
+// Functions for escaping and unescaping strings to/from HTML interpolation.
+var createEscaper = function(map) {
+    var escaper = function(match) {
+        return map[match];
+    };
+    // Regexes for identifying a key that needs to be escaped.
+    var source = '(?:' + Object.keys(map).join('|') + ')';
+    var testRegexp = RegExp(source);
+    var replaceRegexp = RegExp(source, 'g');
+    return function(string) {
+        string = string == null ? '' : '' + string;
+        return testRegexp.test(string) ? string.replace(replaceRegexp, escaper) : string;
+    };
+};
+
+var htmlEscape = createEscaper(escapeMap);
+var htmlUnescape = createEscaper(unescapeMap);
+
+// 回显到select
+function echoToSelect(grid, noneSelectedText){
+    var gridId = "";
+    if (grid instanceof jQuery) {
+        gridId = $(grid[0]).attr('id');
+    } else {
+        gridId = grid;
+    }
+    var select = gridId.substring(0, gridId.length-5);
+    if (!select.startsWith("#")) {
+        select = "#" + select;
+    }
+    if (!gridId.startsWith("#")) {
+        gridId = "#" + gridId;
+    }
+
+    var config = $(gridId).jqGrid('getGridParam');
+    var flag = config.AllowCheckParentNode;
+    var name = config.ExpandColumn;
+    var rowsData = [];
+    if (config.treeGrid){ 
+    	if (!config.multiselectTree) {
+    		var index = $(gridId).jqGrid('getGridParam', "selrow");
+    		if ($(gridId).jqGrid("getRowData", index)[config.dataId]) {    			
+    			rowsData.push($(gridId).jqGrid("getRowData", index));
+    		}
+    	} else {    		
+    		rowsData = $(gridId).getCheckedRowsData();
+    	}
+    } else {
+    	if (!config.multiselect) {
+    		var index = $(gridId).jqGrid('getGridParam', "selrow");
+    		if ($(gridId).jqGrid("getRowData", index)[config.dataId]) {    			
+    			rowsData.push($(gridId).jqGrid("getRowData", index));
+    		}
+    	} else {    		
+    		$.each($(gridId).jqGrid('getGridParam', "selarrrow"), function(index, id) {
+    			if ($(gridId).jqGrid("getRowData", id)[config.dataId]) {    				
+    				rowsData.push($(gridId).jqGrid("getRowData", id));
+    			}
+    		});
+    	}
+    }
+    var chk_value =[]; // 选中的值
+    for (var i = 0 ;i<rowsData.length;i++) {
+    	if (config.treeGrid){ 
+    		if (rowsData[i].leaf ==='true' || flag) {
+    			chk_value.push(rowsData[i][name]);
+    		}    		
+    	} else {
+    		chk_value.push(rowsData[i][name]);
+    	}
+    }
+    var title = noneSelectedText ? noneSelectedText : "Nothing selected";
+    if (chk_value.length != 0) {
+        title = "";
+        if (config.treeGrid && config.multiselectTree){ 
+        	for (var i in chk_value) {
+        		title += $(chk_value[i]).val().trim() + ",";
+        	}        	
+        } else {
+        	for (var i in chk_value) {
+        		title += chk_value[i].trim() + ",";
+        	}   
+        }
+        title = title.substring(0, title.length-1);
+    }
+    $(select).trigger('changed.bs.select');
+    var _button = $('.bootstrap-select '+select).parent().children('button');
+    if (chk_value.length != 0 && _button.hasClass("bs-placeholder")) {   	
+    	_button.removeClass("bs-placeholder");
+    } else if (chk_value.length == 0 && !_button.hasClass("bs-placeholder")) {    	
+    	_button.addClass("bs-placeholder");
+    }
+    _button.attr('title', htmlUnescape($.trim(title.replace(/<[^>]*>?/g, ''))));
+    _button.children('.filter-option').html(title);
+}

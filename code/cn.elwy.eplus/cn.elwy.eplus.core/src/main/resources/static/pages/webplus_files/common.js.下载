@@ -1,0 +1,1070 @@
+/**
+ * 通用公共方法
+ * @author huangsq
+ * @version 1.0.0
+ */
+var Common = {};
+
+//liyaojin add （增加动态引入JS和CSS的代码，扩展JQUERY）
+(function($, w) {
+    //资源路径
+    $.extend({
+        includePath : resourcePath,
+        include : function(file, timeout,callback,path) {
+            var files = typeof file == "string" ? [file] : file;
+            //判断类型
+            for (var i = 0; i < files.length; i++) {
+                var name = files[i].replace(/^\s|\s$/g, "");
+                var att = name.split('.');
+                var ext = att[att.length - 1].toLowerCase();
+                var isCSS = ext == "css";
+                //判断是否加载的是css文件
+                var tag = isCSS ? "link" : "script";
+                //是css文件使用link，是js文件使用script
+                var attr = isCSS ? " type='text/css' rel='stylesheet' " : " language='javascript' type='text/javascript' ";
+                var link = ( isCSS ? "href" : "src") + "='" + (path || $.includePath) + name + "'";
+                if ($(tag + "[" + link + "]").length == 0)
+                    document.write("<" + tag + attr + link + "></" + tag + ">");
+            }
+            if(timeout){
+                if(typeof callback == 'function'){
+                    window.setTimeout(callback,timeout);
+                }
+            }
+        }
+    });
+
+})(jQuery, window);
+//end
+
+/**
+ * 上下文对象，用于存储页面的全局元素
+ */
+Common.context = {
+	openState : false,
+	currentPanel : null,
+	currentForm : null,
+	currentState : 'query',
+	operate : 'query',
+	tablePanels : {},
+
+	isOpenState : function() {
+		return this.openState;
+	}
+// setOpenState : function(value) {
+// this.openState = value;
+// },
+// getCurrentPanel : function() {
+// return this.currentPanel;
+// },
+// setCurrentPanel : function(value) {
+// this.currentPanel = value;
+// },
+// getCurrentState : function() {
+// return this.currentState;
+// },
+// setCurrentState : function(value) {
+// this.currentState = value;
+// },
+// getTablePanels : function() {
+// return this.tablePanels;
+// },
+// setTablePanels : function(value) {
+// this.tablePanels = value;
+// }
+};
+
+/**
+ * 常量
+ */
+var constants = {
+	SET_BTN_TAG : '#right-side', // set界面按钮栏标识
+	LIST_UP_BTN_TAG : '#_basicSearch', // list界面上半区按钮栏标识
+	LIST_DOWN_BTN_TAG : '#C_basicSearch', // list界面下半区按钮栏标识
+	WEBPLUS_CONTAINER : '.webplus-container', // 主区域样式标识
+	HEADER : '.header', // 主区域头部样式标识
+	FOOTER : '.footer', // 主区域脚部样式标识
+	TAB_SEARCH : '.tab-search', // tab页内搜索栏样式标识
+	TAB_HEADER : '.tab-header', // tab页内头部样式标识
+	TAB_FOOTER : '.tab-footer', // tab页内教部样式标识
+	GRID_WRAPPER : '.jqGrid_wrapper', // 表格最外层包装样式标识
+	BTN_TAG : '.btnBar' // 按钮bar样式标识
+}  
+
+//获取常量的方法  
+Common.getConstant = function(name){ 
+    return constants[name];  
+}  
+
+function TablePanel(id, gridConfig) {
+	this.id = id;
+	this.name = id;
+	this.gridConfig = gridConfig;
+	this.url = null;
+	this.grid = null;
+	this.lastRow = null;
+}
+//
+// TablePanel.prototype.getId = function() {
+// return this.id;
+// };
+// TablePanel.prototype.setId = function(value) {
+// this.id = value;
+// };
+// TablePanel.prototype.getGridConfig = function() {
+// return this.gridConfig;
+// };
+// TablePanel.prototype.setGridConfig = function(value) {
+// this.gridConfig = value;
+// };
+// TablePanel.prototype.getUrl = function() {
+// return this.url;
+// };
+// TablePanel.prototype.setUrl = function(value) {
+// this.url = value;
+// };
+// TablePanel.prototype.getGrid = function() {
+// return this.grid;
+// };
+// TablePanel.prototype.setGrid = function(value) {
+// this.grid = value;
+// };
+// TablePanel.prototype.getLastRow = function() {
+// return this.lastRow;
+// };
+// TablePanel.prototype.setLastRow = function(value) {
+// this.lastRow = value;
+// };
+
+Common.getContext = function() {
+	return Common.context;
+};
+
+/**
+ * 检测是否选中一条记录
+ */
+Common.checkSelectOne = function(tableId) {
+	var id = Common.getSelectId(tableId);
+	if (id === null || id === undefined) {
+		layer.alert('请选择一条数据!', {
+			icon : 0,
+			title : '警告'
+		});
+		return false;
+	}
+	return true;
+}
+
+/**
+ * 检测是否选中一条或多条记录
+ */
+Common.checkSelectMulti = function(tableId) {
+	var ids = Common.getSelectIds(tableId);
+	var size = ids.length;
+	if (size < 1) {
+		layer.alert('请至少选择一条数据!', {
+			icon : 0,
+			title : '警告'
+		});
+		return false;
+	}
+	return true;
+}
+
+/**
+ * 获取选中的ID
+ */
+Common.getSelectIds = function(tableId) {
+	return $(tableId).jqGrid('getGridParam', 'selarrrow');
+}
+
+/**
+ * 获取选中的ID
+ */
+Common.getSelectId = function(tableId) {
+	return $(tableId).jqGrid('getGridParam', 'selrow');
+}
+
+/**
+ * 获取表单所有非空的数据
+ */
+Common.getFormData = function(formId) {
+	var _formData = {};
+	var _extendData = {};
+	var _form = {};
+	var _thisForm = $(formId);
+	if (_thisForm) {
+		// 处理placeholder
+		var emptyValuePlaceholderNames = new Array();
+		_thisForm.find(".placeholder").each(function() {
+			if ($(this).attr("placeholder") != "" && ($(this).val() == "" || $(this).val() == $(this).attr("placeholder"))) {
+				emptyValuePlaceholderNames.push($(this).attr("name"));
+			}
+		});
+		// 读取表单里面的字段
+		var _formArr = _thisForm.serializeArray();
+		for (var i = 0; i < _formArr.length; i++) {
+			if (_formArr[i].value == "") {
+				continue; // 过滤空值字段
+			}
+			if ($.inArray(_formArr[i].name, emptyValuePlaceholderNames) > -1) {
+				continue; // 处理placeholder
+			}
+
+			if (_thisForm.find("[name='" + _formArr[i].name + "']").hasClass("formExtend")) {
+				if (_extendData[_formArr[i].name] !== undefined) {
+					_extendData[_formArr[i].name] = _extendData[_formArr[i].name] + "," + _formArr[i].value;
+				} else {
+					_extendData[_formArr[i].name] = _formArr[i].value;
+				}
+			} else {
+				if (_formData[_formArr[i].name] !== undefined) {
+					_formData[_formArr[i].name] = _formData[_formArr[i].name] + "," + _formArr[i].value;
+				} else {
+					_formData[_formArr[i].name] = _formArr[i].value;
+				}
+			}
+		}
+		_form.formData = _formData;
+		_form.formExtend = _extendData;
+		try {
+			_formData["queryType"] = $("#queryType").val();
+		} catch (e) {
+			console.warn("不存在queryType属性");
+		}
+	}
+	return _form;
+}
+
+// 将表单数据转换成json
+Common.form2Json = function(fromId) {
+	// 处理placeholder
+	var emptyValuePlaceholderNames = new Array();
+	var formObj = $("#" + fromId);
+	formObj.find(".placeholder").each(function() {
+		if ($(this).attr("placeholder") != "" && ($(this).val() == "" || $(this).val() == $(this).attr("placeholder"))) {
+			emptyValuePlaceholderNames.push($(this).attr("name"));
+		}
+	});
+	// 读取表单里面的字段
+	var arr = $("#" + fromId).serializeArray();
+	var json = {};
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i].value == "")
+			continue; // 过滤空值字段
+		if ($.inArray(arr[i].name, emptyValuePlaceholderNames) > -1)
+			continue; // 处理placeholder
+		json[arr[i].name] = arr[i].value;
+	}
+
+	return json;
+}
+
+// 判断一个变量是否为空
+Common.isEmpty = function(obj) {
+	if (obj == null || obj == undefined) {
+		return true;
+	}
+	if (typeof obj == "string" && obj.length == 0) {
+		return true;
+	}
+	return false;
+}
+
+// 重置GridWrapper的高度
+// id 为最接近table的div的id
+Common.resizeGridWrapper = function(id) {
+    var target = id.startsWith("#") ? id : "#" + id;
+    var _target = $(target);
+    var container = _target.closest(Common.getConstant('WEBPLUS_CONTAINER'));
+    var container_h = container.innerHeight() == null ? 0 : container.innerHeight(); // main-container的高度
+    var header = container.find(Common.getConstant('HEADER')).first();
+    var header_h = header.innerHeight() == null ? 0 : header.innerHeight(); // header高度
+    var footer = container.find(Common.getConstant('FOOTER')).first();
+    var footer_h = footer.innerHeight() == null ? 0 : footer.innerHeight(); // footer高度
+//    var tab_nav_h = $(".nav-tabs:not('#right-side .nav-tabs')").innerHeight() == null ? 0 : $(".nav-tabs").innerHeight(); // tab导航高度  
+    var tab_nav = container.find(".nav-tabs").first();
+    var tab_nav_h = tab_nav.innerHeight() == null ? 0 : tab_nav.innerHeight(); // tab导航高度
+    var tab_search = container.find(Common.getConstant('TAB_SEARCH')).first();
+    var tab_search_h = tab_search.innerHeight() == null ? 0 : tab_search.innerHeight(); // tab的search栏高度
+    var tab_header = container.find(Common.getConstant('TAB_HEADER')).first();
+    var tab_header_h = tab_header.innerHeight() == null ? 0 : tab_header.innerHeight(); // tab内header高度
+    var tab_footer = container.find(Common.getConstant('TAB_FOOTER')).first();
+    var tab_footer_h = tab_footer.innerHeight() == null ? 0 : tab_footer.innerHeight(); // tab内footer高度
+    var tab_panel_p = 0 ; // panel-body的padding
+    if ($(target+" .panel-body").length > 0) {
+        tab_panel_p = $(target+" .panel-body").innerHeight() - $(target+" .panel-body").height();
+    }
+    var height = container_h - header_h - footer_h - tab_nav_h - tab_search_h - tab_header_h - tab_footer_h - tab_panel_p;
+    // 鉴于目前存在开发人员在开发表格的html是层级关系没有按之前的定义，故这里做个处理
+    if (_target.hasClass("jqGrid_wrapper")) {
+    	_target.height(height);
+    } else {    	
+    	$(target + " " + Common.getConstant('GRID_WRAPPER')).height(height);
+    }
+}
+
+Common.resetSetBtnStatus = function(){
+    var target = $(Common.getConstant('SET_BTN_TAG'));
+    Common.setButtonStatus({btns:['ALL'],target:target,status:true,effectSet:true});
+    Common.setButtonStatus({btns:['btn-save'],target:target,status:false,effectSet:true});
+}
+
+Common.resetSetBtnStatus2 = function(){
+    var target = $(Common.getConstant('SET_BTN_TAG'));
+    Common.setButtonStatus({btns:['ALL'],target:target,status:false,effectSet:true});
+    Common.setButtonStatus({btns:['btn-save','btn-help','btn-close-side'],target:target,status:true,effectSet:true});
+}
+
+//设置按钮状态
+Common.setButtonStatus = function(option) {
+    var btnArr = option.btns;
+    var target = option.target;
+    var status = option.status;
+    var effectSet = option.effectSet;
+    var _context = Common.getContext();
+    if (btnArr.length > 0) {
+        $.each(btnArr, function(index) {
+            var $dom = null;
+            if (effectSet && _context.isOpenState()) {
+                if (btnArr[index] == 'ALL') {
+                    $dom = $(Common.getConstant('SET_BTN_TAG') + ' .btn-group').eq(0).find('a[class^="btn"]');
+                } else {
+                    $dom = $(Common.getConstant('SET_BTN_TAG') + ' .'+btnArr[index]);
+                }
+                if (!$dom.hasClass("btn")) {
+                	$dom.addClass("btn");
+                }
+                if (status) {
+                    $dom.removeClass("disabled");
+                } else {
+                    $dom.addClass("disabled");
+		}
+            }
+            if (btnArr[index] == 'ALL') {
+                $dom = $(target).find('a[class^="btn"]');
+            } else {
+                $dom = $(target).find('.'+btnArr[index]);
+            }
+            if (!$dom.hasClass("btn")) {
+            	$dom.addClass("btn");
+            }
+            if (status) {
+                $dom.removeClass("disabled");
+            } else {
+                $dom.addClass("disabled");
+            }
+        });
+    }
+}
+
+function removeValidate(form){
+	if (form) {
+		form.find('*[required]').each(function(){
+			var element = this;
+			var errorClass = "error";
+			if($(element).next("div").hasClass("tooltip")){
+				$(element).tooltip('destroy');
+			}
+			if($(element).hasClass("error")){
+				$(element).removeClass(errorClass);
+			}
+		});	
+	} else {
+		$('*[required]').each(function(){
+			var element = this;
+			var errorClass = "error";
+			if($(element).next("div").hasClass("tooltip")){
+				$(element).tooltip('destroy');
+			}
+			if($(element).hasClass("error")){
+				$(element).removeClass(errorClass);
+			}
+		});
+	}
+}
+
+$(document).on("click",".search-select-icon",function(){
+	var _this = $(this);
+	var container = _this.closest(".webplus-container");
+	var tabSearch = container.find(".tab-search");
+	var tabHeader = container.find(".tab-header");
+	var wrappers = container.find(".jqGrid_wrapper"); 
+	// 需要排除内嵌的表格
+	var wrapper;
+	wrappers.each(function(){
+	    if ($(this).closest(".dropdown-menu").length <= 0) {
+	    	wrapper = $(this);
+	    	return false;
+	    }
+	});
+	if(tabSearch.length > 0) {
+		 _this.toggleClass("fa-caret-up fa-caret-down");
+		 if(_this.hasClass("fa-caret-up")) {
+			 var h = tabSearch.outerHeight();
+			 tabSearch.hide();
+			 // 重新计算表格最外层高度
+			 wrapper.height(function(n,c){
+			     return c + h;
+		     });
+		 } else {
+			 tabSearch.show();
+			 // 重新计算表格最外层高度
+			 wrapper.height(function(n,c){
+			     return c - tabSearch.outerHeight();
+		     });
+		 }
+	} else {
+		 _this.toggleClass("fa-caret-up fa-caret-down");
+		 if(_this.hasClass("fa-caret-up")) {
+			 var h = tabHeader.outerHeight();
+			 tabHeader.hide();// 执行hide会有高度改变的情况。目前原因未知
+			 // 重新计算表格最外层高度
+			 wrapper.height(function(n,c){
+			     return c + h;
+		     });
+		 } else {
+			 tabHeader.show();
+			 // 重新计算表格最外层高度
+			 wrapper.height(function(n,c){
+			     return c - tabHeader.outerHeight();
+		     });
+		 }
+	}
+	// 找到附近的表格，重置大小
+	var dataGrid = wrapper.find(".ui-jqgrid-btable");
+	dataGrid.resizeDataGrid.call(dataGrid);
+});
+
+Common.formatHandler = function(value, format){
+    var result = "", n;
+    if (format != "") {    	
+    	var a = format.match(YssGlobal.dayParts); //
+    	if (a != null && a.length > 0) {
+    		n = 2;
+    	} 
+//    	else if (YssGlobal.booleanPattern.test(format)) {
+//    		n = 3;
+//    	}
+    	else if (YssGlobal.decimalPattern.test(format)) {
+    		n = 1;
+    	}
+    } else {
+    	n = 4;
+    }
+    switch(n)
+    {
+        case 1:
+        	if (value != null) {        		
+        		result = new Decimal(value).format(format);
+        	}
+            break;
+        case 2:
+        	if (value != null) {        		
+        		result = new Date(value.replace(/\-/g, "\/")).format(format);
+        	}
+            break;
+//        case 3:
+//            var flag = false;
+//            if (value !== undefined & !parseInt(value)) {
+//                flag = (JSON.parse(value) == true);
+//            } else {
+//                flag = (value == true);
+//            }
+//            if (flag) {
+//                result = new Boolean(1).format(format);
+//            } else {
+//                result = new Boolean(0).format(format);
+//            }
+//            break;
+        case 4 :
+    		if (value == '0' || value == 0) {
+    			result = "未审核";
+    			break;
+    		} else if (value == '1' || value == 1) {
+    			result = "已审核";
+    			break;
+    		} 		
+        default:
+            result = value;
+    }
+    return result;
+}
+
+// 创建colModel
+Common.createColModel = function(listHead) {
+	var element = {};
+	element["header"] = listHead.text; 
+	element["name"] = listHead.key;
+	if (listHead.isShow == '0') {
+		element["hidden"] = true;
+	}
+	
+	if (listHead.width == "") {		
+		element["width"] = 150;
+	} else {
+		element["width"] = listHead.width;
+	}
+	
+	if (listHead.align == "L" || listHead.align == "") {
+		element["align"] = "left";
+	} else if (listHead.align == "R") {
+		element["align"] = "right";
+	} else if (listHead.align == "C") {
+		element["align"] = "center";
+	}
+	
+	if (listHead.format != "" || listHead.key == "auditState" || listHead.key == "n_STATE") {
+		element["formatter"] = function (val) {
+			return Common.formatHandler(val, listHead.format);
+		};
+		element["unformat"] = function (val) {
+            return Common.unformatHandler(val, listHead.format);
+        };
+        element["format"] = listHead.format;
+	}
+	
+	if (listHead.sortable == "true") {
+		element["sortable"] = true;
+	}else{
+		element["sortable"] = false;
+	}
+	
+	return element;
+};
+
+Common.unformatHandler = function(value, format){
+    var result = "", n;
+    if (format != "") { 
+        var a = format.match(YssGlobal.dayParts); //
+        if (a != null && a.length > 0) {
+            n = 2;
+        }
+//        else if (YssGlobal.booleanPattern.test(format)) {
+//            n = 3;
+//        } 
+        else if (YssGlobal.decimalPattern.test(format)) {
+            n = 1;
+        }
+    } else {
+    	n = 4;
+    }
+    switch(n)
+    {
+        case 1:
+        	var sep, re = /([\.\*\_\'\(\)\{\}\+\?\\])/g, stripTag, pattern = /<[^>]*>?/g;
+            sep = ",".replace(re,"\\$1");
+            stripTag = new RegExp(sep, "g");
+            if (pattern.test(value)) {
+                result = $(value).text().trim().replace(stripTag,"");
+			} else {
+                result = value.trim().replace(stripTag,"");
+            }
+            break;
+		case 2:
+            result = Common.parseDate(format, value);
+			break;
+//        case 3:
+//        	if (value && value != null) {
+//                format = format.slice(format.lastIndexOf("?")+1, format.length);
+//                var arr = format.split(":");
+//                if (value == arr[0]) {
+//                    result = 1;
+//                } else {
+//                    result = 0;
+//                }
+//			} else {
+//                result = 0;
+//			}
+//            break;
+        case 4 :
+    		if (value == '未审核') {
+    			result = 0;
+    			break;
+    		} else if (value == '已审核') {
+    			result = 1;
+    			break;
+    		}
+        default:
+            result = value;
+    }
+    return result;
+}
+
+// 日期反格式化
+Common.parseDate = function(oldformat, date, newformat, options) {
+	if (date == undefined || date == null || date == "") {
+		return "";
+	}
+    var result, dM, k, hl, ts = {M : 1, D : 1,MM : 1, DD: 1, dd : 1, yyyy : 1970, hh : 0, mm : 0, ss : 0, SS:0}, timestamp = 0,
+        msDateRegExp = new RegExp("^\/Date\\((([-+])?[0-9]+)(([-+])([0-9]{2})([0-9]{2}))?\\)\/$"),
+        parseRe = /[#%\\\/:_;.,\t\s-]/,
+        msMatch = ((typeof date === 'string') ? date.match(msDateRegExp): null);
+
+    if (newformat === undefined) {
+        newformat = "yyyy-MM-dd hh:mm:ss";
+    }
+    if (options === undefined) {
+        options = {};
+    }
+
+    if(!isNaN(date - 0 ) && String(oldformat).toLowerCase() === "u") {
+        //Unix timestamp
+        timestamp = new Date( parseFloat(date)*1000 );
+    } else if (date.constructor === Date) {
+        timestamp = date;
+        // Microsoft date format support
+    } else if (msMatch !== null ) {
+        timestamp = new Date(parseInt(msMatch[1], 10));
+        if (msMatch[3]) {
+            var offset = Number(msMatch[5]) * 60 + Number(msMatch[6]);
+            offset *= ((msMatch[4] === '-') ? 1 : -1);
+            offset -= timestamp.getTimezoneOffset();
+            timestamp.setTime(Number(Number(timestamp) + (offset * 60 * 1000)));
+        }
+    } else {
+        var offset = 0;
+        //Support ISO8601Long that have Z at the end to indicate UTC timezone
+        if(date.charAt(date.length - 1) === 'Z') {
+            offset -= (new Date()).getTimezoneOffset();
+        }
+        date = String(date).replace(/\T/g,"#").replace(/\t/,"%").split(parseRe);
+        oldformat = oldformat.replace(/\T/g,"#").replace(/\t/,"%").split(parseRe);
+        // parsing for month names
+        for (k = 0, hl = oldformat.length; k < hl; k++) {
+            if (oldformat[k] === 'M') {
+                dM = $.inArray(date[k],YssGlobalVal['zn'].monthsShort);
+                if (dM !== -1 && dM < 12) {
+                    date[k] = dM+1;
+                    ts.MM = parseInt(date[k],10);
+                }
+                continue;
+            }
+            if (oldformat[k] === 'D') {
+                date[k] = date[k].replace(/[^0-9]/ig,"");
+                ts.dd = date[k];
+                continue;
+            }
+            if (oldformat[k] === 'YYYY') {
+                date[k] = date[k].replace(/[^0-9]/ig,"");
+                ts.yyyy = parseInt(date[k],10);
+                continue;
+            }
+            if (date[k] !== undefined) {
+                ts[oldformat[k]] = parseInt(date[k],10);
+            }
+        }
+        if ( ts.mm === 0 && ts.yyyy === 0 && ts.dd === 0) {
+            return "&#160;" ;
+        }
+        ts.MM = parseInt(ts.MM,10)-1;
+        timestamp = new Date(ts.yyyy, ts.MM, ts.dd, ts.hh, ts.mm, ts.ss, ts.SS);
+        //Apply offset to show date as local time.
+        if (offset > 0) {
+            timestamp.setTime(Number(Number(timestamp) + (offset * 60 * 1000)));
+        }
+    }
+
+    result = timestamp.format(newformat);
+    return result;
+}
+
+//清理缓存的函数
+Common.navSideRefresh = function(refreshType, callBack) {
+	var url = "";
+	if (refreshType == 1) {
+		
+	} else if (refreshType == 0) {
+		url = ctx +"/webplus/cache?operate=refresh";
+	}
+	// 修改图标
+	var btn = $('#btnCacheRefresh');
+	btn.removeClass("fa-refresh").addClass("fa-times").removeClass("side-refresh-btn");
+	btn.attr("onclick",""); 
+	$.ajax({
+		type: "post",
+		url: url,
+		async: true,
+		success: function(data) {
+			btn.removeClass("fa-times").addClass("fa-refresh").addClass("side-refresh-btn");
+			btn.attr("onclick","Common.navSideRefresh(0)"); 
+//			btn.attr("","pointer");
+			if(callBack) {
+				callBack(data)
+			} else {
+				var state = data.success;
+				if(state) {
+					YssLayer.tip("刷新缓存成功", btn);
+				} else {
+					YssLayer.tip("刷新缓存失败", btn);
+				}
+
+			}
+		},
+		error: function(data) {
+			btn.removeClass("fa-times").addClass("fa-refresh");
+			if(data.message != undefined) {
+				YssLayer.messageDialogOnRightDown(data.message)
+			} else {
+				YssLayer.tip("刷新缓存失败", btn);
+			}
+
+		}
+	});
+}
+//悬浮的按钮条控件
+/*{
+ * 	height: 悬浮按钮的高度(选填)
+ *  width：悬浮按钮的宽度(选填)
+ *  site：悬浮按钮的位置（"topLeft"，"topRight"，"bottomLeft"，"bottomRight"，"center"）(选填)
+ *  lrdistance：悬浮按钮的位置距离左右的距离(选填)
+ *  tbdistance：悬浮按钮的位置上下的距离(选填)
+ *  targetBox：悬浮弹窗的选择器(必填)
+ *  openBtn：悬浮弹窗的选择器(必填)
+ *  closeBtn：悬浮弹窗的选择器(必填)
+ *  targetBoxWidth：悬浮弹窗的宽(选填)
+ *  targetBoxHeight：悬浮弹窗的高(选填)
+ * }*/
+$.fn.suspensionControl = function(options){
+	var _this=$(this);
+	var defaults = {
+			height:"200px",
+			width:"100px",
+			site:"bottomRight",	
+			lrdistance:"10px",
+			tbdistance:"10px",
+			targetBoxWidth:"500px",
+	}
+	var opts = $.extend(defaults, options);
+	var centerL="calc(50% - "+parseInt(opts.width)/2+"px"+")",
+	    centerT="calc(50% - "+parseInt(opts.height)/2+"px"+")";
+	
+	switch (opts.site){
+		case "topLeft":
+		_this.css({"position":"fixed","width":opts.width,"height":opts.height,"top":opts.tbdistance,"left":opts.lrdistance,"z-index":"100000000000"});
+			break;
+		case "topRight":
+		_this.css({"position":"fixed","width":opts.width,"height":opts.height,"top":opts.tbdistance,"right":opts.lrdistance,"z-index":"100000000000"});
+			break;
+		case "bottomLeft":
+		_this.css({"position":"fixed","width":opts.width,"height":opts.height,"bottom":opts.tbdistance,"left":opts.tbdistance,"z-index":"100000000000"});
+			break;
+		case "bottomRight":
+		_this.css({"position":"fixed","width":opts.width,"height":opts.height,"bottom":opts.tbdistance,"right":opts.tbdistance,"z-index":"100000000000"});
+			break;
+		case "center":
+		_this.css({"position":"fixed","width":opts.width,"height":opts.height,"left":centerL,"top":centerT,"z-index":"100000000000"});              
+			break;					
+		default:
+			break;
+	}
+	if(opts.targetBoxHeight==undefined){
+		opts.targetBoxHeight=opts.height;
+	}
+	$(opts.targetBox).css({"width":opts.targetBoxWidth,"height":opts.targetBoxHeight});
+	
+	if(opts.openBtn && opts.closeBtn && opts.targetBox){
+		var maxWidth=opts.targetBoxWidth;
+		$(opts.openBtn).bind("click",function(){
+			$(opts.targetBox).removeClass('hide').animate({"right":"-"+maxWidth,opacity:'0'},0,function(){
+	       $(opts.targetBox).animate({"right":"0px",opacity:'1'},500);
+	       
+	    });		         
+		});
+		$(opts.closeBtn).bind("click",function(){
+			$(opts.targetBox).animate({"right":"-"+maxWidth,opacity:'0'},500,function(){
+	      $(opts.targetBox).addClass('hide')
+	    });	
+		})
+		return false;
+	}
+}
+
+/*Common.cacheMenu = function(){
+    var e = window.event || arguments.callee.caller.arguments[0];
+    var target = $(e.currentTarget);
+    var offset = target.offset();
+    var menu = $('#cache-menu');
+    if (menu.is(":hidden")){
+        menu.show();
+    }
+    menu.css('left',offset.left + target.width()/2+'px').css('top',offset.top+target.height()/2-menu.height()+'px').fadeIn();
+    e.stopPropagation();
+}
+
+Common.cacheMenuHide = function() {
+    var e = window.event || arguments.callee.caller.arguments[0];
+    var target = $(e.currentTarget);
+    if (target) {
+        var a = target.attr("id")
+    } else {
+        var a = target.attr("id")
+    }
+    if (a != "btnCacheRefresh") {
+        $('#cache-menu').hide();
+    }
+};
+
+$(document).on('click',Common.cacheMenuHide);*/
+
+
+/**
+ * jquery.validate插件默认校验提示样式
+ */
+//配置jQuery.validator默认的处理方法  
+$.validator.setDefaults({  
+	success : 'valid', 
+	unhighlight : function(element, errorClass, validClass) { //验证通过
+		$(element).tooltip('destroy').removeClass(errorClass);
+	},
+	errorPlacement : function(error, element) {
+		if ($(element).next("div").hasClass("tooltip")) {
+			$(element).attr("data-original-title", $(error).text())
+					.tooltip("show");
+		} else {
+			$(element).attr("title", $(error).text()).tooltip(
+					"show");
+		}
+	}, 
+});  
+  
+//配置通用的默认提示语  
+$.extend($.validator.messages, {  
+    required: '该项为必填项',  
+    maxlength: $.validator.format("最大长度不能大于{0}个字符"),  
+    minlength: $.validator.format("最小长度不能小于{0}个字符"),  
+    rangelength: $.validator.format("字符长度必须在 {0} 和 {1} 之间"),  
+    range: $.validator.format("数值必须在 {0} 和 {1} 之间"),  
+    max: $.validator.format("数值不能大于 {0}"),  
+    min: $.validator.format("数值不能小于 {0}")  
+});  
+
+
+
+/**
+ * gird 列头个性化布局设置：列排序，列是否显示，列是否导出，列宽。
+ */
+Common.colSetModalDialog = function(colModel , datagGrid_ID, gridOptions) {
+		
+		var dialog = null;
+
+		var content='<body class="gray-bg">'+ 
+					'<div class="row">'+ 
+		            '<div class="col-sm-12">'+ 
+		                '<div class="ibox float-e-margins">'+ 
+		                    '<div class="ibox-content">'+ 
+		                            '<div id="form_COL_SETTING"  >'+ 
+										'<div id="col_setting_content">'+ 
+											'<div id="col_setting_div" style="width: 560px;height: 340px;">'+ 
+												'<table id="col_setting_Grid"></table>'+
+											'</div>'+ 
+										'</div>'+ 
+									'</div>'+  
+		                    '</div>'+ 
+		                '</div>'+ 
+		            '</div>'+ 
+		        	'</div></body>';
+		
+		var options = {
+			id: funcCode,
+	        title: "布局设置",
+	        backdrop:"static", //点击空白不关闭
+	        prepareFunction: function(){
+	        	$("#col_setting_Grid").tableDnD({
+					scrollAmount : 0
+				});
+
+        		var gridoptions = {
+        			// 当前页签编号
+    				//height: 500,
+        			shrinkToFit : false,
+        			//tabPageId : "tabPageId",
+        			url : resourcePath + "/userConfig?operate=queryColumnSetting&funCode="+funcCode, 
+        			multiselect : false,
+    				//cellEdit: true,
+        			//searchForm : searchForm,
+        			//rowNum : -1,
+        			// 设置数据表格列
+        			colModel : [
+        			              {name:'id', header:'ID', width:60, editable:false, hidden:true},
+        			              {name:'c_COL_CODE', header:'c_COL_CODE', width:60, editable:false, hidden:true},
+        			              {name:'c_COL_NAME',header:'字段', width:180, editable: false },
+        			              {name:'c_IS_VISIBAL',header:'是否可见', width:110, checkbox : true , align : 'center'},
+        			              {name:'c_IS_EXPORT',header:'是否导出', width:110, checkbox : true , align : 'center'},
+        			              //{name:'c_IS_VISIBAL',header:'是否可见', width:110, editable: true, edittype : "select", editoptions:{value:"1:是;0:否"},formatter:'select'},
+        			              //{name:'c_IS_EXPORT',header:'是否导出', width:110, editable: true, edittype : "select", editoptions:{value:"1:是;0:否"},formatter:'select'},
+        			              {name:'n_COL_WIDTH',header:'列宽(px)', width:110, editable: true, editoptions:{
+        			            	  dataInit: function (element) {
+        			                    $(element).keydown(function (event) {
+        			                        if (event.keyCode == 13) { $("#sData").click(); }
+        			                        if (event.keyCode == 27) { $("#cData").click(); }
+        			                    });
+        			                }}
+        			              }
+        			           ],
+        			altRows : true,
+        			altclass : 'someClass',
+        			ondblClickRow : gridOndblClickRow,
+        			loadComplete: function()
+        			{
+    		            var ids = $(this).jqGrid("getDataIDs");
+    		            var headCheckBox = $(this).closest('.ui-jqgrid-view').find('.ui-jqgrid-hdiv').find(':checkbox');
+    		            headCheckBox.each(function() {
+    		                $(this).remove();
+    		            });
+    		            
+    		            for (var i = 0; i < ids.length; i++) {
+    		                var rowData = $(this).jqGrid('getRowData', ids[i]);
+    		                var row = $(this).getRowDomById(ids[i]);
+    		                var checkbox = $(row).find(':checkbox');
+    						for (var j = 0; j< checkbox.length; j++) {
+    							var name = checkbox[j].name;
+    							if (name == "c_IS_VISIBAL" || name == "c_IS_EXPORT") {
+    								if(checkbox[j].value=='1'){
+    									checkbox[j].parentNode.childNodes[1].nodeValue=''; // 找到父节点 ， 清空td里面的文本内容
+    									$(checkbox[j]).prop('checked',true);
+    								} else {
+    									checkbox[j].parentNode.childNodes[1].nodeValue=''; // 找到父节点 ， 清空td里面的文本内容
+    									$(checkbox[j]).prop('checked',false);
+    								}
+    							}
+    						}
+    		            }
+    		            
+        				/** 行拖拽  **/
+        				$("#_empty" , "#col_setting_Grid").addClass("nodrag nodrop"); //样式
+        				$("#col_setting_Grid").tableDnDUpdate(); //更新jquery.tablednd.js插件的方法。 
+        			},
+		        };
+        		
+        		var riskGrid = $('#col_setting_Grid').YssDataGrid(gridoptions);
+        		
+        		//双击事件
+        		function gridOndblClickRow(rowid, iRow, iCol, e) {
+        			var gd = null;
+        			if(e.currentTarget.id == "col_setting_Grid"){
+        				gd = riskGrid;
+        			}
+        			var currentEditId = gd.getCurrentEditId();
+        			if (currentEditId == rowid) { // 如果该行还在编辑状态，跳过
+        			    return false;
+        			} else {  // 保存上一次修改的行
+        			    gd.exSaveRow(currentEditId);
+        			}
+        			if (gd.getCurrentEditId() === null) {
+        			    gd.exEditRow(rowid, true, initWidget);
+        			}
+        		}
+        		
+        		//初始化控件
+        		function initWidget(rowid){
+        		}
+
+	        }
+		};
+		
+		options.content = content;
+		options.yes = function(){
+			var rowArr = $("#col_setting_Grid").jqGrid("getDataIDs");  //取得所有数据
+			if(rowArr != ""){
+				for (var i = 0; i < rowArr.length; i++) {
+					jQuery("#col_setting_Grid").saveRow(rowArr[i], true, 'clientArray');  //保存正在编辑的数据行
+				}
+			}
+			
+			var regu = /^[1-9]\d*$/;
+			var rowData = $("#col_setting_Grid").jqGrid("getRowData");  //设置信息
+			if(rowData != ""){
+				for (var i = 0; i < rowData.length; i++) {
+					if(!regu.test(rowData[i].n_COL_WIDTH)){
+						YssLayer.messageAlter("设置的列宽必须是正整数！", 2);
+						$("#col_setting_Grid").jqGrid('editRow', rowData[i].id, { keys: true, focusField: 6 });
+						return false;
+					}
+					
+					if( Number(rowData[i].n_COL_WIDTH) > 1000){
+						YssLayer.messageAlter("设置的列宽必须小于1000px！", 2);
+						$("#col_setting_Grid").jqGrid('editRow', rowData[i].id, { keys: true, focusField: 6 });
+						return false;
+					}
+				}
+			}
+			
+			//重新设置colmodel
+			$.jgrid.gridUnload("#"+datagGrid_ID);			
+			var resColModel = [];
+			resColModel.push({header: "ID", name: "id", hidden: true});
+			var var_hidden = true;
+			for (var i = 0; i < rowData.length; i++) {
+				resColModel.push({
+					header: rowData[i].c_COL_NAME,
+					name: rowData[i].c_COL_CODE,
+					hidden: rowData[i].c_IS_VISIBAL==null?true:false ,   //0-不显示，也就是隐藏为true
+			        width: rowData[i].n_COL_WIDTH , 
+			        align: "left"
+				});
+			}
+			for (var i = 0; i < colModel.length; i++) {  //传入原先的隐藏列。显示的列，会用到隐藏列的值
+				if(colModel[i].hidden==true){
+					resColModel.push({
+						header: colModel[i].header,
+						name: colModel[i].name,
+						hidden: colModel[i].hidden ,   //0-不显示，也就是隐藏为true
+				        width: colModel[i].width , 
+				        align: colModel[i].align
+					});
+				}
+			}
+			
+			gridOptions.colModel = resColModel;
+			$("#"+datagGrid_ID).YssDataGrid(gridOptions);
+			$("#"+datagGrid_ID).trigger("reloadGrid");
+			
+			var parameter = {};
+			parameter.applyinfos = rowData;
+			parameter.operate = "saveColumnSetting";
+			parameter.funCode = funcCode;
+			
+			$.ajax({
+				type : "post", 
+				contentType : "application/x-www-form-urlencoded; charset=UTF-8",
+				url : resourcePath + "/userConfig?operate=saveColumnSetting", 
+				data : {
+					"parameter" : JSON.stringify(parameter)
+				}, // 这里是要传递的参数，格式为 data: "{paraNamearaValue}",下面将会看到
+				dataType : 'json',
+				success : function(result) { // 回调函数，result，返回值
+					if (result && !result.success) {
+                        loadMSG(result.message, result.detailMessage);
+                        return false;
+                    } else {
+                    	//element.reload();
+                    	//element.trigger("reloadGrid");
+					}
+				}
+			});
+			
+			dialog.close();
+		};
+		options.btn = ['保存','取消'];
+		dialog = new YssDialog(options);
+	    dialog.show();
+	    //Common.resizeGridWrapper("table_div_set");
+
+}
+
+function isIE() {
+	if (!isIE.result) {
+		var agentString = navigator.userAgent;
+		isIE.result = agentString.indexOf('Trident') >= 0 || agentString.indexOf('MSIE') >= 0;
+	}
+	return isIE.result;
+}
+
+function isFirFox(){
+	return navigator.userAgent.indexOf("Firefox") >= 0;
+}
+
+function isChrome(){
+	return navigator.userAgent.indexOf("Chrome") >= 0;
+}

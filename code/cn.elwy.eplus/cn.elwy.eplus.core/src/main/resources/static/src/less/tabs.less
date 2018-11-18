@@ -1,0 +1,283 @@
+
+@import "bootstrap-less/mixins.less";
+@import "bootstrap-less/variables.less";
+@import "variables.less";
+@import "mixins.less";
+.content-tabs {
+  border-bottom: solid 2px #e7ebee;
+  background: #fff !important;
+  border-top: none;
+  height: 34px;
+  .page-tabs {
+    a.active {
+      background: whitesmoke;
+      color: #fff !important;
+      border-right: solid 1px #e7ebee;
+    }
+  }
+  .roll-left {
+    border-right: solid 1px #e7ebee;
+  }
+  .roll-right {
+    border-left: solid 1px #e7ebee;
+  }
+}
+
+#content-wrapper {
+  background-color: #f9f9f9;
+  border-left: 2px solid #e7ebee;
+}
+
+@media (min-width: 768px) {
+  .nav-small {
+    #nav-col {
+      width: 64px;
+    }
+    #content-wrapper {
+      margin-left: 64px;
+    }
+  }
+
+  .content-tabs {
+    position: relative;
+    height: 34px;
+    line-height: 35.5px;
+    background: #fafafa;
+    border-bottom: solid 2px #2c3e50;
+    font-size: 12px;
+    //border-top: 1px solid #ddd;
+    .roll-nav {
+      position: absolute;
+      width: 40px;
+      height: 30px;
+      text-align: center;
+      color: #475059;
+      z-index: 2;
+      top: 0;
+    }
+    .roll-left {
+      left: 0;
+      border-right: solid 1px #ddd;
+    }
+    .roll-right {
+      right: 0;
+      border-left: solid 1px #ddd;
+    }
+    button {
+      background: #fff;
+      border: 0;
+      height: 30px;
+      line-height: 34px;
+      width: 40px;
+      outline: 0;
+      &:hover {
+        background: #fafafa;
+      }
+      i {
+        color: #999;
+      }
+    }
+    nav.page-tabs {
+      margin-left: 40px;
+      width: 100000px;
+      height: 32px;
+      overflow: hidden;
+      .page-tabs-content {
+        float: left;
+      }
+    }
+    .page-tabs {
+      a {
+        display: block;
+        float: left;
+        border-right: solid 0px #ddd;
+        padding: 0 15px;
+        padding-right: 8px;
+        text-decoration: none;
+        color: #475059;
+        &:first-child {
+          padding-right: 15px;
+        }
+        i {
+          margin-top: -10px;
+          right: 0px;
+          position: relative;
+          color: #999;
+          &:hover {
+            color: #c00 !important;
+          }
+        }
+      }
+      a.active {
+        background: #2c3e50;
+        color: #fff;
+        border-right: solid 1px #2c3e50;
+        i {
+          &:hover {
+            color: #fff !important;
+          }
+        }
+      }
+    }
+    .roll-right.tabRight {
+      right: 120px;
+    }
+    .roll-right.btn-group {
+      right: 40px;
+      width: 80px;
+      padding: 0;
+      button {
+        width: 80px;
+      }
+    }
+    .roll-right.tabExit {
+      background: #fff;
+      height: 39px;
+      width: 40px;
+      outline: 0;
+    }
+  }
+
+  .page-tabs-list {
+    position: absolute;
+    width: 40px;
+    height: 39px;
+    text-align: center;
+    color: #475059;
+    z-index: 2;
+    top: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-tabs {
+    display: none;
+  }
+}
+
+.tabs-container .panel-body {
+	background: #fff;
+	border: 1px solid #e7eaec;
+	border-radius: 2px;
+	padding: 20px;
+	position: relative
+}
+
+.tabs-container .nav-tabs>li.active>a,.tabs-container .nav-tabs>li.active>a:focus,.tabs-container .nav-tabs>li.active>a:hover {
+	background-color: #fff
+}
+
+.tabs-container .nav-tabs>li {
+	float: left;
+	margin-bottom: -1px
+}
+
+.tabs-container .nav-tabs>li.active>a,.tabs-container .nav-tabs>li.active>a:focus,.tabs-container .nav-tabs>li.active>a:hover {
+	border: 1px solid #ccc;
+	border-bottom-color: transparent;
+	font-weight: 600;
+}
+
+.tabs-container .nav-tabs {
+	border-bottom: 1px solid #e7eaec
+}
+
+.tabs-container .tab-pane .panel-body {
+	border-top: none
+}
+
+.tabs-container .tabs-left .tab-pane .panel-body,.tabs-container .tabs-right .tab-pane .panel-body {
+	border-top: 1px solid #e7eaec
+}
+
+.tabs-container .nav-tabs>li a:hover {
+	background: 0 0;
+	border-color: transparent
+}
+
+.tabs-container .tabs-below>.nav-tabs,.tabs-container .tabs-left>.nav-tabs,.tabs-container .tabs-right>.nav-tabs {
+	border-bottom: 0
+}
+
+.tabs-container .tabs-left .panel-body {
+	position: static
+}
+
+.tabs-container .tabs-left>.nav-tabs,.tabs-container .tabs-right>.nav-tabs {
+	width: 20%
+}
+
+.tabs-container .tabs-left .panel-body {
+	width: 80%;
+	margin-left: 20%
+}
+
+.tabs-container .tabs-right .panel-body {
+	width: 80%;
+	margin-right: 20%
+}
+
+.tabs-container .pill-content>.pill-pane,.tabs-container .tab-content>.tab-pane {
+	display: none
+}
+
+.tabs-container .pill-content>.active,.tabs-container .tab-content>.active {
+	display: block
+}
+
+.tabs-container .tabs-below>.nav-tabs {
+	border-top: 1px solid #e7eaec
+}
+
+.tabs-container .tabs-below>.nav-tabs>li {
+	margin-top: -1px;
+	margin-bottom: 0
+}
+
+.tabs-container .tabs-below>.nav-tabs>li>a {
+	border-radius: 0 0 4px 4px
+}
+
+.tabs-container .tabs-below>.nav-tabs>li>a:focus,.tabs-container .tabs-below>.nav-tabs>li>a:hover {
+	border-top-color: #e7eaec;
+	border-bottom-color: transparent
+}
+
+.tabs-container .tabs-left>.nav-tabs>li,.tabs-container .tabs-right>.nav-tabs>li {
+	float: none
+}
+
+.tabs-container .tabs-left>.nav-tabs>li>a,.tabs-container .tabs-right>.nav-tabs>li>a {
+	min-width: 74px;
+	margin-right: 0;
+	margin-bottom: 3px
+}
+
+.tabs-container .tabs-left>.nav-tabs {
+	float: left;
+	margin-right: 19px
+}
+
+.tabs-container .tabs-left>.nav-tabs>li>a {
+	margin-right: -1px;
+	border-radius: 4px 0 0 4px
+}
+
+.tabs-container .tabs-left>.nav-tabs .active>a,.tabs-container .tabs-left>.nav-tabs .active>a:focus,.tabs-container .tabs-left>.nav-tabs .active>a:hover {
+	border-color: #e7eaec transparent #e7eaec #e7eaec
+}
+
+.tabs-container .tabs-right>.nav-tabs {
+	float: right;
+	margin-left: 19px
+}
+
+.tabs-container .tabs-right>.nav-tabs>li>a {
+	margin-left: -1px;
+	border-radius: 0 4px 4px 0
+}
+
+.tabs-container .tabs-right>.nav-tabs .active>a,.tabs-container .tabs-right>.nav-tabs .active>a:focus,.tabs-container .tabs-right>.nav-tabs .active>a:hover {
+	border-color: #e7eaec #e7eaec #e7eaec transparent;
+	z-index: 1
+}
